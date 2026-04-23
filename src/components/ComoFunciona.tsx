@@ -38,21 +38,29 @@ export default function ComoFunciona() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left */}
           <div>
-            <span className="badge">Como Funciona</span>
-            <h2 className="section-title mt-4">
+            <span className="inline-flex items-center gap-1.5 bg-[#C8FFF0] text-[#1C3A32] text-xs font-semibold px-3 py-1.5 rounded-full">
+              Como Funciona
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1C3A32] leading-tight mt-4">
               Contrate seu seguro em
               <span className="text-[#1C3A32]"> 4 passos simples</span>
             </h2>
-            <p className="section-subtitle max-w-md">
+            <p className="text-lg text-[#5A7A70] mt-4 max-w-md">
               Processo 100% digital, sem burocracia e com aprovação imediata. Do formulário
               à apólice em questão de minutos.
             </p>
 
-            <div className="mt-8 flex gap-4">
-              <a href="#cotacao" className="btn-dark">
+            <div className="mt-8 flex flex-wrap gap-4">
+              <a
+                href="#cotacao"
+                className="inline-flex items-center gap-2 bg-[#1C3A32] hover:bg-[#0F211B] text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-md"
+              >
                 Começar Agora
               </a>
-              <a href="tel:08007070700" className="btn-ghost">
+              <a
+                href="tel:08007070700"
+                className="inline-flex items-center gap-2 border-2 border-[#1C3A32] text-[#1C3A32] hover:bg-[#1C3A32] hover:text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200"
+              >
                 Falar com Especialista
               </a>
             </div>

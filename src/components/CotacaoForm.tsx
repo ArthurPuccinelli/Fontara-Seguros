@@ -17,7 +17,6 @@ export default function CotacaoForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    // Simula envio
     await new Promise((r) => setTimeout(r, 1500));
     setLoading(false);
     setSubmitted(true);
@@ -30,13 +29,17 @@ export default function CotacaoForm() {
     >
       {/* Decorative */}
       <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#3DFFC0]/10 blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-[#3DFFC0]/08 blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-[#3DFFC0]/[0.08] blur-3xl" />
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <span
             className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full mb-4"
-            style={{ background: 'rgba(61,255,192,0.15)', color: '#3DFFC0', border: '1px solid rgba(61,255,192,0.25)' }}
+            style={{
+              background: 'rgba(61,255,192,0.15)',
+              color: '#3DFFC0',
+              border: '1px solid rgba(61,255,192,0.25)',
+            }}
           >
             Cotação Gratuita
           </span>
@@ -51,7 +54,10 @@ export default function CotacaoForm() {
         {submitted ? (
           <div
             className="rounded-2xl p-12 text-center"
-            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(61,255,192,0.25)' }}
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(61,255,192,0.25)',
+            }}
           >
             <div className="w-16 h-16 rounded-full bg-[#3DFFC0]/20 flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 className="w-9 h-9 text-[#3DFFC0]" />
@@ -63,7 +69,7 @@ export default function CotacaoForm() {
             </p>
             <button
               onClick={() => setSubmitted(false)}
-              className="mt-8 btn-primary"
+              className="mt-8 inline-flex items-center gap-2 bg-[#3DFFC0] hover:bg-[#00D4A8] text-[#1C3A32] font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-md"
             >
               Fazer nova cotação
             </button>
@@ -71,7 +77,12 @@ export default function CotacaoForm() {
         ) : (
           <div
             className="rounded-2xl p-8 md:p-10"
-            style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(20px)', border: '1px solid rgba(61,255,192,0.20)' }}
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: '1px solid rgba(61,255,192,0.20)',
+            }}
           >
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Tipo de Seguro */}

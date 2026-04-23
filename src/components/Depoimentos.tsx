@@ -56,12 +56,14 @@ export default function Depoimentos() {
     <section id="depoimentos" className="py-24 bg-[#F7FDFB]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <span className="badge">Depoimentos</span>
-          <h2 className="section-title mt-4">
+          <span className="inline-flex items-center gap-1.5 bg-[#C8FFF0] text-[#1C3A32] text-xs font-semibold px-3 py-1.5 rounded-full">
+            Depoimentos
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-[#1C3A32] leading-tight mt-4">
             Quem protegemos,
             <span className="text-[#1C3A32]"> aprova</span>
           </h2>
-          <p className="section-subtitle mx-auto max-w-lg">
+          <p className="text-lg text-[#5A7A70] mt-4 mx-auto max-w-lg">
             Mais de 500 mil clientes confiam na Fontara. Veja o que eles dizem.
           </p>
         </div>

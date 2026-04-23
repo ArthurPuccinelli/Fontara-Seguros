@@ -35,7 +35,7 @@ export default function Hero() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left content */}
           <div className="text-white">
-            <div className="badge mb-6 bg-[#3DFFC0]/20 text-[#3DFFC0] border border-[#3DFFC0]/30">
+            <div className="inline-flex items-center gap-1.5 bg-[#3DFFC0]/20 text-[#3DFFC0] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#3DFFC0]/30 mb-6">
               <Shield className="w-3.5 h-3.5" />
               Aprovado pela SUSEP · Desde 2010
             </div>
@@ -53,11 +53,17 @@ export default function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <a href="#cotacao" className="btn-primary text-base px-8 py-4 text-[#1C3A32]">
+              <a
+                href="#cotacao"
+                className="inline-flex items-center gap-2 bg-[#3DFFC0] hover:bg-[#00D4A8] text-[#1C3A32] font-semibold px-8 py-4 rounded-xl transition-all duration-200 shadow-md text-base"
+              >
                 Fazer Cotação Grátis
                 <ArrowRight className="w-5 h-5" />
               </a>
-              <a href="#seguros" className="btn-outline text-base px-8 py-4">
+              <a
+                href="#seguros"
+                className="inline-flex items-center gap-2 border-2 border-white text-white hover:bg-white hover:text-[#1C3A32] font-semibold px-8 py-4 rounded-xl transition-all duration-200 text-base"
+              >
                 Nossos Seguros
               </a>
             </div>
@@ -95,11 +101,14 @@ export default function Hero() {
                   <label className="block text-white/80 text-sm font-medium mb-1.5">
                     Tipo de seguro
                   </label>
-                  <select className="w-full bg-white/10 border border-white/20 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#3DFFC0]/40 focus:border-[#3DFFC0]">
-                    <option value="" className="text-gray-900">Selecione o seguro</option>
-                    <option value="auto" className="text-gray-900">Seguro Auto</option>
-                    <option value="vida" className="text-gray-900">Seguro de Vida</option>
-                    <option value="empresarial" className="text-gray-900">Seguro Empresarial</option>
+                  <select
+                    className="w-full bg-white/10 border border-white/20 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#3DFFC0]/40 focus:border-[#3DFFC0]"
+                    style={{ colorScheme: 'dark' }}
+                  >
+                    <option value="" className="bg-[#1C3A32] text-white">Selecione o seguro</option>
+                    <option value="auto" className="bg-[#1C3A32] text-white">Seguro Auto</option>
+                    <option value="vida" className="bg-[#1C3A32] text-white">Seguro de Vida</option>
+                    <option value="empresarial" className="bg-[#1C3A32] text-white">Seguro Empresarial</option>
                   </select>
                 </div>
 

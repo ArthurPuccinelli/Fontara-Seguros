@@ -2,7 +2,6 @@
 @import "tailwindcss";
 
 :root {
-  /* Fontara Brand — Verde Floresta + Verde Menta */
   --color-primary: #1C3A32;
   --color-primary-dark: #0F211B;
   --color-primary-light: #2A5445;
@@ -24,46 +23,22 @@
   margin: 0;
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   font-family: 'IBM Plex Sans', sans-serif;
-  color: var(--color-text);
+  color: #1C3A32;
   background: #ffffff;
   line-height: 1.6;
-}
-
-@layer components {
-  .btn-primary {
-    @apply inline-flex items-center gap-2 bg-[#3DFFC0] hover:bg-[#00D4A8] text-[#1C3A32] font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-md;
-  }
-  .btn-outline {
-    @apply inline-flex items-center gap-2 border-2 border-white text-white hover:bg-white hover:text-[#1C3A32] font-semibold px-6 py-3 rounded-xl transition-all duration-200;
-  }
-  .btn-dark {
-    @apply inline-flex items-center gap-2 bg-[#1C3A32] hover:bg-[#0F211B] text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-md;
-  }
-  .btn-ghost {
-    @apply inline-flex items-center gap-2 border-2 border-[#1C3A32] text-[#1C3A32] hover:bg-[#1C3A32] hover:text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200;
-  }
-  .card {
-    @apply bg-white rounded-2xl p-6 border border-[#D4EDE6] transition-all duration-300;
-  }
-  .section-title {
-    @apply text-3xl md:text-4xl font-bold text-[#1C3A32] leading-tight;
-  }
-  .section-subtitle {
-    @apply text-lg text-[#5A7A70] mt-4;
-  }
-  .badge {
-    @apply inline-flex items-center gap-1.5 bg-[#C8FFF0] text-[#1C3A32] text-xs font-semibold px-3 py-1.5 rounded-full;
-  }
 }
 
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50%       { transform: translateY(-12px); }

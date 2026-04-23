@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Phone, Mail, MapPin, Instagram, Linkedin, Facebook } from 'lucide-react';
+import { Phone, Mail, MapPin } from 'lucide-react';
 
 const links = {
   Seguros: [
@@ -64,17 +64,19 @@ export default function Footer() {
 
             <div className="flex gap-4 mt-8">
               {[
-                { icon: Instagram, href: '#', label: 'Instagram' },
-                { icon: Linkedin, href: '#', label: 'LinkedIn' },
-                { icon: Facebook, href: '#', label: 'Facebook' },
-              ].map(({ icon: Icon, href, label }) => (
+                { label: 'Instagram', href: '#', letter: 'IG' },
+                { label: 'LinkedIn', href: '#', letter: 'in' },
+                { label: 'Facebook', href: '#', letter: 'fb' },
+              ].map(({ label, href, letter }) => (
                 <a
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="w-9 h-9 rounded-lg bg-white/08 hover:bg-[#3DFFC0]/20 flex items-center justify-center transition-colors group"
+                  className="w-9 h-9 rounded-lg bg-white/[0.08] hover:bg-[#3DFFC0]/20 flex items-center justify-center transition-colors group"
                 >
-                  <Icon className="w-4 h-4 text-white/60 group-hover:text-[#3DFFC0]" />
+                  <span className="text-[10px] font-bold text-white/60 group-hover:text-[#3DFFC0]">
+                    {letter}
+                  </span>
                 </a>
               ))}
             </div>

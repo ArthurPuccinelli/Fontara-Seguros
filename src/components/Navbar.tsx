@@ -36,7 +36,7 @@ export default function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/97 backdrop-blur-md shadow-sm border-b border-[#D4EDE6]'
+          ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-[#D4EDE6]'
           : 'bg-transparent'
       }`}
     >
@@ -117,7 +117,10 @@ export default function Navbar() {
               <Phone className="w-4 h-4" />
               0800 707 0700
             </a>
-            <a href="#cotacao" className="btn-primary text-sm px-5 py-2.5">
+            <a
+              href="#cotacao"
+              className="inline-flex items-center gap-2 bg-[#3DFFC0] hover:bg-[#00D4A8] text-[#1C3A32] font-semibold px-5 py-2.5 rounded-xl transition-all duration-200 shadow-md text-sm"
+            >
               Cotação Grátis
             </a>
           </div>
@@ -170,11 +173,18 @@ export default function Navbar() {
               </div>
             ))}
             <div className="pt-3 border-t border-[#D4EDE6] mt-3 space-y-2">
-              <a href="tel:08007070700" className="flex items-center gap-2 px-3 py-2 text-sm text-[#1C3A32] font-medium">
+              <a
+                href="tel:08007070700"
+                className="flex items-center gap-2 px-3 py-2 text-sm text-[#1C3A32] font-medium"
+              >
                 <Phone className="w-4 h-4" />
                 0800 707 0700 (Gratuito)
               </a>
-              <a href="#cotacao" className="btn-primary w-full justify-center text-sm">
+              <a
+                href="#cotacao"
+                className="inline-flex items-center justify-center gap-2 w-full bg-[#3DFFC0] hover:bg-[#00D4A8] text-[#1C3A32] font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-md text-sm"
+                onClick={() => setMobileOpen(false)}
+              >
                 Cotação Grátis
               </a>
             </div>

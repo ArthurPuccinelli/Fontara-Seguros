@@ -10,7 +10,6 @@ const seguros = [
     subtitle: 'Proteção completa para seu veículo',
     description:
       'Cobertura contra colisão, roubo, furto, incêndio e danos naturais. Assistência 24h em todo o Brasil com guincho, chaveiro e carro reserva.',
-    color: '#3DFFC0',
     features: [
       'Cobertura contra roubo e furto',
       'Danos a terceiros',
@@ -29,7 +28,6 @@ const seguros = [
     subtitle: 'Cuide de quem você ama',
     description:
       'Garantia financeira para sua família em qualquer eventualidade. Cobertura por morte, invalidez, doenças graves e assistências complementares.',
-    color: '#3DFFC0',
     features: [
       'Indenização por morte',
       'Invalidez permanente',
@@ -48,7 +46,6 @@ const seguros = [
     subtitle: 'Blindagem total para o seu negócio',
     description:
       'Proteção abrangente para empresas de todos os portes. Cobertura de incêndio, responsabilidade civil, lucros cessantes e muito mais.',
-    color: '#3DFFC0',
     features: [
       'Incêndio e explosão',
       'Responsabilidade civil',
@@ -68,15 +65,14 @@ export default function Seguros() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <span className="badge">Nossos Produtos</span>
-          <h2 className="section-title mt-4">
-            Seguros feitos para
-            <span className="text-[#3DFFC0] block" style={{ WebkitTextStroke: '1px #00D4A8', color: 'transparent', WebkitTextFillColor: 'transparent' }}>
-              &nbsp;
-            </span>
-            <span>proteger o que importa</span>
+          <span className="inline-flex items-center gap-1.5 bg-[#C8FFF0] text-[#1C3A32] text-xs font-semibold px-3 py-1.5 rounded-full">
+            Nossos Produtos
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-[#1C3A32] leading-tight mt-4">
+            Seguros feitos para{' '}
+            <span className="text-[#00A87A] block">proteger o que importa</span>
           </h2>
-          <p className="section-subtitle mx-auto max-w-xl">
+          <p className="text-lg text-[#5A7A70] mt-4 mx-auto max-w-xl">
             Produtos desenhados para cada fase da sua vida e do seu negócio,
             com cobertura completa e aprovação em minutos.
           </p>
@@ -84,7 +80,7 @@ export default function Seguros() {
 
         {/* Cards */}
         <div className="grid md:grid-cols-3 gap-8">
-          {seguros.map((seguro, idx) => {
+          {seguros.map((seguro) => {
             const Icon = seguro.icon;
             return (
               <div
@@ -127,7 +123,7 @@ export default function Seguros() {
 
                 <a
                   href="#cotacao"
-                  className="btn-dark w-full justify-center text-sm group-hover:bg-[#3DFFC0] group-hover:text-[#1C3A32] transition-all"
+                  className="inline-flex items-center justify-center gap-2 w-full bg-[#1C3A32] hover:bg-[#3DFFC0] text-white hover:text-[#1C3A32] font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-md text-sm"
                 >
                   {seguro.cta}
                   <ArrowRight className="w-4 h-4" />

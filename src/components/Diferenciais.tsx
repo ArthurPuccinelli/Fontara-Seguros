@@ -51,12 +51,14 @@ export default function Diferenciais() {
     <section id="diferenciais" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <span className="badge">Por que Fontara</span>
-          <h2 className="section-title mt-4">
+          <span className="inline-flex items-center gap-1.5 bg-[#C8FFF0] text-[#1C3A32] text-xs font-semibold px-3 py-1.5 rounded-full">
+            Por que Fontara
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-[#1C3A32] leading-tight mt-4">
             O seguro que protege e
             <span className="text-[#1C3A32]"> que simplifica</span>
           </h2>
-          <p className="section-subtitle mx-auto max-w-xl">
+          <p className="text-lg text-[#5A7A70] mt-4 mx-auto max-w-xl">
             Combinamos tecnologia, transparência e atendimento humanizado para
             entregar a melhor experiência em seguros do Brasil.
           </p>
@@ -68,7 +70,7 @@ export default function Diferenciais() {
             return (
               <div
                 key={d.title}
-                className="card hover:border-[#3DFFC0] hover:shadow-lg group"
+                className="bg-white rounded-2xl p-6 border border-[#D4EDE6] transition-all duration-300 hover:border-[#3DFFC0] hover:shadow-lg group"
               >
                 <div className="w-12 h-12 rounded-xl bg-[#F0FAF7] group-hover:bg-[#3DFFC0]/25 flex items-center justify-center mb-4 transition-colors">
                   <Icon className="w-6 h-6 text-[#1C3A32]" />
