@@ -1,26 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Fontara Brand — Verde Floresta + Verde Menta */
+  --color-primary: #1C3A32;
+  --color-primary-dark: #0F211B;
+  --color-primary-light: #2A5445;
+  --color-accent: #3DFFC0;
+  --color-accent-dark: #00D4A8;
+  --color-accent-muted: #C8FFF0;
+  --color-surface: #F7FDFB;
+  --color-text: #1C3A32;
+  --color-text-muted: #5A7A70;
+  --color-border: #D4EDE6;
+  --shadow-sm: 0 2px 8px rgba(28, 58, 50, 0.08);
+  --shadow-md: 0 8px 32px rgba(28, 58, 50, 0.12);
+  --shadow-lg: 0 16px 48px rgba(28, 58, 50, 0.16);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  color: var(--color-text);
+  background: #ffffff;
+  line-height: 1.6;
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-[#3DFFC0] hover:bg-[#00D4A8] text-[#1C3A32] font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-md;
+  }
+  .btn-outline {
+    @apply inline-flex items-center gap-2 border-2 border-white text-white hover:bg-white hover:text-[#1C3A32] font-semibold px-6 py-3 rounded-xl transition-all duration-200;
+  }
+  .btn-dark {
+    @apply inline-flex items-center gap-2 bg-[#1C3A32] hover:bg-[#0F211B] text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-md;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 border-2 border-[#1C3A32] text-[#1C3A32] hover:bg-[#1C3A32] hover:text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200;
+  }
+  .card {
+    @apply bg-white rounded-2xl p-6 border border-[#D4EDE6] transition-all duration-300;
+  }
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold text-[#1C3A32] leading-tight;
+  }
+  .section-subtitle {
+    @apply text-lg text-[#5A7A70] mt-4;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1.5 bg-[#C8FFF0] text-[#1C3A32] text-xs font-semibold px-3 py-1.5 rounded-full;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+
+.animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+.animate-float      { animation: float 4s ease-in-out infinite; }
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #F0FAF7; }
+::-webkit-scrollbar-thumb { background: #1C3A32; border-radius: 3px; }
