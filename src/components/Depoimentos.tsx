@@ -1,119 +1,112 @@
-import { Star, Quote } from 'lucide-react';
+import { Star, Quote } from 'lucide-react'
 
 const depoimentos = [
   {
-    name: 'Mariana Costa',
-    role: 'Empresária · São Paulo, SP',
-    avatar: 'MC',
+    nome: 'Ana Carolina Silva',
+    cargo: 'Empresária',
+    texto:
+      'Contratar o seguro empresarial pela Fontara foi incrível. Tudo online, a proposta chegou rapidinho e assinei pelo celular mesmo. Super recomendo!',
+    avatar: 'AC',
     rating: 5,
-    text: 'Contratei o seguro empresarial da Fontara e quando tive um incêndio no depósito, fui atendida em menos de 2 horas. O processo de indenização foi rápido e transparente. Recomendo muito!',
     seguro: 'Seguro Empresarial',
   },
   {
-    name: 'Ricardo Almeida',
-    role: 'Médico · Belo Horizonte, MG',
-    avatar: 'RA',
+    nome: 'Roberto Mendes',
+    cargo: 'Engenheiro Civil',
+    texto:
+      'Tive um sinistro no meu carro e a Fontara resolveu tudo em menos de 48h. Atendimento humanizado de verdade. Nunca mais vou contratar seguro de outra forma.',
+    avatar: 'RM',
     rating: 5,
-    text: 'Excelente custo-benefício no seguro de vida. A cotação foi feita em menos de 3 minutos pelo app e a apólice chegou no email logo em seguida. Processo incrivelmente simples.',
-    seguro: 'Seguro de Vida',
-  },
-  {
-    name: 'Felipe Torres',
-    role: 'Engenheiro · Curitiba, PR',
-    avatar: 'FT',
-    rating: 5,
-    text: 'Tive meu carro roubado e a Fontara me pagou dentro do prazo prometido. O atendimento 24h funcionou perfeitamente. Nunca mais vou mudar de seguradora.',
     seguro: 'Seguro Auto',
   },
   {
-    name: 'Ana Beatriz Souza',
-    role: 'Advogada · Rio de Janeiro, RJ',
-    avatar: 'AB',
+    nome: 'Juliana Ferreira',
+    cargo: 'Médica',
+    texto:
+      'Finalmente encontrei uma corretora que explica tudo de forma clara. A cotação foi rápida e o preço do seguro de vida ficou bem abaixo do que eu esperava.',
+    avatar: 'JF',
     rating: 5,
-    text: 'Já contratei seguro em várias seguradoras e a Fontara é, de longe, a mais transparente. Sem letrinhas miúdas, sem surpresas na hora do sinistro. Atendimento nota 10.',
-    seguro: 'Seguro Auto',
-  },
-  {
-    name: 'Carlos Mendonça',
-    role: 'Varejista · Fortaleza, CE',
-    avatar: 'CM',
-    rating: 5,
-    text: 'Protegi minha loja com o seguro empresarial. O preço foi bem melhor do que eu esperava e a cobertura é completa. O consultor me ajudou a escolher o plano ideal para meu negócio.',
-    seguro: 'Seguro Empresarial',
-  },
-  {
-    name: 'Juliana Lima',
-    role: 'Professora · Porto Alegre, RS',
-    avatar: 'JL',
-    rating: 5,
-    text: 'O seguro de vida da Fontara me deu tranquilidade. Processo 100% digital, sem precisar ir a lugar nenhum. Recomendo para todas as famílias.',
     seguro: 'Seguro de Vida',
   },
-];
+  {
+    nome: 'Marcos Oliveira',
+    cargo: 'Diretor de TI',
+    texto:
+      'A assinatura digital via DocuSign foi um diferencial enorme. Zero papelada, zero burocracia. Em 10 minutos já estava tudo resolvido.',
+    avatar: 'MO',
+    rating: 5,
+    seguro: 'Seguro Residencial',
+  },
+  {
+    nome: 'Camila Santos',
+    cargo: 'Designer',
+    texto:
+      'Viajei para a Europa com total tranquilidade. O seguro viagem da Fontara me amparou quando precisei de assistência médica lá fora. Valeu muito!',
+    avatar: 'CS',
+    rating: 5,
+    seguro: 'Seguro Viagem',
+  },
+  {
+    nome: 'Paulo Henrique Lima',
+    cargo: 'Contador',
+    texto:
+      'Já indiquei a Fontara para toda a minha família. O atendimento é excelente e os preços são justos. Empresa séria e comprometida.',
+    avatar: 'PH',
+    rating: 5,
+    seguro: 'Seguro Saúde',
+  },
+]
 
 export default function Depoimentos() {
   return (
-    <section id="depoimentos" className="py-24 bg-[#F7FDFB]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="depoimentos" className="py-24 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        {/* Header */}
         <div className="text-center mb-16">
-          <span className="inline-flex items-center gap-1.5 bg-[#C8FFF0] text-[#1C3A32] text-xs font-semibold px-3 py-1.5 rounded-full">
+          <span className="inline-block text-fontara-accent font-semibold text-sm uppercase tracking-widest mb-3">
             Depoimentos
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1C3A32] leading-tight mt-4">
-            Quem protegemos,
-            <span className="text-[#1C3A32]"> aprova</span>
+          <h2 className="section-heading mb-4">
+            O que nossos clientes{' '}
+            <span className="text-fontara-accent">dizem</span>
           </h2>
-          <p className="text-lg text-[#5A7A70] mt-4 mx-auto max-w-lg">
-            Mais de 500 mil clientes confiam na Fontara. Veja o que eles dizem.
+          <p className="text-gray-500 max-w-xl mx-auto text-lg">
+            Mais de 50 mil clientes satisfeitos. Veja por que eles escolheram a Fontara Seguros.
           </p>
         </div>
 
+        {/* Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {depoimentos.map((dep) => (
-            <div
-              key={dep.name}
-              className="bg-white rounded-2xl p-6 border border-[#D4EDE6] flex flex-col hover:border-[#3DFFC0] hover:shadow-lg transition-all duration-300"
-            >
-              <Quote className="w-7 h-7 text-[#3DFFC0] mb-4 opacity-70" />
+            <div key={dep.nome} className="card p-6 flex flex-col">
+              {/* Quote icon */}
+              <Quote className="text-fontara-light mb-4" size={32} />
 
-              <p className="text-sm text-[#1C3A32] leading-relaxed flex-1 mb-6">
-                &ldquo;{dep.text}&rdquo;
+              {/* Stars */}
+              <div className="flex gap-1 mb-3">
+                {Array.from({ length: dep.rating }).map((_, i) => (
+                  <Star key={i} size={16} className="text-fontara-amber fill-fontara-amber" />
+                ))}
+              </div>
+
+              <p className="text-gray-600 text-sm leading-relaxed flex-1 mb-6">
+                "{dep.texto}"
               </p>
 
-              <div>
-                <div className="flex mb-3">
-                  {Array.from({ length: dep.rating }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-[#3DFFC0] text-[#3DFFC0]" />
-                  ))}
+              {/* Author */}
+              <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-fontara-blue to-fontara-accent flex items-center justify-center text-white text-xs font-bold shrink-0">
+                  {dep.avatar}
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#1C3A32] flex items-center justify-center text-[#3DFFC0] font-bold text-xs flex-shrink-0">
-                    {dep.avatar}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-[#1C3A32] text-sm">{dep.name}</p>
-                    <p className="text-[#5A7A70] text-xs">{dep.role}</p>
-                  </div>
-                  <span className="ml-auto text-xs bg-[#F0FAF7] text-[#1C3A32] px-2.5 py-1 rounded-full font-medium whitespace-nowrap">
-                    {dep.seguro}
-                  </span>
+                <div>
+                  <p className="font-semibold text-fontara-navy text-sm">{dep.nome}</p>
+                  <p className="text-gray-400 text-xs">{dep.cargo} · {dep.seguro}</p>
                 </div>
               </div>
             </div>
           ))}
         </div>
-
-        {/* Google rating */}
-        <div className="mt-12 flex flex-col items-center gap-2">
-          <div className="flex gap-1">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-6 h-6 fill-[#3DFFC0] text-[#3DFFC0]" />
-            ))}
-          </div>
-          <p className="font-bold text-[#1C3A32] text-lg">4.9 de 5 estrelas</p>
-          <p className="text-[#5A7A70] text-sm">Baseado em +12.000 avaliações verificadas</p>
-        </div>
       </div>
     </section>
-  );
+  )
 }

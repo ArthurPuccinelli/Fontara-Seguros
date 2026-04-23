@@ -1,25 +1,23 @@
-import Navbar from '@/components/Navbar';
-import Hero from '@/components/Hero';
-import Seguros from '@/components/Seguros';
-import ComoFunciona from '@/components/ComoFunciona';
-import Diferenciais from '@/components/Diferenciais';
-import Depoimentos from '@/components/Depoimentos';
-import CotacaoForm from '@/components/CotacaoForm';
-import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar'
+import Hero from '@/components/Hero'
+import Seguros from '@/components/Seguros'
+import ComoFunciona from '@/components/ComoFunciona'
+import Diferenciais from '@/components/Diferenciais'
+import Depoimentos from '@/components/Depoimentos'
+import CotacaoForm from '@/components/CotacaoForm'
+import Footer from '@/components/Footer'
 
 export default function Home() {
   return (
-    <>
+    <main>
       <Navbar />
-      <main>
-        <Hero />
-        <Seguros />
-        <ComoFunciona />
-        <Diferenciais />
-        <Depoimentos />
-        <CotacaoForm />
-      </main>
+      <Hero />
+      <Seguros />
+      <ComoFunciona />
+      <Diferenciais />
+      <Depoimentos />
+      <CotacaoForm />
       <Footer />
-    </>
-  );
+    </main>
+  )
 }

@@ -1,196 +1,119 @@
-'use client';
+'use client'
 
-import { ArrowRight, Shield, Star, Users, Award } from 'lucide-react';
+import { Shield, ArrowRight, CheckCircle } from 'lucide-react'
 
-const stats = [
-  { icon: Users, value: '500K+', label: 'Clientes Protegidos' },
-  { icon: Shield, value: '99.2%', label: 'Sinistros Pagos' },
-  { icon: Star, value: '4.9/5', label: 'Avaliação Média' },
-  { icon: Award, value: '15 anos', label: 'No Mercado' },
-];
+const highlights = [
+  'Mais de 15 anos de experiência',
+  'Atendimento 24h / 7 dias',
+  'Coberturas personalizadas',
+]
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0F211B] via-[#1C3A32] to-[#2A5445]" />
-
-      {/* Subtle grid */}
-      <div className="absolute inset-0 opacity-[0.06]">
-        <svg width="100%" height="100%">
-          <defs>
-            <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" strokeWidth="0.8" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#grid)" />
-        </svg>
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-hero-pattern">
+      {/* Decorative circles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full bg-fontara-accent/10 blur-3xl" />
+        <div className="absolute bottom-0 -left-32 w-[400px] h-[400px] rounded-full bg-fontara-gold/10 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full border border-white/5" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/5" />
       </div>
 
-      {/* Decorative blobs */}
-      <div className="absolute top-20 right-[-5%] w-[500px] h-[500px] rounded-full bg-[#3DFFC0]/15 blur-3xl" />
-      <div className="absolute bottom-10 left-[10%] w-72 h-72 rounded-full bg-[#3DFFC0]/10 blur-3xl" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-20">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left content */}
-          <div className="text-white">
-            <div className="inline-flex items-center gap-1.5 bg-[#3DFFC0]/20 text-[#3DFFC0] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#3DFFC0]/30 mb-6">
-              <Shield className="w-3.5 h-3.5" />
-              Aprovado pela SUSEP · Desde 2010
-            </div>
-
-            <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.15] mb-6 tracking-tight">
-              Proteção de verdade
-              <span className="block" style={{ color: '#3DFFC0' }}>
-                para o que é seu
-              </span>
-            </h1>
-
-            <p className="text-lg text-white/75 mb-8 max-w-lg leading-relaxed">
-              Seguros para auto, vida e empresas com aprovação imediata. Atendimento
-              humanizado 24h e o melhor custo-benefício do mercado.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <a
-                href="#cotacao"
-                className="inline-flex items-center gap-2 bg-[#3DFFC0] hover:bg-[#00D4A8] text-[#1C3A32] font-semibold px-8 py-4 rounded-xl transition-all duration-200 shadow-md text-base"
-              >
-                Fazer Cotação Grátis
-                <ArrowRight className="w-5 h-5" />
-              </a>
-              <a
-                href="#seguros"
-                className="inline-flex items-center gap-2 border-2 border-white text-white hover:bg-white hover:text-[#1C3A32] font-semibold px-8 py-4 rounded-xl transition-all duration-200 text-base"
-              >
-                Nossos Seguros
-              </a>
-            </div>
-
-            <div className="flex flex-wrap gap-5 text-sm text-white/65">
-              {['Sem taxa de adesão', 'Cancelamento gratuito', 'Parcela no cartão'].map((t) => (
-                <span key={t} className="flex items-center gap-1.5">
-                  <span className="w-4 h-4 rounded-full bg-[#3DFFC0] flex items-center justify-center text-[#1C3A32] font-bold text-[10px]">
-                    ✓
-                  </span>
-                  {t}
-                </span>
-              ))}
-            </div>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-16 grid md:grid-cols-2 gap-12 items-center">
+        {/* Left content */}
+        <div className="animate-fade-up">
+          <div className="inline-flex items-center gap-2 bg-fontara-gold/20 border border-fontara-gold/30 rounded-full px-4 py-2 text-fontara-amber text-sm font-medium mb-6">
+            <Shield size={16} />
+            Proteção que você pode confiar
           </div>
 
-          {/* Right: Quick quote */}
-          <div>
-            <div
-              className="rounded-2xl p-8"
-              style={{
-                background: 'rgba(255,255,255,0.08)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: '1px solid rgba(61,255,192,0.20)',
-              }}
-            >
-              <h2 className="text-white font-bold text-xl mb-1">Cotação em 2 minutos</h2>
-              <p className="text-white/60 text-sm mb-6">
-                Preencha os dados e receba a melhor proposta
-              </p>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+            Segurança para{' '}
+            <span className="gradient-text">cada momento</span>{' '}
+            da sua vida
+          </h1>
 
-              <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-                <div>
-                  <label className="block text-white/80 text-sm font-medium mb-1.5">
-                    Tipo de seguro
-                  </label>
-                  <select
-                    className="w-full bg-white/10 border border-white/20 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#3DFFC0]/40 focus:border-[#3DFFC0]"
-                    style={{ colorScheme: 'dark' }}
-                  >
-                    <option value="" className="bg-[#1C3A32] text-white">Selecione o seguro</option>
-                    <option value="auto" className="bg-[#1C3A32] text-white">Seguro Auto</option>
-                    <option value="vida" className="bg-[#1C3A32] text-white">Seguro de Vida</option>
-                    <option value="empresarial" className="bg-[#1C3A32] text-white">Seguro Empresarial</option>
-                  </select>
-                </div>
+          <p className="text-lg text-white/70 mb-8 max-w-lg leading-relaxed">
+            Oferecemos soluções completas em seguros para pessoas e empresas.
+            Proteja o que é mais importante para você com cobertura de qualidade
+            e atendimento humanizado.
+          </p>
 
-                <div>
-                  <label className="block text-white/80 text-sm font-medium mb-1.5">
-                    Nome completo
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="João Silva"
-                    className="w-full bg-white/10 border border-white/20 text-white placeholder-white/35 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#3DFFC0]/40 focus:border-[#3DFFC0]"
-                  />
-                </div>
+          <ul className="space-y-3 mb-10">
+            {highlights.map((item) => (
+              <li key={item} className="flex items-center gap-3 text-white/80">
+                <CheckCircle size={18} className="text-fontara-amber shrink-0" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-white/80 text-sm font-medium mb-1.5">
-                      CPF / CNPJ
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="000.000.000-00"
-                      className="w-full bg-white/10 border border-white/20 text-white placeholder-white/35 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#3DFFC0]/40 focus:border-[#3DFFC0]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-white/80 text-sm font-medium mb-1.5">
-                      WhatsApp
-                    </label>
-                    <input
-                      type="tel"
-                      placeholder="(11) 99999-9999"
-                      className="w-full bg-white/10 border border-white/20 text-white placeholder-white/35 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#3DFFC0]/40 focus:border-[#3DFFC0]"
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-[#3DFFC0] hover:bg-[#00D4A8] text-[#1C3A32] font-bold py-4 rounded-xl transition-all duration-200 text-sm flex items-center justify-center gap-2 shadow-lg"
-                >
-                  Ver Minha Cotação
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </form>
-
-              <p className="text-center text-white/45 text-xs mt-4">
-                🔒 Dados protegidos · LGPD
-              </p>
-            </div>
+          <div className="flex flex-wrap gap-4">
+            <a href="#cotacao" className="btn-primary flex items-center gap-2">
+              Cotação Gratuita
+              <ArrowRight size={18} />
+            </a>
+            <a href="#seguros" className="btn-outline">
+              Nossos Seguros
+            </a>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-3">
-          {stats.map(({ icon: Icon, value, label }) => (
-            <div
-              key={label}
-              className="text-center py-5 px-4 rounded-xl"
-              style={{
-                background: 'rgba(255,255,255,0.06)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(61,255,192,0.12)',
-              }}
-            >
-              <Icon className="w-5 h-5 mx-auto mb-2" style={{ color: '#3DFFC0' }} />
-              <p className="text-white font-bold text-2xl">{value}</p>
-              <p className="text-white/55 text-xs mt-1">{label}</p>
+        {/* Right — stats card */}
+        <div className="hidden md:flex justify-center items-center">
+          <div className="relative animate-float">
+            {/* Main card */}
+            <div className="glass rounded-3xl p-8 w-80">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <p className="text-white/60 text-sm">Clientes protegidos</p>
+                  <p className="text-4xl font-bold text-white mt-1">50k+</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-fontara-gold/20 flex items-center justify-center">
+                  <Shield className="text-fontara-amber" size={24} />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  { label: 'Seguro de Vida', value: '98%', color: 'bg-green-400' },
+                  { label: 'Satisfação', value: '4.9★', color: 'bg-fontara-amber' },
+                  { label: 'Sinistros pagos', value: 'R$ 2B+', color: 'bg-blue-400' },
+                ].map((stat) => (
+                  <div key={stat.label} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-2 h-2 rounded-full ${stat.color}`} />
+                      <span className="text-white/70 text-sm">{stat.label}</span>
+                    </div>
+                    <span className="text-white font-semibold text-sm">{stat.value}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
+
+            {/* Floating badge */}
+            <div className="absolute -bottom-6 -right-6 glass rounded-2xl px-4 py-3 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-green-400/20 flex items-center justify-center">
+                <CheckCircle className="text-green-400" size={20} />
+              </div>
+              <div>
+                <p className="text-white text-xs font-semibold">Aprovado!</p>
+                <p className="text-white/60 text-xs">Cotação em 2 min</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Wave */}
+      {/* Bottom wave */}
       <div className="absolute bottom-0 left-0 right-0">
         <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
-            d="M0 80L60 72C120 64 240 48 360 44C480 40 600 48 720 52C840 56 960 56 1080 52C1200 48 1320 40 1380 36L1440 32V80H0Z"
+            d="M0 80L60 69.3C120 58.7 240 37.3 360 32C480 26.7 600 37.3 720 42.7C840 48 960 48 1080 42.7C1200 37.3 1320 26.7 1380 21.3L1440 16V80H1380C1320 80 1200 80 1080 80C960 80 840 80 720 80C600 80 480 80 360 80C240 80 120 80 60 80H0Z"
             fill="white"
           />
         </svg>
       </div>
     </section>
-  );
+  )
 }

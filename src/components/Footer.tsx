@@ -1,117 +1,130 @@
-import Image from 'next/image';
-import { Phone, Mail, MapPin } from 'lucide-react';
+import Image from 'next/image'
+import { Phone, Mail, MapPin, Instagram, Linkedin, Facebook } from 'lucide-react'
 
 const links = {
-  Seguros: [
-    { label: 'Seguro Auto', href: '#auto' },
-    { label: 'Seguro de Vida', href: '#vida' },
-    { label: 'Seguro Empresarial', href: '#empresarial' },
+  seguros: [
+    { label: 'Seguro de Vida', href: '#seguros' },
+    { label: 'Seguro Auto', href: '#seguros' },
+    { label: 'Seguro Residencial', href: '#seguros' },
+    { label: 'Seguro Empresarial', href: '#seguros' },
+    { label: 'Seguro Saúde', href: '#seguros' },
+    { label: 'Seguro Viagem', href: '#seguros' },
   ],
-  Empresa: [
-    { label: 'Sobre Nós', href: '#' },
-    { label: 'Carreiras', href: '#' },
-    { label: 'Blog', href: '#' },
-    { label: 'Imprensa', href: '#' },
+  empresa: [
+    { label: 'Sobre nós', href: '#' },
+    { label: 'Diferenciais', href: '#diferenciais' },
+    { label: 'Depoimentos', href: '#depoimentos' },
+    { label: 'Trabalhe conosco', href: '#' },
+    { label: 'Parceiros', href: '#' },
   ],
-  Suporte: [
-    { label: 'Central de Ajuda', href: '#' },
-    { label: 'Sinistros', href: '#' },
-    { label: 'Ouvidoria', href: '#' },
-    { label: 'Política de Privacidade', href: '#' },
+  suporte: [
+    { label: 'Central de ajuda', href: '#' },
+    { label: 'Como funciona', href: '#como-funciona' },
+    { label: 'Política de privacidade', href: '#' },
+    { label: 'Termos de uso', href: '#' },
   ],
-};
+}
 
 export default function Footer() {
   return (
-    <footer id="contato" className="bg-[#0F211B] text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main footer */}
-        <div className="py-16 grid lg:grid-cols-5 gap-10">
-          {/* Brand column */}
-          <div className="lg:col-span-2">
+    <footer className="bg-fontara-navy pt-16 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+          {/* Brand */}
+          <div className="col-span-2 md:col-span-1">
             <Image
               src="/logo.png"
-              alt="Fontara Seguradora"
+              alt="Fontara Seguros"
               width={140}
-              height={44}
-              className="h-10 w-auto object-contain brightness-0 invert mb-6"
+              height={48}
+              className="object-contain mb-4"
             />
-            <p className="text-white/60 text-sm leading-relaxed max-w-xs">
-              A Fontara é uma seguradora digital comprometida em simplificar a proteção de
-              pessoas e empresas com tecnologia, transparência e humanidade.
+            <p className="text-white/50 text-sm leading-relaxed mb-6">
+              Protegendo o que importa para você há mais de 15 anos. Soluções completas em seguros
+              para pessoas e empresas.
             </p>
-
-            <div className="mt-6 space-y-3">
-              <a
-                href="tel:08007070700"
-                className="flex items-center gap-3 text-sm text-white/70 hover:text-[#3DFFC0] transition-colors"
-              >
-                <Phone className="w-4 h-4 text-[#3DFFC0]" />
-                0800 707 0700 (Gratuito 24h)
-              </a>
-              <a
-                href="mailto:contato@fontaraseguros.com.br"
-                className="flex items-center gap-3 text-sm text-white/70 hover:text-[#3DFFC0] transition-colors"
-              >
-                <Mail className="w-4 h-4 text-[#3DFFC0]" />
-                contato@fontaraseguros.com.br
-              </a>
-              <div className="flex items-start gap-3 text-sm text-white/60">
-                <MapPin className="w-4 h-4 text-[#3DFFC0] mt-0.5 flex-shrink-0" />
-                Av. Paulista, 1374 — São Paulo, SP
-              </div>
-            </div>
-
-            <div className="flex gap-4 mt-8">
+            <div className="flex gap-3">
               {[
-                { label: 'Instagram', href: '#', letter: 'IG' },
-                { label: 'LinkedIn', href: '#', letter: 'in' },
-                { label: 'Facebook', href: '#', letter: 'fb' },
-              ].map(({ label, href, letter }) => (
+                { icon: Instagram, href: '#' },
+                { icon: Linkedin, href: '#' },
+                { icon: Facebook, href: '#' },
+              ].map(({ icon: Icon, href }) => (
                 <a
-                  key={label}
+                  key={href}
                   href={href}
-                  aria-label={label}
-                  className="w-9 h-9 rounded-lg bg-white/[0.08] hover:bg-[#3DFFC0]/20 flex items-center justify-center transition-colors group"
+                  className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center text-white/60 hover:bg-fontara-gold/20 hover:text-fontara-amber transition-all"
                 >
-                  <span className="text-[10px] font-bold text-white/60 group-hover:text-[#3DFFC0]">
-                    {letter}
-                  </span>
+                  <Icon size={16} />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Links */}
-          {Object.entries(links).map(([category, items]) => (
-            <div key={category}>
-              <h4 className="font-semibold text-sm text-white mb-4">{category}</h4>
-              <ul className="space-y-3">
-                {items.map((item) => (
-                  <li key={item.label}>
-                    <a
-                      href={item.href}
-                      className="text-sm text-white/55 hover:text-[#3DFFC0] transition-colors"
-                    >
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+          {/* Seguros */}
+          <div>
+            <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">Seguros</h4>
+            <ul className="space-y-2.5">
+              {links.seguros.map((l) => (
+                <li key={l.label}>
+                  <a href={l.href} className="text-white/50 hover:text-fontara-amber text-sm transition-colors">
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Empresa */}
+          <div>
+            <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">Empresa</h4>
+            <ul className="space-y-2.5">
+              {links.empresa.map((l) => (
+                <li key={l.label}>
+                  <a href={l.href} className="text-white/50 hover:text-fontara-amber text-sm transition-colors">
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contato */}
+          <div>
+            <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">Contato</h4>
+            <ul className="space-y-3">
+              <li>
+                <a href="tel:+551130000000" className="flex items-center gap-2 text-white/50 hover:text-fontara-amber text-sm transition-colors">
+                  <Phone size={14} /> (11) 3000-0000
+                </a>
+              </li>
+              <li>
+                <a href="mailto:contato@fontaraseguros.com.br" className="flex items-center gap-2 text-white/50 hover:text-fontara-amber text-sm transition-colors">
+                  <Mail size={14} /> contato@fontaraseguros.com.br
+                </a>
+              </li>
+              <li className="flex items-start gap-2 text-white/50 text-sm">
+                <MapPin size={14} className="shrink-0 mt-0.5" />
+                <span>Av. Paulista, 1000 — São Paulo, SP</span>
+              </li>
+            </ul>
+
+            <div className="mt-6 p-3 rounded-xl bg-white/5 border border-white/10">
+              <p className="text-white/40 text-xs mb-1">Atendimento</p>
+              <p className="text-fontara-amber text-sm font-semibold">24h / 7 dias por semana</p>
             </div>
-          ))}
+          </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="border-t border-white/10 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-white/40 text-xs">
-            © 2025 Fontara Seguradora. CNPJ 00.000.000/0001-00 · Processo SUSEP 15414.001234/2010-00
+        {/* Bottom */}
+        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-white/30 text-xs">
+            © {new Date().getFullYear()} Fontara Seguros. Todos os direitos reservados.
           </p>
-          <p className="text-white/40 text-xs">
-            Todos os direitos reservados · Regulado pela SUSEP
+          <p className="text-white/20 text-xs">
+            Corretora registrada na SUSEP · CNPJ 00.000.000/0001-00
           </p>
         </div>
       </div>
     </footer>
-  );
+  )
 }

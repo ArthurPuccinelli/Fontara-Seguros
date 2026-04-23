@@ -1,98 +1,82 @@
-import { ClipboardList, Search, FileCheck, HeartHandshake } from 'lucide-react';
+import { ClipboardList, Search, FileSignature, ShieldCheck } from 'lucide-react'
 
 const steps = [
   {
-    number: '01',
     icon: ClipboardList,
+    step: '01',
     title: 'Preencha o formulário',
     description:
-      'Informe seus dados e o tipo de cobertura. O processo leva menos de 2 minutos e é 100% online.',
+      'Informe seus dados básicos e o tipo de seguro que você precisa. Leva menos de 2 minutos.',
   },
   {
-    number: '02',
     icon: Search,
-    title: 'Receba sua cotação',
+    step: '02',
+    title: 'Análise personalizada',
     description:
-      'Nossa tecnologia analisa as melhores opções e apresenta a cotação mais adequada para o seu perfil.',
+      'Nossa equipe analisa seu perfil e busca as melhores opções de cobertura nas principais seguradoras.',
   },
   {
-    number: '03',
-    icon: FileCheck,
+    icon: FileSignature,
+    step: '03',
     title: 'Assine digitalmente',
     description:
-      'Contratação 100% digital com assinatura eletrônica segura. Sem burocracia, sem papelada.',
+      'Receba sua proposta e assine eletronicamente com segurança via DocuSign, sem precisar sair de casa.',
   },
   {
-    number: '04',
-    icon: HeartHandshake,
-    title: 'Fique protegido',
+    icon: ShieldCheck,
+    step: '04',
+    title: 'Proteção ativada',
     description:
-      'Apólice ativa imediatamente. Nosso time fica disponível 24h para qualquer necessidade.',
+      'Pronto! Sua apólice é emitida imediatamente e você já está protegido. Simples assim.',
   },
-];
+]
 
 export default function ComoFunciona() {
   return (
-    <section id="como-funciona" className="py-24 bg-[#F7FDFB]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left */}
-          <div>
-            <span className="inline-flex items-center gap-1.5 bg-[#C8FFF0] text-[#1C3A32] text-xs font-semibold px-3 py-1.5 rounded-full">
-              Como Funciona
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1C3A32] leading-tight mt-4">
-              Contrate seu seguro em
-              <span className="text-[#1C3A32]"> 4 passos simples</span>
-            </h2>
-            <p className="text-lg text-[#5A7A70] mt-4 max-w-md">
-              Processo 100% digital, sem burocracia e com aprovação imediata. Do formulário
-              à apólice em questão de minutos.
-            </p>
+    <section id="como-funciona" className="py-24 bg-fontara-light">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <span className="inline-block text-fontara-accent font-semibold text-sm uppercase tracking-widest mb-3">
+            Processo
+          </span>
+          <h2 className="section-heading mb-4">
+            Como funciona em{' '}
+            <span className="text-fontara-accent">4 passos</span>
+          </h2>
+          <p className="text-gray-500 max-w-xl mx-auto text-lg">
+            Contratar um seguro nunca foi tão simples. Do formulário à apólice, tudo 100% digital.
+          </p>
+        </div>
 
-            <div className="mt-8 flex flex-wrap gap-4">
-              <a
-                href="#cotacao"
-                className="inline-flex items-center gap-2 bg-[#1C3A32] hover:bg-[#0F211B] text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-md"
-              >
-                Começar Agora
-              </a>
-              <a
-                href="tel:08007070700"
-                className="inline-flex items-center gap-2 border-2 border-[#1C3A32] text-[#1C3A32] hover:bg-[#1C3A32] hover:text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200"
-              >
-                Falar com Especialista
-              </a>
-            </div>
-          </div>
+        {/* Steps */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+          {/* Connector line (desktop) */}
+          <div className="hidden lg:block absolute top-12 left-[12.5%] right-[12.5%] h-0.5 bg-gradient-to-r from-fontara-blue via-fontara-accent to-fontara-gold" />
 
-          {/* Right: Steps */}
-          <div className="space-y-4">
-            {steps.map((step, idx) => {
-              const Icon = step.icon;
-              return (
-                <div
-                  key={step.number}
-                  className="flex gap-5 bg-white rounded-2xl p-6 border border-[#D4EDE6] hover:border-[#3DFFC0] hover:shadow-md transition-all duration-300 group"
-                >
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 rounded-xl bg-[#F0FAF7] group-hover:bg-[#3DFFC0]/20 flex items-center justify-center transition-colors relative">
-                      <Icon className="w-5 h-5 text-[#1C3A32]" />
-                      <span className="absolute -top-2 -right-2 bg-[#1C3A32] text-[#3DFFC0] text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                        {idx + 1}
-                      </span>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-[#1C3A32] mb-1">{step.title}</h3>
-                    <p className="text-sm text-[#5A7A70] leading-relaxed">{step.description}</p>
-                  </div>
+          {steps.map((step, i) => (
+            <div key={step.step} className="relative flex flex-col items-center text-center">
+              {/* Step number */}
+              <div className="relative z-10 mb-6">
+                <div className="w-24 h-24 rounded-full bg-white shadow-blue flex flex-col items-center justify-center">
+                  <step.icon className="text-fontara-accent mb-1" size={28} />
+                  <span className="text-xs font-bold text-fontara-gold">{step.step}</span>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+
+              <h3 className="text-lg font-bold text-fontara-navy mb-2">{step.title}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">{step.description}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div className="mt-16 text-center">
+          <a href="#cotacao" className="btn-primary inline-flex items-center gap-2">
+            Começar agora — é grátis
+          </a>
         </div>
       </div>
     </section>
-  );
+  )
 }

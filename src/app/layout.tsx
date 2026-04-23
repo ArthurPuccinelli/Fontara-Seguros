@@ -1,27 +1,25 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Fontara Seguradora | Seguro Auto, Vida e Empresarial",
+  title: 'Fontara Seguros — Protegendo o que importa para você',
   description:
-    "Proteção completa para você e sua empresa. Cotação grátis em 2 minutos. Seguro Auto, Vida e Empresarial com aprovação imediata. Regulada pela SUSEP.",
-  keywords: "seguro auto, seguro de vida, seguro empresarial, seguradora digital, cotação seguro",
+    'Soluções completas em seguros para pessoas e empresas. Vida, auto, saúde, residencial e muito mais com a proteção que você merece.',
+  keywords: 'seguros, seguro de vida, seguro auto, seguro residencial, seguro empresarial, fontara',
   openGraph: {
-    title: "Fontara Seguradora",
-    description: "Proteção completa para auto, vida e empresas. Cotação em 2 minutos.",
-    type: "website",
-    locale: "pt_BR",
+    title: 'Fontara Seguros',
+    description: 'Soluções completas em seguros para pessoas e empresas.',
+    type: 'website',
   },
-};
+}
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="pt-BR">
+      <body className={inter.className}>{children}</body>
     </html>
-  );
+  )
 }
