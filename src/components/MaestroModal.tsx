@@ -5,11 +5,12 @@ import { X, Loader2 } from 'lucide-react'
 
 interface Props {
   onClose: () => void
+  workflowId?: string
 }
 
 type Step = 'loading' | 'workflow' | 'demo' | 'error'
 
-export default function MaestroModal({ onClose }: Props) {
+export default function MaestroModal({ onClose, workflowId }: Props) {
   const [step, setStep] = useState<Step>('loading')
   const [embeddedUrl, setEmbeddedUrl] = useState<string | null>(null)
   const [errorMsg, setErrorMsg] = useState('')
@@ -18,7 +19,7 @@ export default function MaestroModal({ onClose }: Props) {
     fetch('/api/docusign/maestro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({}),
+      body: JSON.stringify(workflowId ? { workflowId } : {}),
     })
       .then((r) => r.json())
       .then((data) => {
@@ -98,7 +99,7 @@ export default function MaestroModal({ onClose }: Props) {
               <X size={24} className="text-red-500" />
             </div>
             <h2 className="text-xl font-bold text-fontara-navy mb-2">Ocorreu um erro</h2>
-            <p className="text-gray-500 text-sm mb-6">{errorMsg}</p>
+            <p className="text-gray-500 text-sm mb-6 break-all">{errorMsg}</p>
             <div className="flex gap-3 justify-center">
               <button onClick={onClose} className="btn-primary">Fechar</button>
             </div>

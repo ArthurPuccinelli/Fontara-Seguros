@@ -1,19 +1,22 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { User, FileText, Shield, AlertTriangle, LogOut, ChevronRight, Phone } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
+import MaestroModal from '@/components/MaestroModal'
+
+const DADOS_CADASTRAIS_WORKFLOW = '98e2f24c-e903-4692-b599-21fd8214e04e'
 
 const menuItems = [
   {
     icon: User,
-    title: 'Dados Cadastrais',
+    title: 'Alterar Dados Cadastrais',
     description: 'Atualize suas informações pessoais e de contato',
-    href: '/area-cliente/dados-cadastrais',
     color: 'bg-blue-50 text-blue-600',
+    maestro: true,
   },
   {
     icon: Shield,
@@ -44,6 +47,7 @@ const menuItems = [
 export default function AreaClientePage() {
   const { user, logout } = useAuth()
   const router = useRouter()
+  const [modalOpen, setModalOpen] = useState(false)
 
   useEffect(() => {
     if (!user) router.replace('/area-cliente/login')
@@ -87,10 +91,30 @@ export default function AreaClientePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
           {menuItems.map((item) => {
             const Icon = item.icon
+
+            if (item.maestro) {
+              return (
+                <button
+                  key={item.title}
+                  onClick={() => setModalOpen(true)}
+                  className="relative bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-start gap-4 group transition hover:shadow-md text-left w-full"
+                >
+                  <div className={`p-3 rounded-lg ${item.color} shrink-0`}>
+                    <Icon size={22} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h2 className="font-semibold text-fontara-navy text-sm">{item.title}</h2>
+                    <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">{item.description}</p>
+                  </div>
+                  <ChevronRight size={18} className="text-gray-300 group-hover:text-fontara-navy transition shrink-0 mt-1" />
+                </button>
+              )
+            }
+
             return (
               <Link
                 key={item.title}
-                href={item.href}
+                href={item.href!}
                 className={`relative bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-start gap-4 group transition hover:shadow-md ${item.soon ? 'opacity-60 pointer-events-none' : ''}`}
               >
                 <div className={`p-3 rounded-lg ${item.color} shrink-0`}>
@@ -128,6 +152,13 @@ export default function AreaClientePage() {
           </a>
         </div>
       </main>
+
+      {modalOpen && (
+        <MaestroModal
+          workflowId={DADOS_CADASTRAIS_WORKFLOW}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
     </div>
   )
 }

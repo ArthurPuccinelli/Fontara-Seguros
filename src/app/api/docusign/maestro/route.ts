@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const MAESTRO_WORKFLOW_ID = process.env.DOCUSIGN_MAESTRO_WORKFLOW_ID || '0359ae48-47dc-45be-a7b8-9ae20894eaba'
+const DEFAULT_WORKFLOW_ID = process.env.DOCUSIGN_MAESTRO_WORKFLOW_ID || '0359ae48-47dc-45be-a7b8-9ae20894eaba'
 
 async function getAccessToken(): Promise<string> {
   const {
@@ -52,7 +52,9 @@ async function maestroFetch(path: string, method: string, token: string, body?: 
 
 export async function POST(req: NextRequest) {
   try {
-    const userInputs: Record<string, unknown> = await req.json()
+    const body = await req.json()
+    const { workflowId: bodyWorkflowId, ...userInputs } = body as Record<string, unknown>
+    const MAESTRO_WORKFLOW_ID = (bodyWorkflowId as string) || DEFAULT_WORKFLOW_ID
 
     const {
       DOCUSIGN_INTEGRATION_KEY,
@@ -69,7 +71,14 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    const accessToken = await getAccessToken()
+    let accessToken: string
+    try {
+      accessToken = await getAccessToken()
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      console.error('JWT token error:', msg)
+      return NextResponse.json({ error: `JWT auth failed: ${msg}` }, { status: 500 })
+    }
 
     // Fetch trigger requirements to build valid inputs
     let triggerInputs: Record<string, unknown> = {}
@@ -129,6 +138,8 @@ export async function POST(req: NextRequest) {
       }
     )
 
+    console.log('Trigger result:', JSON.stringify(triggerResult, null, 2))
+
     const instanceId =
       triggerResult.instanceId ?? triggerResult.instance_id ?? triggerResult.id
 
@@ -136,22 +147,57 @@ export async function POST(req: NextRequest) {
       throw new Error('Workflow trigger did not return an instanceId')
     }
 
-    // Get embedded URL for the workflow instance
-    const embedData = await maestroFetch(
-      `/workflows/instances/${instanceId}/embeddedUrl`,
-      'GET',
-      accessToken
-    )
+    // Check if trigger already returned a usable URL
+    const triggerUrl =
+      triggerResult.instance_url ??
+      triggerResult.url ??
+      triggerResult.workflowInstanceUrl ??
+      triggerResult.instanceUrl ??
+      triggerResult.redirectUrl ??
+      null
 
-    return NextResponse.json({
-      instanceId,
-      embeddedUrl: embedData?.url ?? embedData?.embeddedUrl ?? null,
-    })
+    if (triggerUrl) {
+      return NextResponse.json({ instanceId, embeddedUrl: triggerUrl })
+    }
+
+    // Try to get embedded URL — attempt both known endpoint patterns
+    const origin = req.headers.get('origin') || 'https://fontaraseguros.netlify.app'
+    let embeddedUrl: string | null = null
+
+    const candidates = [
+      () => maestroFetch(
+        `/accounts/${DOCUSIGN_ACCOUNT_ID}/workflows/instances/${instanceId}/embeddedUrl`,
+        'POST',
+        accessToken,
+        { returnUrl: `${origin}?maestro=complete` }
+      ),
+      () => maestroFetch(
+        `/accounts/${DOCUSIGN_ACCOUNT_ID}/workflows/instances/${instanceId}/embeddedUrl`,
+        'GET',
+        accessToken
+      ),
+      () => maestroFetch(
+        `/workflows/instances/${instanceId}/embeddedUrl`,
+        'GET',
+        accessToken
+      ),
+    ]
+
+    for (const attempt of candidates) {
+      try {
+        const data = await attempt()
+        console.log('Embed data:', JSON.stringify(data, null, 2))
+        embeddedUrl = data?.url ?? data?.embeddedUrl ?? data?.redirectUrl ?? null
+        if (embeddedUrl) break
+      } catch (e) {
+        console.warn('Embed attempt failed:', e instanceof Error ? e.message : e)
+      }
+    }
+
+    return NextResponse.json({ instanceId, embeddedUrl })
   } catch (err) {
-    console.error('Maestro route error:', err)
-    return NextResponse.json(
-      { error: 'Erro ao iniciar o fluxo de contratação. Tente novamente.' },
-      { status: 500 }
-    )
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('Maestro route error:', message)
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }
