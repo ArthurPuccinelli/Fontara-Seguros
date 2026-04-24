@@ -23,9 +23,8 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-fontara-navy/95 backdrop-blur-md shadow-lg py-3' : 'bg-white/15 backdrop-blur-md py-5'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-fontara-navy/95 backdrop-blur-md shadow-lg py-3' : 'bg-white/15 backdrop-blur-md py-5'
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
         {/* Logo */}
@@ -33,8 +32,8 @@ export default function Navbar() {
           <Image
             src="/logo.png"
             alt="Fontara Seguros"
-            width={140}
-            height={48}
+            width={180}
+            height={60}
             className="object-contain"
             priority
           />
@@ -62,8 +61,8 @@ export default function Navbar() {
             <Phone size={16} />
             (11) 3000-0000
           </a>
-          <a href="#cotacao" className="btn-primary text-sm">
-            Solicitar Cotação
+          <a href="/area-cliente/login" className="btn-primary text-sm">
+            Área do Cliente
           </a>
         </div>
 

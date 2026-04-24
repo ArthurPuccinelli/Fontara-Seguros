@@ -1,4 +1,8 @@
+'use client'
+
+import { useState } from 'react'
 import { ClipboardList, Search, FileSignature, ShieldCheck } from 'lucide-react'
+import MaestroModal from './MaestroModal'
 
 const steps = [
   {
@@ -32,6 +36,8 @@ const steps = [
 ]
 
 export default function ComoFunciona() {
+  const [modalOpen, setModalOpen] = useState(false)
+
   return (
     <section id="como-funciona" className="py-24 bg-fontara-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -54,7 +60,7 @@ export default function ComoFunciona() {
           {/* Connector line (desktop) */}
           <div className="hidden lg:block absolute top-12 left-[12.5%] right-[12.5%] h-0.5 bg-gradient-to-r from-fontara-blue via-fontara-accent to-fontara-gold" />
 
-          {steps.map((step, i) => (
+          {steps.map((step) => (
             <div key={step.step} className="relative flex flex-col items-center text-center">
               {/* Step number */}
               <div className="relative z-10 mb-6">
@@ -72,11 +78,16 @@ export default function ComoFunciona() {
 
         {/* CTA */}
         <div className="mt-16 text-center">
-          <a href="#cotacao" className="btn-primary inline-flex items-center gap-2">
-            Começar agora — é grátis
-          </a>
+          <button
+            onClick={() => setModalOpen(true)}
+            className="btn-primary inline-flex items-center gap-2"
+          >
+            Contrate agora é fácil
+          </button>
         </div>
       </div>
+
+      {modalOpen && <MaestroModal onClose={() => setModalOpen(false)} />}
     </section>
   )
 }
