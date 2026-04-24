@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const { workflowId: bodyWorkflowId, ...userInputs } = body as Record<string, unknown>
-    const MAESTRO_WORKFLOW_ID = (bodyWorkflowId as string) || DEFAULT_WORKFLOW_ID
+    const workflowId = (bodyWorkflowId as string) || DEFAULT_WORKFLOW_ID
 
     const {
       DOCUSIGN_INTEGRATION_KEY,
@@ -63,7 +63,6 @@ export async function POST(req: NextRequest) {
       DOCUSIGN_PRIVATE_KEY,
     } = process.env
 
-    // Demo mode — env vars not configured
     if (!DOCUSIGN_INTEGRATION_KEY || !DOCUSIGN_USER_ID || !DOCUSIGN_ACCOUNT_ID || !DOCUSIGN_PRIVATE_KEY) {
       return NextResponse.json({
         demo: true,
@@ -84,52 +83,39 @@ export async function POST(req: NextRequest) {
     let triggerInputs: Record<string, unknown> = {}
     try {
       const requirements = await maestroFetch(
-        `/accounts/${DOCUSIGN_ACCOUNT_ID}/workflows/${MAESTRO_WORKFLOW_ID}/trigger-requirements`,
+        `/accounts/${DOCUSIGN_ACCOUNT_ID}/workflows/${workflowId}/trigger-requirements`,
         'GET',
         accessToken
       )
-
       if (Array.isArray(requirements.trigger_input_schema)) {
         for (const field of requirements.trigger_input_schema) {
           const name: string = field?.field_name
           if (!name) continue
           const type = String(field?.field_data_type || '').toLowerCase()
-
           if (userInputs[name] !== undefined) {
             triggerInputs[name] = userInputs[name]
           } else {
-            // Try case-insensitive match on user inputs
-            const key = Object.keys(userInputs).find(
-              (k) => k.toLowerCase() === name.toLowerCase()
-            )
+            const key = Object.keys(userInputs).find((k) => k.toLowerCase() === name.toLowerCase())
             if (key) {
               triggerInputs[name] = userInputs[key]
             } else {
               switch (type) {
-                case 'date':
-                  triggerInputs[name] = new Date().toISOString().split('T')[0]
-                  break
-                case 'number':
-                  triggerInputs[name] = 0
-                  break
-                case 'boolean':
-                  triggerInputs[name] = false
-                  break
-                default:
-                  triggerInputs[name] = ''
+                case 'date': triggerInputs[name] = new Date().toISOString().split('T')[0]; break
+                case 'number': triggerInputs[name] = 0; break
+                case 'boolean': triggerInputs[name] = false; break
+                default: triggerInputs[name] = ''
               }
             }
           }
         }
       }
     } catch {
-      // If requirements fetch fails, pass user inputs directly
       triggerInputs = userInputs
     }
 
-    // Trigger workflow instance
+    // Trigger workflow — instance_url in response is used directly as the iframe src
     const triggerResult = await maestroFetch(
-      `/accounts/${DOCUSIGN_ACCOUNT_ID}/workflows/${MAESTRO_WORKFLOW_ID}/actions/trigger`,
+      `/accounts/${DOCUSIGN_ACCOUNT_ID}/workflows/${workflowId}/actions/trigger`,
       'POST',
       accessToken,
       {
@@ -138,61 +124,11 @@ export async function POST(req: NextRequest) {
       }
     )
 
-    console.log('Trigger result:', JSON.stringify(triggerResult, null, 2))
+    const instanceId = triggerResult.instance_id ?? triggerResult.instanceId ?? triggerResult.id
+    const embeddedUrl = triggerResult.instance_url ?? triggerResult.url ?? null
 
-    const instanceId =
-      triggerResult.instanceId ?? triggerResult.instance_id ?? triggerResult.id
-
-    if (!instanceId) {
-      throw new Error('Workflow trigger did not return an instanceId')
-    }
-
-    // Check if trigger already returned a usable URL
-    const triggerUrl =
-      triggerResult.instance_url ??
-      triggerResult.url ??
-      triggerResult.workflowInstanceUrl ??
-      triggerResult.instanceUrl ??
-      triggerResult.redirectUrl ??
-      null
-
-    if (triggerUrl) {
-      return NextResponse.json({ instanceId, embeddedUrl: triggerUrl })
-    }
-
-    // Try to get embedded URL — attempt both known endpoint patterns
-    const origin = req.headers.get('origin') || 'https://fontaraseguros.netlify.app'
-    let embeddedUrl: string | null = null
-
-    const candidates = [
-      () => maestroFetch(
-        `/accounts/${DOCUSIGN_ACCOUNT_ID}/workflows/instances/${instanceId}/embeddedUrl`,
-        'POST',
-        accessToken,
-        { returnUrl: `${origin}?maestro=complete` }
-      ),
-      () => maestroFetch(
-        `/accounts/${DOCUSIGN_ACCOUNT_ID}/workflows/instances/${instanceId}/embeddedUrl`,
-        'GET',
-        accessToken
-      ),
-      () => maestroFetch(
-        `/workflows/instances/${instanceId}/embeddedUrl`,
-        'GET',
-        accessToken
-      ),
-    ]
-
-    for (const attempt of candidates) {
-      try {
-        const data = await attempt()
-        console.log('Embed data:', JSON.stringify(data, null, 2))
-        embeddedUrl = data?.url ?? data?.embeddedUrl ?? data?.redirectUrl ?? null
-        if (embeddedUrl) break
-      } catch (e) {
-        console.warn('Embed attempt failed:', e instanceof Error ? e.message : e)
-      }
-    }
+    if (!instanceId) throw new Error('Workflow trigger did not return an instanceId')
+    if (!embeddedUrl) throw new Error('Workflow trigger did not return an instance_url')
 
     return NextResponse.json({ instanceId, embeddedUrl })
   } catch (err) {

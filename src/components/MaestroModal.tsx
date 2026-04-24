@@ -1,20 +1,37 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { X, Loader2 } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { X, Loader2, CheckCircle } from 'lucide-react'
 
 interface Props {
   onClose: () => void
   workflowId?: string
 }
 
-type Step = 'loading' | 'workflow' | 'demo' | 'error'
+type Step = 'loading' | 'workflow' | 'completed' | 'demo' | 'error'
+
+// DocuSign Maestro sends postMessage when a workflow instance finishes.
+// Known event shapes (we handle all variants):
+const isCompletionEvent = (data: unknown): boolean => {
+  if (!data || typeof data !== 'object') return false
+  const d = data as Record<string, unknown>
+  const type = String(d.type ?? d.messageType ?? d.eventType ?? '').toLowerCase()
+  return (
+    type.includes('complet') ||
+    type.includes('finish') ||
+    type.includes('done') ||
+    type === 'maestro_workflow_completed' ||
+    type === 'workflow_completed'
+  )
+}
 
 export default function MaestroModal({ onClose, workflowId }: Props) {
   const [step, setStep] = useState<Step>('loading')
   const [embeddedUrl, setEmbeddedUrl] = useState<string | null>(null)
   const [errorMsg, setErrorMsg] = useState('')
+  const iframeRef = useRef<HTMLIFrameElement>(null)
 
+  // Trigger the workflow on mount
   useEffect(() => {
     fetch('/api/docusign/maestro', {
       method: 'POST',
@@ -42,6 +59,17 @@ export default function MaestroModal({ onClose, workflowId }: Props) {
       })
   }, [])
 
+  // Listen for completion postMessage from the Maestro iframe
+  useEffect(() => {
+    const handler = (event: MessageEvent) => {
+      if (isCompletionEvent(event.data)) {
+        setStep('completed')
+      }
+    }
+    window.addEventListener('message', handler)
+    return () => window.removeEventListener('message', handler)
+  }, [])
+
   const isWorkflow = step === 'workflow'
 
   return (
@@ -62,22 +90,36 @@ export default function MaestroModal({ onClose, workflowId }: Props) {
         {step === 'loading' && (
           <div className="p-16 flex flex-col items-center gap-4">
             <Loader2 size={44} className="text-fontara-accent animate-spin" />
-            <p className="text-fontara-navy font-medium">Iniciando seu fluxo de contratação…</p>
+            <p className="text-fontara-navy font-medium">Iniciando seu fluxo…</p>
           </div>
         )}
 
         {step === 'workflow' && embeddedUrl && (
           <>
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
-              <h2 className="text-lg font-bold text-fontara-navy">Contratação via DocuSign Maestro</h2>
+            <div className="px-6 py-4 border-b border-gray-100 shrink-0">
+              <h2 className="text-lg font-bold text-fontara-navy">DocuSign Maestro</h2>
             </div>
             <iframe
+              ref={iframeRef}
               src={embeddedUrl}
               className="flex-1 w-full rounded-b-2xl border-0"
               title="DocuSign Maestro"
               allow="camera; microphone"
             />
           </>
+        )}
+
+        {step === 'completed' && (
+          <div className="p-10 text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle size={32} className="text-green-500" />
+            </div>
+            <h2 className="text-xl font-bold text-fontara-navy mb-2">Concluído!</h2>
+            <p className="text-gray-500 text-sm mb-6">
+              Seu fluxo foi finalizado com sucesso.
+            </p>
+            <button onClick={onClose} className="btn-primary">Fechar</button>
+          </div>
         )}
 
         {step === 'demo' && (
@@ -100,9 +142,7 @@ export default function MaestroModal({ onClose, workflowId }: Props) {
             </div>
             <h2 className="text-xl font-bold text-fontara-navy mb-2">Ocorreu um erro</h2>
             <p className="text-gray-500 text-sm mb-6 break-all">{errorMsg}</p>
-            <div className="flex gap-3 justify-center">
-              <button onClick={onClose} className="btn-primary">Fechar</button>
-            </div>
+            <button onClick={onClose} className="btn-primary">Fechar</button>
           </div>
         )}
       </div>
