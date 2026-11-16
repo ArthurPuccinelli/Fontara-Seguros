@@ -121,6 +121,43 @@ td.mono { font-family: var(--f-mono); font-size: 12.5px; background: none; paddi
 .q button { font: 500 12px var(--f-body); border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 5px 10px; cursor: pointer; flex: none; }
 .q button:focus-visible { outline: 2px solid var(--ds); outline-offset: 2px; }
 
+
+/* bloco "por dentro" (condutor) */
+details.inside { border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+details.inside > summary { cursor: pointer; padding: 10px 14px; font-weight: 600; font-size: 13.5px; list-style: none; display: flex; align-items: center; gap: 8px; }
+details.inside > summary::-webkit-details-marker { display: none; }
+details.inside > summary::before { content: "▸"; color: var(--accent); transition: transform .15s; }
+details.inside[open] > summary::before { transform: rotate(90deg); }
+details.inside > summary:focus-visible { outline: 2px solid var(--ds); outline-offset: 2px; border-radius: 10px; }
+.inside-body { padding: 4px 16px 16px; display: flex; flex-direction: column; gap: 14px; font-size: 14px; }
+.inside-body h5 { margin: 0 0 4px; font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.flow { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; counter-reset: f; }
+.flow li { counter-increment: f; display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; padding: 6px 0; position: relative; }
+.flow li::before { content: counter(f); width: 22px; height: 22px; border-radius: 50%; background: var(--surface); border: 1.5px solid var(--accent); color: var(--accent); font: 600 11px/19px var(--f-body); text-align: center; }
+.flow li:not(:last-child)::after { content: ""; position: absolute; left: 10.5px; top: 30px; bottom: -4px; width: 1.5px; background: var(--line); }
+.flow .who { font-size: 11.5px; font-weight: 600; color: var(--ds); text-transform: uppercase; letter-spacing: .06em; }
+.rules { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.rules li { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 8px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.rules .if { font-family: var(--f-mono); font-size: 12.5px; color: var(--ink); overflow-wrap: anywhere; }
+.rules .then { font-size: 13px; color: var(--muted); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.risk { font-size: 13px; border-left: 3px solid var(--warn); padding: 6px 10px; background: var(--warn-soft); color: var(--ink); border-radius: 0 6px 6px 0; }
+.arch { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; align-items: stretch; }
+.arch .node { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.arch .node h4 { margin: 0; font-size: 14px; }
+.arch .node p { font-size: 13px; color: var(--muted); }
+.arch .tag { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+
+
+/* matriz de recursos */
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--muted); }
+.st { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.st.live { background: var(--ok-soft); color: var(--ok); }
+.st.console { background: var(--ds-soft); color: var(--ds); }
+.st.talk { background: var(--warn-soft); color: var(--warn); }
+.feat-group td:first-child { font-weight: 600; }
+tr.grp td { background: var(--bg); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+
 @media (max-width: 560px) {
   .step { grid-template-columns: 1fr; gap: 12px; padding: 18px; }
   .num { font-size: 28px; }
@@ -217,10 +254,26 @@ td.mono { font-family: var(--f-mono); font-size: 12.5px; background: none; paddi
   </div>
 </section>
 
+
+<section id="recursos">
+  <span class="eyebrow">Recursos</span>
+  <h2>O que a demo mostra da DocuSign</h2>
+  <p class="lead">Cada recurso, onde ele aparece no roteiro e como é mostrado. Use para saber o que destacar e o que só citar.</p>
+  <div class="legend"><span class="st live">Ao vivo no portal</span> <span>clicando no portal</span> <span class="st console">No console DocuSign</span> <span>abrindo a tela de configuração</span> <span class="st talk">Só mencionar</span> <span>disponível, sem demonstração</span></div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Recurso</th><th>O que mostra</th><th>Passo</th><th>Como</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="4">Orquestração e integração</td></tr><tr><td>API do Workflow Builder (trigger)</td><td>O formulário do portal dispara o workflow com um POST e 30 variáveis; painel “Ver payload” mostra o JSON</td><td class="mono">1A, 2</td><td><span class="st live">Ao vivo no portal</span></td></tr><tr><td>Workflow Builder — ramificação</td><td>Regra PF/PJ escolhe template e signatários</td><td class="mono">2</td><td><span class="st console">No console DocuSign</span></td></tr><tr><td>Workflow Builder — criação com IA</td><td>Descrever o processo em português e a IA monta o fluxo</td><td class="mono">1B</td><td><span class="st console">No console DocuSign</span></td></tr><tr><td>Workflow embarcado (iframe)</td><td>A jornada inteira roda dentro do portal, sem sair do site</td><td class="mono">1B</td><td><span class="st live">Ao vivo no portal</span></td></tr><tr><td>APIs de status (instâncias e envelopes)</td><td>Painel de acompanhamento do canal, atualizado a cada 15 s</td><td class="mono">3</td><td><span class="st live">Ao vivo no portal</span></td></tr><tr><td>Integração com CRM (Salesforce)</td><td>Passo “Gravar dados no Salesforce” no workflow embarcado</td><td class="mono">1B</td><td><span class="st console">No console DocuSign</span></td></tr><tr class="grp"><td colspan="4">Formulários e documentos</td></tr><tr><td>Web Forms — regras condicionais</td><td>Campos aparecem conforme o tipo (resgate parcial, portabilidade)</td><td class="mono">1C</td><td><span class="st live">Ao vivo no portal</span></td></tr><tr><td>Web Forms — pré-preenchimento por API</td><td>Nome e CPF chegam preenchidos e travados</td><td class="mono">1C</td><td><span class="st live">Ao vivo no portal</span></td></tr><tr><td>Web Forms embarcado (Docusign JS)</td><td>Formulário dentro da Área do Cliente</td><td class="mono">1C</td><td><span class="st live">Ao vivo no portal</span></td></tr><tr><td>Templates com campos preenchidos pelo workflow</td><td>Proposta sai pronta, com campos travados</td><td class="mono">1A, 2</td><td><span class="st live">Ao vivo no portal</span></td></tr><tr><td>Mapeamento de campos com IA</td><td>Botão “Mapeie para mim” liga campos do template às variáveis</td><td class="mono">1A</td><td><span class="st console">No console DocuSign</span></td></tr><tr><td>Doc Gen (geração de documento)</td><td>Passo “Preparar modelo de documento” no workflow embarcado</td><td class="mono">1B</td><td><span class="st console">No console DocuSign</span></td></tr><tr class="grp"><td colspan="4">Assinatura e identidade</td></tr><tr><td>eSignature remota (e-mail)</td><td>Signatário recebe o link por e-mail e assina no celular</td><td class="mono">1A, 2</td><td><span class="st live">Ao vivo no portal</span></td></tr><tr><td>Roteamento variável e ordem de assinatura</td><td>1–3 representantes, 0–2 testemunhas; vazios são omitidos; representantes → testemunhas → cópia</td><td class="mono">2</td><td><span class="st live">Ao vivo no portal</span></td></tr><tr><td>Entrega por SMS / WhatsApp</td><td>Checkbox “Mensagem de texto ou WhatsApp” por destinatário no passo de envio (não ligado na demo)</td><td class="mono">1A</td><td><span class="st console">No console DocuSign</span></td></tr><tr><td>White label (brand)</td><td>Logo e cores Fontara no Web Form e no workflow</td><td class="mono">1B, 1C</td><td><span class="st live">Ao vivo no portal</span></td></tr><tr><td>Autenticação SMS/OTP, IDV com prova de vida, ICP-Brasil</td><td>Disponíveis na plataforma; não configurados nesta demo</td><td class="mono">—</td><td><span class="st talk">Só mencionar</span></td></tr><tr class="grp"><td colspan="4">Pós-assinatura e IA</td></tr><tr><td>Agreement Manager (Navigator) — extração por IA</td><td>14 contratos legados com partes, datas, valor e renovação extraídos</td><td class="mono">4</td><td><span class="st console">No console DocuSign</span></td></tr><tr><td>Busca de contratos via API</td><td>Filtros por vencimento e CPF/CNPJ no portal do canal</td><td class="mono">4</td><td><span class="st live">Ao vivo no portal</span></td></tr><tr><td>Consultar Iris</td><td>Perguntas em linguagem natural dentro do Agreement Manager</td><td class="mono">4</td><td><span class="st console">No console DocuSign</span></td></tr><tr><td>Docusign MCP (Claude / WhatsApp)</td><td>Perguntas sobre contratos a partir de um assistente externo</td><td class="mono">4</td><td><span class="st live">Ao vivo no Claude</span></td></tr><tr><td>Importar do e-mail / upload em lote</td><td>Encaminhar anexos ou subir centenas de PDFs legados</td><td class="mono">4</td><td><span class="st talk">Só mencionar</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
 <section>
   <span class="eyebrow">Roteiro</span>
   <h2>A demo, na ordem</h2>
-  <p class="lead">A numeração é a ordem sugerida de apresentação. Cada caso traz o caminho, as falas e o que está configurado na DocuSign.</p>
+  <p class="lead">A numeração é a ordem sugerida de apresentação. Cada caso traz o caminho, as falas e o que está configurado na DocuSign. Abra “Por dentro” para ver gatilhos, regras e o que acontece em cada etapa.</p>
 
   <div class="steps">
 
@@ -261,6 +314,29 @@ td.mono { font-family: var(--f-mono); font-size: 12.5px; background: none; paddi
         </div>
         <p class="say">“O vendedor continua no sistema dele. Um POST com o JSON da proposta dispara o workflow: o documento sai preenchido e vai para assinatura.”</p>
         <div class="behind"><span><b>Workflow:</b> Fontara Seguros - Proposta PF/PJ (API) · <code>824dd961…</code></span><span><b>Templates:</b> Proposta PF <code>8e999bc2…</code></span><span class="chip ok">testado 16/11</span></div>
+        <details class="inside"><summary>Por dentro: gatilho, condicionais e o que acontece</summary><div class="inside-body">
+<div><h5>Gatilho</h5><p>Botão <b>Enviar proposta</b> no formulário do portal → <code>POST /api/docusign/maestro</code> com <code>{journey:"proposta", mode:"api", inputs}</code>. O backend autentica por JWT (impersonando o usuário da conta demo), lê o schema em <code>trigger-requirements</code> e chama <code>POST /workflows/824dd961…/actions/trigger</code>.</p></div>
+<div class="two">
+<div><h5>Regras no formulário (portal)</h5><ul class="rules">
+<li><span class="if">tipoPessoa = PF</span><span class="then">Mostra CPF, e-mail, celular, data de nascimento e beneficiários. Produtos: VGBL, PGBL, Seguro de Vida Individual.</span></li>
+<li><span class="if">Beneficiários</span><span class="then">Percentuais precisam somar 100%; senão o envio é bloqueado.</span></li>
+<li><span class="if">Validação</span><span class="then">Campos obrigatórios e formato de e-mail. CPF/CNPJ aceitam qualquer número (sem dígito verificador).</span></li>
+<li><span class="if">numeroProposta / dataProposta</span><span class="then">Gerados no envio (<code>FS-AAAA-xxxxxx</code> e data de hoje).</span></li>
+</ul></div>
+<div><h5>O que acontece no workflow</h5><ol class="flow">
+<li><div><span class="who">Iniciar (API)</span><br>Recebe as 30 variáveis do portal.</div></li>
+<li><div><span class="who">Regra de ramificação</span><br><code>tipoPessoa contém "PF"</code> (diferencia maiúsculas) → ramo PF.</div></li>
+<li><div><span class="who">Prepare eSignature Template</span><br>Template PF: preenche 11 campos travados (nº, data, nome, CPF, e-mail, celular, produto, valor, periodicidade, canal, beneficiários).</div></li>
+<li><div><span class="who">Enviar para assinatura</span><br>Remoto. Titular = <code>nomeTitular</code>/<code>emailTitular</code>; Corretor (CC) = quem publicou o fluxo. Notificação por e-mail.</div></li>
+<li><div><span class="who">Tela de confirmação</span><br>“Proposta enviada para assinatura” para quem iniciou.</div></li>
+</ol></div>
+</div>
+<div class="two">
+<div><h5>O que o público vê</h5><p>Cartão de sucesso com o ID da instância, a linha do tempo (gerado → enviado → signatários) e o painel “Ver payload enviado à API”. O e-mail chega em ~10–30 s.</p></div>
+<div><h5>Ganchos para a conversa</h5><p>Mostre o JSON para o TI; abra o workflow no Workflow Builder e mostre que o envio por <b>Mensagem de texto ou WhatsApp</b> é um checkbox no passo de envio.</p></div>
+</div>
+<p class="risk">Campos Data de nascimento, Endereço e Corretor do PDF ficam em branco (não há variável). Se perguntarem, é só criar a variável e mapear.</p>
+</div></details>
       </div>
     </article>
 
@@ -285,6 +361,23 @@ td.mono { font-family: var(--f-mono); font-size: 12.5px; background: none; paddi
         </div>
         <p class="say">“Uma única jornada atende PF e PJ. O workflow decide o caminho e quem assina, conforme os dados preenchidos.”</p>
         <div class="behind"><span><b>Template PJ:</b> <code>d47237d8…</code> (Rep 1–3, Testemunha 1–2, CC Corretor)</span><span class="chip ok">testado 16/11</span></div>
+        <details class="inside"><summary>Por dentro: gatilho, condicionais e o que acontece</summary><div class="inside-body">
+<div class="two">
+<div><h5>Regras no formulário (portal)</h5><ul class="rules">
+<li><span class="if">tipoPessoa = PJ</span><span class="then">Esconde beneficiários; mostra razão social, CNPJ e representantes. Produtos: VGBL, PGBL, Seguro de Vida em Grupo.</span></li>
+<li><span class="if">Representantes: 1 a 3</span><span class="then">Cada um com nome, CPF, e-mail, celular e cargo (Sócio-administrador, Diretor, Procurador). O 1º representante vira o contato principal.</span></li>
+<li><span class="if">“Exige testemunhas” ligado</span><span class="then">Abre 2 testemunhas (nome + e-mail). Desligado: envia as testemunhas vazias.</span></li>
+</ul></div>
+<div><h5>O que acontece no workflow</h5><ol class="flow">
+<li><div><span class="who">Regra de ramificação</span><br><code>tipoPessoa</code> não contém “PF” → ramo <b>Nenhuma condição atendida</b> (PJ).</div></li>
+<li><div><span class="who">Prepare eSignature Template</span><br>Template PJ: razão social, representantes (nome, CPF, cargo), produto, valor, periodicidade, canal, testemunhas.</div></li>
+<li><div><span class="who">Enviar para assinatura</span><br>Ordem 1: Representantes 1–3 (em paralelo). Ordem 2: Testemunhas 1–2. Ordem 3: Corretor (cópia).</div></li>
+<li><div><span class="who">Roteamento variável</span><br>Papel com nome/e-mail vazio é omitido do envelope. 1 representante sem testemunhas = 1 signatário; 3 + 2 = 5.</div></li>
+</ol></div>
+</div>
+<div><h5>Teste de referência (16/11)</h5><p>2 representantes + 2 testemunhas → envelope com Rep 1, Rep 2, Testemunha 1, Testemunha 2 e Corretor; Representante 3 omitido.</p></div>
+<p class="risk">O campo CNPJ do PDF PJ ainda não está mapeado no workflow (a razão social aparece). Evite dar zoom nesse campo ou mapeie <code>cpfCnpj</code> → <code>Cnpj</code> no passo “Prepare eSignature Template” do ramo PJ.</p>
+</div></details>
       </div>
     </article>
 
@@ -309,6 +402,23 @@ td.mono { font-family: var(--f-mono); font-size: 12.5px; background: none; paddi
         </div>
         <p class="say">“Vocês escolhem por jornada: formulário próprio via API ou a experiência DocuSign embarcada. A orquestração é a mesma.”</p>
         <div class="behind"><span><b>Workflow:</b> Fontara Seguros - Onboarding de cliente portal · <code>0359ae48…</code></span></div>
+        <details class="inside"><summary>Por dentro: gatilho, condicionais e o que acontece</summary><div class="inside-body">
+<div><h5>Gatilho</h5><p>Botão <b>Iniciar experiência</b> → <code>POST /api/docusign/maestro</code> com <code>mode:"embedded-workflow"</code> → dispara o workflow <code>0359ae48…</code> e devolve o <code>instance_url</code>, aberto num iframe dentro do portal.</p></div>
+<div class="two">
+<div><h5>O que acontece no workflow</h5><ol class="flow">
+<li><div><span class="who">Iniciar (API)</span><br>O participante é “quem inicia o fluxo”: quem abre o iframe executa as etapas.</div></li>
+<li><div><span class="who">Coletar dados com Web Forms</span><br>Formulário dentro do iframe, com a marca Fontara.</div></li>
+<li><div><span class="who">Regra de várias ramificações</span><br>Empresarial / Vida / Auto / nenhuma condição, conforme o produto escolhido.</div></li>
+<li><div><span class="who">Preparar modelo de documento</span><br>Doc Gen gera a proposta do ramo escolhido (Auto não tem documento).</div></li>
+<li><div><span class="who">Enviar para assinatura → Gravar no Salesforce</span><br>Ramo sem condição exibe uma tela de confirmação.</div></li>
+</ol></div>
+<div><h5>Comportamento do portal</h5><ul class="rules">
+<li><span class="if">Evento de conclusão (postMessage)</span><span class="then">O modal troca para “Concluído”. Só aceita mensagens de domínios <code>*.docusign.com / .net</code>.</span></li>
+<li><span class="if">Fechar o modal</span><span class="then">A instância fica “In Progress” e aparece no Acompanhamento.</span></li>
+</ul></div>
+</div>
+<p class="risk">Este workflow é o “Onboarding de cliente portal” reaproveitado: o Web Form não pergunta PF/PJ. Use-o para mostrar a experiência embarcada e a edição sem código; a ramificação PF/PJ você mostra no 1A/2.</p>
+</div></details>
       </div>
     </article>
 
@@ -335,6 +445,24 @@ td.mono { font-family: var(--f-mono); font-size: 12.5px; background: none; paddi
         <p class="say">“Este era um PDF para imprimir, assinar e digitalizar. Agora é um formulário que se adapta a cada resposta e termina assinado.”</p>
         <div class="behind"><span><b>Web Form:</b> Fontara Seguros - Resgate/Portabilidade · <code>b5a06678…</code></span><span><b>Template base:</b> <code>87db4535…</code></span></div>
         <p class="fallback">O envio e a assinatura deste formulário ainda não foram testados ponta a ponta. Faça um envio completo antes da reunião.</p>
+        <details class="inside"><summary>Por dentro: gatilho, condicionais e o que acontece</summary><div class="inside-body">
+<div><h5>Gatilho</h5><p>Card <b>Resgate / Portabilidade</b> → <code>POST /api/docusign/webforms/instance</code> → <code>createInstance</code> no Web Form <code>b5a06678…</code> com <code>clientUserId</code> = e-mail do perfil e <code>formValues</code> pré-preenchidos → o portal monta o form com Docusign JS (<code>instanceToken</code> vale 5 min).</p></div>
+<div class="two">
+<div><h5>Pré-preenchimento</h5><ul class="rules">
+<li><span class="if">Nome_do_Titular, Email_do_Titular</span><span class="then">Nome e e-mail do signatário (vêm do perfil de demo).</span></li>
+<li><span class="if">NomeTitular, CpfTitular</span><span class="then">Somente leitura (cinza) — o cliente não altera.</span></li>
+<li><span class="if">NumeroCertificado</span><span class="then">Fixo <code>CERT-PGBL-2020-0031942</code>, editável.</span></li>
+</ul></div>
+<div><h5>Regras condicionais do Web Form</h5><ul class="rules">
+<li><span class="if">Tipo = Resgate parcial</span><span class="then">Mostra “Valor do resgate parcial (R$)”.</span></li>
+<li><span class="if">Tipo = Portabilidade</span><span class="then">Mostra “Entidade de destino” e “CNPJ da entidade de destino”.</span></li>
+<li><span class="if">Tipo = Resgate total</span><span class="then">Nenhum campo extra.</span></li>
+<li><span class="if">Banco, Agência, Conta</span><span class="then">Sempre visíveis e opcionais.</span></li>
+</ul></div>
+</div>
+<div><h5>Depois do envio</h5><p>O Web Form gera um envelope a partir da cópia do template, com os valores digitados, e segue para a assinatura do Titular. A data da solicitação é preenchida na assinatura. Para editar as regras: Modelos → Formulários da Web → “Fontara Seguros - Resgate/Portabilidade” → campo “Tipo de solicitação” → aba Regras.</p></div>
+<p class="risk">Se a tela ficar parada por mais de 5 min antes de abrir, o token expira: feche e abra o card de novo.</p>
+</div></details>
       </div>
     </article>
 
@@ -356,6 +484,16 @@ td.mono { font-family: var(--f-mono); font-size: 12.5px; background: none; paddi
           </ul></div>
         </div>
         <p class="say">“Ninguém precisa perguntar por e-mail em que pé está a proposta.”</p>
+        <details class="inside"><summary>Por dentro: gatilho, condicionais e o que acontece</summary><div class="inside-body">
+<div class="two">
+<div><h5>De onde vêm os dados</h5><ul class="rules">
+<li><span class="if">Aba Instâncias</span><span class="then"><code>GET /api/docusign/maestro/instances</code> → lista de instâncias de todos os workflows do catálogo, com status (In Progress, Completed, Canceled, Expired) e última etapa concluída.</span></li>
+<li><span class="if">Aba Envelopes</span><span class="then"><code>GET /api/docusign/envelopes?days=7</code> → envelopes dos últimos 7 dias com cada destinatário e seu status.</span></li>
+<li><span class="if">Atualização</span><span class="then">Automática a cada 15 s; sem webhook.</span></li>
+</ul></div>
+<div><h5>Roteiro sugerido</h5><p>Assine um envelope no celular durante a fala e espere a próxima atualização: o status muda na frente do cliente.</p></div>
+</div>
+</div></details>
       </div>
     </article>
 
@@ -381,6 +519,22 @@ td.mono { font-family: var(--f-mono); font-size: 12.5px; background: none; paddi
         <p class="say">“Subimos 14 contratos antigos. A IA leu partes, vigência, valor e tipo de renovação. Agora qualquer pessoa pergunta em português.”</p>
         <div class="behind"><span><b>Upload:</b> “Fontara Seguros - Legados Vida e Previdencia”</span><span><b>Gabarito:</b> <code>docs/demos/assets/legados/INDEX.md</code></span></div>
         <p class="fallback">A IA não extrai CPF/CNPJ por padrão. A busca por documento cruza com o cadastro simulado do CRM. Se perguntarem, explique que dá para criar uma extração customizada desse campo.</p>
+        <details class="inside"><summary>Por dentro: gatilho, condicionais e o que acontece</summary><div class="inside-body">
+<div class="two">
+<div><h5>O que a IA extraiu (sem configuração)</h5><ul class="rules">
+<li><span class="if">Partes</span><span class="then">Nomes das partes do contrato.</span></li>
+<li><span class="if">Vigência e vencimento</span><span class="then">100% iguais ao gabarito nos 14 PDFs.</span></li>
+<li><span class="if">Valor, moeda, renovação</span><span class="then">Valor total em BRL, tipo de renovação (prazo fixo / automática), data de aviso, prazo de rescisão.</span></li>
+</ul></div>
+<div><h5>Busca no portal</h5><ul class="rules">
+<li><span class="if">Chips 30 / 60 / 90 dias</span><span class="then">Vencimento entre hoje e hoje + N dias.</span></li>
+<li><span class="if">CPF/CNPJ</span><span class="then">A IA não extrai documento por padrão: o portal cruza o CPF/CNPJ com o cadastro (CRM simulado) e filtra pela parte.</span></li>
+<li><span class="if">Busca livre</span><span class="then">Procura no título, partes e campos extraídos.</span></li>
+</ul></div>
+</div>
+<div><h5>Respostas esperadas (gabarito)</h5><p>Vencem em até 30 dias: Cecília (25/11), Construtora Horizonte Azul (03/12), Otávio (10/12), Correspondente Praça Nova (15/12). Entre 31 e 90 dias: Lívia (16/01) e os 2 da Laticínios Serra Encantada (09/02). Vencidos: Raimundo e Agroindustrial Campos do Sul.</p></div>
+<p class="risk">A lista também traz contratos de outras demos da conta (ex.: “Master Services Agreement”). Filtre por vencimento ou CNPJ para ficar só nos de vida e previdência.</p>
+</div></details>
       </div>
     </article>
 
@@ -405,6 +559,72 @@ td.mono { font-family: var(--f-mono); font-size: 12.5px; background: none; paddi
       </div>
     </article>
 
+  </div>
+</section>
+
+
+<section>
+  <span class="eyebrow">Para quem conduz</span>
+  <h2>Como o portal fala com a DocuSign</h2>
+  <p class="lead">Toda chamada sai do servidor do portal (rotas <code>/api/docusign/*</code>), autenticada por JWT em nome do usuário da conta demo. O navegador nunca vê a chave.</p>
+  <div class="arch">
+    <div class="node"><span class="tag">Portal (Next.js)</span><h4>Formulários e telas</h4><p>Canal, Área do Cliente e roteiro. Dados de demo ficam no navegador.</p></div>
+    <div class="node"><span class="tag">API do portal</span><h4>/api/docusign/*</h4><p>maestro, maestro/instances, webforms/instance, envelopes, agreements, signing-view, consent.</p></div>
+    <div class="node"><span class="tag">DocuSign</span><h4>Workflow Builder · Web Forms · eSignature</h4><p>api-d.docusign.com (workflows), apps-d.docusign.com/api/webforms, demo.docusign.net (envelopes).</p></div>
+    <div class="node"><span class="tag">DocuSign</span><h4>Agreement Manager (Navigator)</h4><p>Repositório com extração por IA, consultado pela API e pelo Docusign MCP.</p></div>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Ação na tela</th><th>Rota do portal</th><th>Chamada DocuSign</th><th>Resultado</th></tr></thead>
+      <tbody>
+        <tr><td>Enviar proposta (1A, 2)</td><td class="mono">POST /api/docusign/maestro</td><td>trigger-requirements → actions/trigger</td><td>Instância + envelope enviado</td></tr>
+        <tr><td>Iniciar experiência (1B)</td><td class="mono">POST /api/docusign/maestro</td><td>actions/trigger (workflow embarcado)</td><td>instance_url no iframe</td></tr>
+        <tr><td>Abrir Resgate (1C)</td><td class="mono">POST /api/docusign/webforms/instance</td><td>forms/{id}/instances</td><td>formUrl + instanceToken (5 min)</td></tr>
+        <tr><td>Acompanhamento (3)</td><td class="mono">GET /api/docusign/maestro/instances</td><td>workflows/{id}/instances</td><td>Status e etapa atual</td></tr>
+        <tr><td>Acompanhamento (3)</td><td class="mono">GET /api/docusign/envelopes</td><td>envelopes?from_date&amp;include=recipients</td><td>Envelopes e signatários</td></tr>
+        <tr><td>Contratos (4)</td><td class="mono">GET /api/docusign/agreements</td><td>agreements (Navigator)</td><td>Contratos com campos extraídos</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Para quem conduz</span>
+  <h2>Todas as regras condicionais, num lugar</h2>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Onde</th><th>Condição</th><th>Efeito</th></tr></thead>
+      <tbody>
+        <tr><td>Formulário do portal</td><td>PF ou PJ</td><td>Troca os blocos de dados, a lista de produtos e esconde/mostra beneficiários e representantes</td></tr>
+        <tr><td>Formulário do portal</td><td>“Exige testemunhas”</td><td>Inclui 2 testemunhas no envio</td></tr>
+        <tr><td>Formulário do portal</td><td>Beneficiários ≠ 100%</td><td>Bloqueia o envio</td></tr>
+        <tr><td>Workflow Proposta PF/PJ</td><td><code>tipoPessoa</code> contém “PF”</td><td>Ramo PF (template PF, 1 signatário)</td></tr>
+        <tr><td>Workflow Proposta PF/PJ</td><td>Nenhuma condição atendida</td><td>Ramo PJ (template PJ, até 5 signatários)</td></tr>
+        <tr><td>Envelope PJ</td><td>Papel sem nome/e-mail</td><td>Papel omitido (roteamento variável)</td></tr>
+        <tr><td>Envelope PJ</td><td>Ordem de assinatura</td><td>Representantes (1) → Testemunhas (2) → Corretor em cópia (3)</td></tr>
+        <tr><td>Web Form Resgate</td><td>Tipo = Resgate parcial</td><td>Mostra “Valor do resgate parcial”</td></tr>
+        <tr><td>Web Form Resgate</td><td>Tipo = Portabilidade</td><td>Mostra entidade de destino e CNPJ</td></tr>
+        <tr><td>Workflow Onboarding (1B)</td><td>Produto Empresarial / Vida / Auto</td><td>Documento e envio diferentes por ramo</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Para quem conduz</span>
+  <h2>Se algo der errado</h2>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Sintoma</th><th>Causa provável</th><th>O que fazer</th></tr></thead>
+      <tbody>
+        <tr><td>Tela mostra “Modo demo” / dados simulados</td><td>Variáveis DocuSign ausentes no servidor ou ID vazio no catálogo</td><td>Siga com o modo demo (o roteiro funciona igual) e confira as variáveis no Netlify depois</td></tr>
+        <tr><td>Erro “Consentimento DocuSign necessário”</td><td>Escopo JWT novo sem consentimento</td><td>Abra o link exibido logado na conta demo e clique em Aceitar; o redirect volta para o site</td></tr>
+        <tr><td>Web Form em branco ou expirado</td><td>Token de 5 min venceu</td><td>Feche e abra o card de novo</td></tr>
+        <tr><td>E-mail de assinatura não chegou</td><td>Atraso de entrega ou e-mail do perfil errado</td><td>Confira o perfil de demo; mostre o envelope em Acompanhamento ou no console</td></tr>
+        <tr><td>Console DocuSign pede login</td><td>Sessão expira em ~1 h</td><td>Faça login antes da reunião; não edite workflows durante a demo sem salvar</td></tr>
+        <tr><td>Contratos “vence em 30 dias” vazio</td><td>Datas dos legados passaram</td><td>Rode <code>generate.py</code> e suba os PDFs de novo no Agreement Manager</td></tr>
+      </tbody>
+    </table>
   </div>
 </section>
 
