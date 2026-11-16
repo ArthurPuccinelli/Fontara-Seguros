@@ -45,6 +45,10 @@
 | Workflow Atualização cadastral (existente) | `98e2f24c-e903-4692-b599-21fd8214e04e` | ativo |
 | Brand pt_BR | `d892d79e-b9b2-4a4c-9349-dd9d30044ac5` (Fontara Financial) | existente |
 
+| Teste E2E 2 (PJ) | instância `0edd347a…`, envelope `3761214a…` | OK 16/11/2026 — Rep1, Rep2, Test1, Test2 + CC Corretor; Rep3 vazio omitido (roteamento variável) |
+
+Mapa visual da demo (rotas, falas, IDs, checklist): `docs/demos/demo-map.html` — publicado em https://claude.ai/artifact/5z42TrDxJ5Z8aHaaXMMHUZ
+
 ## Dados de demo
 - Contratos legados: `assets/legados/` + gabarito `assets/legados/INDEX.md` (rodar `python assets/generate.py` antes da demo para atualizar vencimentos).
 - Perfil do apresentador: `/area-cliente/perfil` (salvo no navegador).

@@ -1,0 +1,472 @@
+<title>Fontara Demo Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: guia de bolso do apresentador — cabeçalho curto, mapa do portal, roteiro em sequência (o número é a ordem da demo), bastidores e checklist */
+:root {
+  --bg: #f6f7fa;
+  --surface: #ffffff;
+  --ink: #0f2044;          /* navy Fontara */
+  --muted: #5a6478;
+  --line: #dde2ec;
+  --accent: #b8860b;       /* ouro Fontara, escurecido p/ contraste */
+  --accent-soft: #fbf3dc;
+  --ds: #4c1d95;           /* roxo DocuSign p/ marcar produtos */
+  --ds-soft: #efe9fb;
+  --ok: #1f7a4d;
+  --ok-soft: #e3f4ea;
+  --warn: #9a5b00;
+  --warn-soft: #fdf0d8;
+  --code-bg: #eef1f6;
+  --f-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --f-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1222; --surface: #121b30; --ink: #e8ecf5; --muted: #9aa6bf; --line: #24304b;
+    --accent: #e3b341; --accent-soft: #2b2512; --ds: #c4b0f5; --ds-soft: #241a3d;
+    --ok: #5fd39a; --ok-soft: #12291f; --warn: #f0b860; --warn-soft: #2d2311; --code-bg: #18233c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1222; --surface: #121b30; --ink: #e8ecf5; --muted: #9aa6bf; --line: #24304b;
+  --accent: #e3b341; --accent-soft: #2b2512; --ds: #c4b0f5; --ds-soft: #241a3d;
+  --ok: #5fd39a; --ok-soft: #12291f; --warn: #f0b860; --warn-soft: #2d2311; --code-bg: #18233c;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.6 var(--f-body); padding: 0 16px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-block: 40px 72px; display: flex; flex-direction: column; gap: 56px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(30px, 5vw, 46px); }
+h2 { font-size: 26px; }
+h3 { font-size: 19px; }
+p { margin: 0; }
+a { color: var(--ds); }
+code, .mono { font-family: var(--f-mono); font-size: 0.86em; background: var(--code-bg); padding: 1px 6px; border-radius: 4px; overflow-wrap: anywhere; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.muted { color: var(--muted); }
+section { display: flex; flex-direction: column; gap: 20px; }
+.lead { max-width: 68ch; color: var(--muted); font-size: 16px; }
+
+/* header */
+header { display: flex; flex-direction: column; gap: 14px; border-bottom: 2px solid var(--ink); padding-bottom: 24px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 13px; color: var(--muted); }
+.meta b { color: var(--ink); font-weight: 600; }
+
+/* prep grid */
+.prep { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.box h3 { font-size: 16px; font-family: var(--f-body); font-weight: 600; }
+.box ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+
+/* sitemap */
+.map { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.zone { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; min-width: 0; }
+.zone > .zh { padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.zone > .zh h3 { font-size: 17px; }
+.zone ol { list-style: none; margin: 0; padding: 0; }
+.zone li { padding: 10px 16px; border-bottom: 1px dashed var(--line); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; }
+.zone li:last-child { border-bottom: 0; }
+.route { font-family: var(--f-mono); font-size: 13px; color: var(--ink); overflow-wrap: anywhere; }
+.what { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }
+.step-ref { font-family: var(--f-mono); font-size: 12px; font-weight: 500; color: var(--accent); white-space: nowrap; }
+
+/* chips */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; padding: 2px 9px; border-radius: 999px; background: var(--ds-soft); color: var(--ds); font-weight: 500; white-space: nowrap; }
+.chip.persona { background: var(--accent-soft); color: var(--accent); }
+.chip.ok { background: var(--ok-soft); color: var(--ok); }
+
+/* roteiro */
+.steps { display: flex; flex-direction: column; gap: 18px; }
+.step { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 0 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 22px; }
+.num { font-family: var(--f-display); font-size: 34px; font-weight: 700; color: var(--accent); line-height: 1; }
+.num small { display: block; font-family: var(--f-body); font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: .06em; margin-top: 6px; }
+.step-body { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.step-head { display: flex; flex-direction: column; gap: 8px; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.col h4 { margin: 0 0 6px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.col ol, .col ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.say { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 8px 8px 0; font-style: italic; }
+.behind { font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; border-top: 1px dashed var(--line); padding-top: 10px; }
+.behind b { color: var(--ink); font-weight: 600; }
+.fallback { font-size: 13px; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; }
+
+/* tables */
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; background: var(--bg); }
+tr:last-child td { border-bottom: 0; }
+td.mono { font-family: var(--f-mono); font-size: 12.5px; background: none; padding: 10px 14px; white-space: nowrap; }
+
+/* checklist */
+.check { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px 24px; }
+.check label { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+.check input { margin-top: 4px; accent-color: var(--accent); width: 16px; height: 16px; flex: none; }
+.check input:focus-visible { outline: 2px solid var(--ds); outline-offset: 2px; }
+
+.qs { display: flex; flex-direction: column; gap: 8px; }
+.q { display: flex; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.q span { flex: 1; min-width: 0; }
+.q button { font: 500 12px var(--f-body); border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 5px 10px; cursor: pointer; flex: none; }
+.q button:focus-visible { outline: 2px solid var(--ds); outline-offset: 2px; }
+
+@media (max-width: 560px) {
+  .step { grid-template-columns: 1fr; gap: 12px; padding: 18px; }
+  .num { font-size: 28px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">Fontara Seguros · Demo DocuSign IAM</span>
+  <h1>Do POP ao acordo inteligente</h1>
+  <p class="lead">Mapa do portal e roteiro passo a passo da demo para a Caixa Vida e Previdência: onde clicar, o que dizer e o que está rodando por trás em cada tela.</p>
+  <div class="meta">
+    <span><b>Cliente:</b> Caixa Vida e Previdência (Fabio, Jhimmy, Ismael)</span>
+    <span><b>Duração:</b> ~45 min</span>
+    <span><b>Conta DocuSign:</b> Fontara Financial (demo)</span>
+    <span><b>Atualizado:</b> 16/11/2026</span>
+  </div>
+</header>
+
+<section>
+  <span class="eyebrow">Antes de começar</span>
+  <h2>Preparação</h2>
+  <div class="prep">
+    <div class="box">
+      <h3>Endereços</h3>
+      <ul>
+        <li>Portal: <code>fontaraseguros.netlify.app</code> (ou <code>localhost:3000</code>)</li>
+        <li>Roteiro do apresentador: <code>/demo</code></li>
+        <li>Console DocuSign: <code>apps-d.docusign.com</code></li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Logins (simulados)</h3>
+      <ul>
+        <li><b>Cliente:</b> <code>/area-cliente/login</code> — qualquer e-mail e senha</li>
+        <li><b>Vendedor do canal:</b> <code>/canal/login</code> — qualquer e-mail e senha</li>
+        <li>Console DocuSign: sua conta demo (sessão expira em ~1 h)</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Seus dados de demo</h3>
+      <ul>
+        <li>Em <code>/area-cliente/perfil</code>, coloque seu nome, e-mail e celular</li>
+        <li>Salvo só neste navegador; pré-preenche Web Form, workflow e assinatura</li>
+        <li>Inclua os representantes e testemunhas PJ com e-mails que você acessa</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Abas abertas</h3>
+      <ul>
+        <li>Portal na <code>/demo</code></li>
+        <li>Workflow Builder: “Fontara Seguros - Proposta PF/PJ (API)”</li>
+        <li>Agreement Manager (Acordos → Concluído)</li>
+        <li>Claude com o Docusign MCP conectado</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Mapa do portal</span>
+  <h2>Onde fica cada coisa</h2>
+  <div class="map">
+    <div class="zone">
+      <div class="zh"><h3>Site público</h3><span class="chips"><span class="chip persona">visitante</span></span></div>
+      <ol>
+        <li><span class="route">/</span><span class="step-ref">abertura</span><span class="what">Home Fontara: produtos (inclui Previdência Privada PGBL/VGBL), cotação e links para Área do Cliente e Portal do Canal.</span></li>
+        <li><span class="route">/demo</span><span class="step-ref">guia</span><span class="what">Roteiro do apresentador com atalhos para cada caso. Fica fora do menu (link discreto no rodapé).</span></li>
+      </ol>
+    </div>
+    <div class="zone">
+      <div class="zh"><h3>Portal do Canal</h3><span class="chips"><span class="chip persona">vendedor banco/parceiro</span></span></div>
+      <ol>
+        <li><span class="route">/canal</span><span class="step-ref">catálogo</span><span class="what">Catálogo de jornadas: cada card “substitui um POP”. Novo POP = nova entrada no catálogo.</span></li>
+        <li><span class="route">/canal/nova-jornada/proposta</span><span class="step-ref">1A · 2</span><span class="what">Proposta de Adesão PF/PJ pelo formulário do portal, chamando a API do Workflow Builder.</span></li>
+        <li><span class="route">/canal/nova-jornada/proposta?modo=embarcado</span><span class="step-ref">1B</span><span class="what">A mesma jornada como experiência DocuSign embarcada (iframe do workflow).</span></li>
+        <li><span class="route">/canal/acompanhamento</span><span class="step-ref">3</span><span class="what">Instâncias de workflow e envelopes, com etapa atual e signatários. Atualiza a cada 15 s.</span></li>
+        <li><span class="route">/canal/contratos</span><span class="step-ref">4</span><span class="what">Busca no Agreement Manager por CPF/CNPJ, texto e “vence em 30/60/90 dias”.</span></li>
+      </ol>
+    </div>
+    <div class="zone">
+      <div class="zh"><h3>Área do Cliente</h3><span class="chips"><span class="chip persona">cliente final</span></span></div>
+      <ol>
+        <li><span class="route">/area-cliente</span><span class="step-ref">1C</span><span class="what">Painel do cliente: Resgate/Portabilidade, Atualização cadastral, Meus contratos, Meus dados de demo.</span></li>
+        <li><span class="route">/area-cliente → Resgate / Portabilidade</span><span class="step-ref">1C</span><span class="what">Web Form embarcado, pré-preenchido, com regras condicionais e assinatura na sequência.</span></li>
+        <li><span class="route">/area-cliente/perfil</span><span class="step-ref">prep</span><span class="what">Meus dados de demo (nome, e-mail, celular, PJ, representantes, testemunhas).</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Roteiro</span>
+  <h2>A demo, na ordem</h2>
+  <p class="lead">A numeração é a ordem sugerida de apresentação. Cada caso traz o caminho, as falas e o que está configurado na DocuSign.</p>
+
+  <div class="steps">
+
+    <article class="step">
+      <div class="num">0<small>2 min</small></div>
+      <div class="step-body">
+        <div class="step-head">
+          <h3>Abertura: o problema dos POPs</h3>
+          <div class="chips"><span class="chip persona">apresentador</span></div>
+        </div>
+        <div class="cols">
+          <div class="col"><h4>Faça</h4><ol><li>Abra <code>/demo</code> e depois <code>/canal</code>.</li><li>Mostre o catálogo: cada card tem o selo “substitui POP-…”.</li></ol></div>
+          <div class="col"><h4>Critério do cliente</h4><ul><li>Reduzir formulários manuais</li><li>Escalar sem recriar POPs</li></ul></div>
+        </div>
+        <p class="say">“Cada formulário manual vira uma jornada digital no catálogo. Para criar um POP novo, a operação configura um workflow; ninguém abre projeto de TI.”</p>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="num">1A<small>8 min</small></div>
+      <div class="step-body">
+        <div class="step-head">
+          <h3>Proposta de adesão pelo formulário do portal (API)</h3>
+          <div class="chips"><span class="chip persona">vendedor</span><span class="chip">Workflow Builder</span><span class="chip">eSignature</span><span class="chip">SMS / WhatsApp</span></div>
+        </div>
+        <div class="cols">
+          <div class="col"><h4>Faça</h4><ol>
+            <li><code>/canal/nova-jornada/proposta</code> → aba “Formulário do portal (API)”.</li>
+            <li>Clique “Usar cliente de demo”, escolha produto (VGBL) e valor.</li>
+            <li>Enviar → abra “Ver payload enviado à API” para o time de TI.</li>
+            <li>Mostre o e-mail de assinatura chegando no seu celular.</li>
+          </ol></div>
+          <div class="col"><h4>Por que importa</h4><ul>
+            <li>O formulário é da Caixa; a DocuSign orquestra o resto.</li>
+            <li>Integração com o sistema dos canais por API.</li>
+            <li>Notificação por e-mail e, opcionalmente, SMS/WhatsApp no workflow.</li>
+          </ul></div>
+        </div>
+        <p class="say">“O vendedor continua no sistema dele. Um POST com o JSON da proposta dispara o workflow: o documento sai preenchido e vai para assinatura.”</p>
+        <div class="behind"><span><b>Workflow:</b> Fontara Seguros - Proposta PF/PJ (API) · <code>824dd961…</code></span><span><b>Templates:</b> Proposta PF <code>8e999bc2…</code></span><span class="chip ok">testado 16/11</span></div>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="num">2<small>5 min</small></div>
+      <div class="step-body">
+        <div class="step-head">
+          <h3>PF x PJ: representantes, procuradores e testemunhas</h3>
+          <div class="chips"><span class="chip persona">vendedor</span><span class="chip">Workflow Builder (ramificação)</span><span class="chip">Roteamento variável</span></div>
+        </div>
+        <div class="cols">
+          <div class="col"><h4>Faça</h4><ol>
+            <li>Na mesma tela, troque para “Pessoa Jurídica”.</li>
+            <li>Adicione 2 representantes (um como Procurador) e ligue “Exige testemunhas”.</li>
+            <li>Enviar → em <code>/canal/acompanhamento</code>, mostre os 5 destinatários.</li>
+            <li>No Workflow Builder, mostre a regra “tipoPessoa contém PF” e o ramo PJ.</li>
+          </ol></div>
+          <div class="col"><h4>Por que importa</h4><ul>
+            <li>Atende o ponto do Jhimmy: PJ assina pelo representante legal, com testemunhas quando o formulário exige.</li>
+            <li>Representante 3 vazio é omitido automaticamente: 1 a 3 representantes, 0 a 2 testemunhas, sem criar outro template.</li>
+          </ul></div>
+        </div>
+        <p class="say">“Uma única jornada atende PF e PJ. O workflow decide o caminho e quem assina, conforme os dados preenchidos.”</p>
+        <div class="behind"><span><b>Template PJ:</b> <code>d47237d8…</code> (Rep 1–3, Testemunha 1–2, CC Corretor)</span><span class="chip ok">testado 16/11</span></div>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="num">1B<small>6 min</small></div>
+      <div class="step-body">
+        <div class="step-head">
+          <h3>A mesma jornada como experiência DocuSign embarcada</h3>
+          <div class="chips"><span class="chip persona">vendedor</span><span class="chip">Workflow Builder</span><span class="chip">Web Forms</span><span class="chip">Doc Gen</span></div>
+        </div>
+        <div class="cols">
+          <div class="col"><h4>Faça</h4><ol>
+            <li><code>/canal/nova-jornada/proposta?modo=embarcado</code> → “Iniciar experiência”.</li>
+            <li>Percorra o Web Form dentro do portal (tela “Fontara Seguros”).</li>
+            <li>Abra o workflow no Workflow Builder e mostre: Web Form → ramificação Empresarial/Vida/Auto → Doc Gen → assinatura → Salesforce.</li>
+          </ol></div>
+          <div class="col"><h4>Por que importa</h4><ul>
+            <li>Compare com o 1A: aqui a tela também é da DocuSign.</li>
+            <li>Mudar o POP é editar o workflow, sem deploy no portal.</li>
+            <li>Mostre a criação de fluxo “com IA”: descrever o processo em português e aprovar.</li>
+          </ul></div>
+        </div>
+        <p class="say">“Vocês escolhem por jornada: formulário próprio via API ou a experiência DocuSign embarcada. A orquestração é a mesma.”</p>
+        <div class="behind"><span><b>Workflow:</b> Fontara Seguros - Onboarding de cliente portal · <code>0359ae48…</code></span></div>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="num">1C<small>6 min</small></div>
+      <div class="step-body">
+        <div class="step-head">
+          <h3>Cliente final: Resgate ou Portabilidade</h3>
+          <div class="chips"><span class="chip persona">cliente</span><span class="chip">Web Forms</span><span class="chip">eSignature</span><span class="chip">White label</span></div>
+        </div>
+        <div class="cols">
+          <div class="col"><h4>Faça</h4><ol>
+            <li>Entre em <code>/area-cliente/login</code> → card “Resgate / Portabilidade”.</li>
+            <li>Mostre nome e CPF já preenchidos e travados.</li>
+            <li>Alterne o tipo: Resgate parcial mostra “Valor”; Portabilidade mostra entidade e CNPJ.</li>
+            <li>Envie e assine.</li>
+          </ol></div>
+          <div class="col"><h4>Por que importa</h4><ul>
+            <li>Formulário dinâmico com regras condicionais, embarcado no site.</li>
+            <li>Marca Fontara aplicada sem configuração extra.</li>
+            <li>Dados do cliente vêm do sistema, sem redigitação.</li>
+          </ul></div>
+        </div>
+        <p class="say">“Este era um PDF para imprimir, assinar e digitalizar. Agora é um formulário que se adapta a cada resposta e termina assinado.”</p>
+        <div class="behind"><span><b>Web Form:</b> Fontara Seguros - Resgate/Portabilidade · <code>b5a06678…</code></span><span><b>Template base:</b> <code>87db4535…</code></span></div>
+        <p class="fallback">O envio e a assinatura deste formulário ainda não foram testados ponta a ponta. Faça um envio completo antes da reunião.</p>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="num">3<small>4 min</small></div>
+      <div class="step-body">
+        <div class="step-head">
+          <h3>Acompanhamento em tempo real</h3>
+          <div class="chips"><span class="chip persona">vendedor / operação</span><span class="chip">Workflow Builder API</span><span class="chip">eSignature API</span></div>
+        </div>
+        <div class="cols">
+          <div class="col"><h4>Faça</h4><ol>
+            <li><code>/canal/acompanhamento</code> → aba Instâncias: status e etapa atual.</li>
+            <li>Aba Envelopes: quem já assinou e quem falta.</li>
+          </ol></div>
+          <div class="col"><h4>Por que importa</h4><ul>
+            <li>Visibilidade para canal e operação, dentro do sistema deles.</li>
+            <li>Mesmos dados disponíveis por API para o CRM.</li>
+          </ul></div>
+        </div>
+        <p class="say">“Ninguém precisa perguntar por e-mail em que pé está a proposta.”</p>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="num">4<small>8 min</small></div>
+      <div class="step-body">
+        <div class="step-head">
+          <h3>Pós-assinatura com IA: contratos legados</h3>
+          <div class="chips"><span class="chip persona">operação / jurídico</span><span class="chip">Agreement Manager</span><span class="chip">Iris (IA)</span><span class="chip">Docusign MCP</span></div>
+        </div>
+        <div class="cols">
+          <div class="col"><h4>Faça</h4><ol>
+            <li>No console: Acordos → Concluído. Mostre os 14 PDFs legados com partes, datas e valores extraídos.</li>
+            <li>No portal, <code>/canal/contratos</code>: chip “Vence em 90 dias”, depois busque o CNPJ <code>55.318.076/0001-51</code>.</li>
+            <li>Feche no Claude com MCP (perguntas abaixo).</li>
+          </ol></div>
+          <div class="col"><h4>Por que importa</h4><ul>
+            <li>Contratos em papel ou PDF antigo viram dados consultáveis.</li>
+            <li>Vencimentos e renovações deixam de passar despercebidos.</li>
+            <li>A mesma consulta pode ir para o WhatsApp do vendedor via MCP.</li>
+          </ul></div>
+        </div>
+        <p class="say">“Subimos 14 contratos antigos. A IA leu partes, vigência, valor e tipo de renovação. Agora qualquer pessoa pergunta em português.”</p>
+        <div class="behind"><span><b>Upload:</b> “Fontara Seguros - Legados Vida e Previdencia”</span><span><b>Gabarito:</b> <code>docs/demos/assets/legados/INDEX.md</code></span></div>
+        <p class="fallback">A IA não extrai CPF/CNPJ por padrão. A busca por documento cruza com o cadastro simulado do CRM. Se perguntarem, explique que dá para criar uma extração customizada desse campo.</p>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="num">5<small>5 min</small></div>
+      <div class="step-body">
+        <div class="step-head">
+          <h3>Fechamento e próximo passo</h3>
+          <div class="chips"><span class="chip persona">apresentador</span></div>
+        </div>
+        <div class="cols">
+          <div class="col"><h4>Faça</h4><ol>
+            <li>Volte ao catálogo <code>/canal</code>.</li>
+            <li>Proponha um piloto com 1 POP real de alto volume.</li>
+          </ol></div>
+          <div class="col"><h4>Perguntas para eles</h4><ul>
+            <li>Quais 3 POPs têm mais volume? Quais exigem testemunha?</li>
+            <li>Onde embarcar: CRM, portal do banco, app do parceiro?</li>
+            <li>PJ: assinatura eletrônica simples ou ICP-Brasil?</li>
+          </ul></div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Docusign MCP</span>
+  <h2>Perguntas prontas para o Claude</h2>
+  <div class="qs" id="qs">
+    <div class="q"><span>Quais contratos vencem nos próximos 90 dias?</span><button type="button">Copiar</button></div>
+    <div class="q"><span>Quais contratos da Laticínios Serra Encantada existem e qual o valor total?</span><button type="button">Copiar</button></div>
+    <div class="q"><span>Quais apólices de vida já estão vencidas e não têm renovação automática?</span><button type="button">Copiar</button></div>
+    <div class="q"><span>Qual o prazo de aviso prévio do contrato de parceria com o Correspondente Praça Nova?</span><button type="button">Copiar</button></div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Bastidores</span>
+  <h2>O que está configurado na conta demo</h2>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Artefato</th><th>Nome</th><th>ID</th><th>Usado em</th></tr></thead>
+      <tbody>
+        <tr><td>Workflow</td><td>Fontara Seguros - Proposta PF/PJ (API)</td><td class="mono">824dd961-5586-4eea-b3af-52d2c3e927f9</td><td>1A, 2</td></tr>
+        <tr><td>Workflow</td><td>Fontara Seguros - Onboarding de cliente portal</td><td class="mono">0359ae48-47dc-45be-a7b8-9ae20894eaba</td><td>1B</td></tr>
+        <tr><td>Workflow</td><td>Fontara Seguros - Portal atualizacao de cadastro Salesforce</td><td class="mono">98e2f24c-e903-4692-b599-21fd8214e04e</td><td>Área do cliente</td></tr>
+        <tr><td>Web Form</td><td>Fontara Seguros - Resgate/Portabilidade</td><td class="mono">b5a06678-688d-4243-952f-f0dccb9a19c7</td><td>1C</td></tr>
+        <tr><td>Template</td><td>Proposta de Adesao PF</td><td class="mono">8e999bc2-0e93-4917-84b3-315fc0ae97f9</td><td>1A</td></tr>
+        <tr><td>Template</td><td>Proposta de Adesao PJ</td><td class="mono">d47237d8-e695-4b77-93a8-5164b581d29f</td><td>2</td></tr>
+        <tr><td>Template</td><td>Resgate/Portabilidade (base do Web Form)</td><td class="mono">87db4535-9f10-4eb2-abd8-6b430349fe75</td><td>1C</td></tr>
+        <tr><td>Brand</td><td>Fontara Financial (pt_BR)</td><td class="mono">d892d79e-b9b2-4a4c-9349-dd9d30044ac5</td><td>White label</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Checklist</span>
+  <h2>No dia da demo</h2>
+  <div class="check" id="check">
+    <label><input type="checkbox" id="c1"> Rodar <code>python docs/demos/assets/generate.py</code> se os vencimentos precisarem ser recalculados (gera novos PDFs: subir de novo no Agreement Manager)</label>
+    <label><input type="checkbox" id="c2"> Perfil de demo com seu e-mail e celular</label>
+    <label><input type="checkbox" id="c3"> Disparar 1 proposta PF e 1 PJ de aquecimento</label>
+    <label><input type="checkbox" id="c4"> Testar o Resgate/Portabilidade ponta a ponta</label>
+    <label><input type="checkbox" id="c5"> Logar no console DocuSign logo antes (sessão expira)</label>
+    <label><input type="checkbox" id="c6"> Variáveis de ambiente DocuSign configuradas no Netlify</label>
+    <label><input type="checkbox" id="c7"> Claude com Docusign MCP conectado à conta Fontara Financial</label>
+    <label><input type="checkbox" id="c8"> Plano B: sem credenciais, o portal roda em modo demo com dados simulados</label>
+  </div>
+</section>
+
+</div>
+
+<script>
+document.querySelectorAll('#qs .q button').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const text = btn.previousElementSibling.textContent
+    const done = () => { btn.textContent = 'Copiado'; setTimeout(() => { btn.textContent = 'Copiar' }, 1500) }
+    const fallback = () => {
+      const r = document.createRange(); r.selectNodeContents(btn.previousElementSibling)
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Selecionado'
+    }
+    try { navigator.clipboard.writeText(text).then(done, fallback) } catch (e) { fallback() }
+  })
+})
+const KEY = 'fontara-demo-check'
+let saved = {}
+try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') } catch (e) {}
+document.querySelectorAll('#check input').forEach((cb) => {
+  cb.checked = !!saved[cb.id]
+  cb.addEventListener('change', () => {
+    saved[cb.id] = cb.checked
+    try { localStorage.setItem(KEY, JSON.stringify(saved)) } catch (e) {}
+  })
+})
+</script>
