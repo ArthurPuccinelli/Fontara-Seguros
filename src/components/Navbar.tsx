@@ -61,6 +61,9 @@ export default function Navbar() {
             <Phone size={16} />
             (11) 3000-0000
           </a>
+          <a href="/canal/login" className="text-white/80 hover:text-fontara-amber text-sm font-medium transition-colors">
+            Portal do Canal
+          </a>
           <a href="/area-cliente/login" className="btn-primary text-sm">
             Área do Cliente
           </a>
@@ -95,6 +98,12 @@ export default function Navbar() {
             className="block btn-primary text-center text-sm mt-4"
           >
             Solicitar Cotação
+          </a>
+          <a href="/canal/login" onClick={() => setOpen(false)} className="block text-white/80 hover:text-fontara-amber font-medium py-2 transition-colors">
+            Portal do Canal
+          </a>
+          <a href="/area-cliente/login" onClick={() => setOpen(false)} className="block text-white/80 hover:text-fontara-amber font-medium py-2 transition-colors">
+            Área do Cliente
           </a>
         </div>
       )}

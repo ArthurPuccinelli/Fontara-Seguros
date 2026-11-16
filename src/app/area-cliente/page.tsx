@@ -4,27 +4,52 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { User, FileText, Shield, AlertTriangle, LogOut, ChevronRight, Phone } from 'lucide-react'
+import { User, FileText, AlertTriangle, LogOut, ChevronRight, Phone, UserCog, ArrowRightLeft, X } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import MaestroModal from '@/components/MaestroModal'
+import WebFormJourney from '@/components/WebFormJourney'
+import AgreementSearch from '@/components/AgreementSearch'
 
 const DADOS_CADASTRAIS_WORKFLOW = '98e2f24c-e903-4692-b599-21fd8214e04e'
 
-const menuItems = [
+type Action = 'maestro' | 'resgate' | 'contratos'
+
+const menuItems: {
+  icon: typeof User
+  title: string
+  description: string
+  color: string
+  href?: string
+  action?: Action
+  soon?: boolean
+}[] = [
+  {
+    icon: UserCog,
+    title: 'Meus dados de demo',
+    description: 'Configure os dados que pré-preenchem todas as demos',
+    color: 'bg-fontara-light text-fontara-accent',
+    href: '/area-cliente/perfil',
+  },
   {
     icon: User,
     title: 'Alterar Dados Cadastrais',
     description: 'Atualize suas informações pessoais e de contato',
     color: 'bg-blue-50 text-blue-600',
-    maestro: true,
+    action: 'maestro',
   },
   {
-    icon: Shield,
-    title: 'Meus Seguros',
-    description: 'Visualize as apólices ativas e coberturas contratadas',
-    href: '#',
+    icon: ArrowRightLeft,
+    title: 'Resgate / Portabilidade',
+    description: 'Solicite resgate ou portabilidade do seu plano de previdência',
     color: 'bg-green-50 text-green-600',
-    soon: true,
+    action: 'resgate',
+  },
+  {
+    icon: FileText,
+    title: 'Meus contratos',
+    description: 'Consulte seus contratos e vencimentos',
+    color: 'bg-purple-50 text-purple-600',
+    action: 'contratos',
   },
   {
     icon: AlertTriangle,
@@ -34,26 +59,18 @@ const menuItems = [
     color: 'bg-amber-50 text-amber-600',
     soon: true,
   },
-  {
-    icon: FileText,
-    title: 'Documentos',
-    description: 'Acesse apólices, boletos e comprovantes',
-    href: '#',
-    color: 'bg-purple-50 text-purple-600',
-    soon: true,
-  },
 ]
 
 export default function AreaClientePage() {
-  const { user, logout } = useAuth()
+  const { user, ready, logout } = useAuth()
   const router = useRouter()
-  const [modalOpen, setModalOpen] = useState(false)
+  const [modal, setModal] = useState<Action | null>(null)
 
   useEffect(() => {
-    if (!user) router.replace('/area-cliente/login')
-  }, [user, router])
+    if (ready && !user) router.replace('/area-cliente/login')
+  }, [ready, user, router])
 
-  if (!user) return null
+  if (!ready || !user) return null
 
   function handleLogout() {
     logout()
@@ -92,11 +109,11 @@ export default function AreaClientePage() {
           {menuItems.map((item) => {
             const Icon = item.icon
 
-            if (item.maestro) {
+            if (item.action) {
               return (
                 <button
                   key={item.title}
-                  onClick={() => setModalOpen(true)}
+                  onClick={() => setModal(item.action!)}
                   className="relative bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-start gap-4 group transition hover:shadow-md text-left w-full"
                 >
                   <div className={`p-3 rounded-lg ${item.color} shrink-0`}>
@@ -153,11 +170,34 @@ export default function AreaClientePage() {
         </div>
       </main>
 
-      {modalOpen && (
-        <MaestroModal
-          workflowId={DADOS_CADASTRAIS_WORKFLOW}
-          onClose={() => setModalOpen(false)}
-        />
+      {modal === 'maestro' && (
+        <MaestroModal workflowId={DADOS_CADASTRAIS_WORKFLOW} onClose={() => setModal(null)} />
+      )}
+
+      {(modal === 'resgate' || modal === 'contratos') && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setModal(null)}
+              className="absolute top-4 right-4 z-10 p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
+              aria-label="Fechar"
+            >
+              <X size={20} />
+            </button>
+            <div className="px-6 py-4 border-b border-gray-100 pr-14">
+              <h2 className="text-lg font-bold text-fontara-navy">
+                {modal === 'resgate' ? 'Resgate / Portabilidade' : 'Meus contratos'}
+              </h2>
+            </div>
+            <div className="p-4 sm:p-6">
+              {modal === 'resgate' ? (
+                <WebFormJourney journey="resgate-portabilidade" title="Solicitação de Resgate / Portabilidade" />
+              ) : (
+                <AgreementSearch initialCpfCnpj={user.cpf} lockCpfCnpj />
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { formatCPF, formatPhone } from '@/lib/br'
 import { FileSignature, Send, CheckCircle, AlertCircle, Loader2, X } from 'lucide-react'
 
 type Seguro = 'vida' | 'auto' | 'residencial' | 'empresarial' | 'saude' | 'viagem'
@@ -23,38 +24,6 @@ const tiposSeguro = [
   { value: 'saude', label: 'Seguro Saúde' },
   { value: 'viagem', label: 'Seguro Viagem' },
 ]
-
-function formatCPF(value: string) {
-  return value
-    .replace(/\D/g, '')
-    .slice(0, 11)
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
-}
-
-function formatPhone(value: string) {
-  return value
-    .replace(/\D/g, '')
-    .slice(0, 11)
-    .replace(/(\d{2})(\d)/, '($1) $2')
-    .replace(/(\d{5})(\d)/, '$1-$2')
-}
-
-function validateCPF(cpf: string): boolean {
-  const digits = cpf.replace(/\D/g, '')
-  if (digits.length !== 11 || /^(\d)\1+$/.test(digits)) return false
-  let sum = 0
-  for (let i = 0; i < 9; i++) sum += parseInt(digits[i]) * (10 - i)
-  let check = 11 - (sum % 11)
-  if (check >= 10) check = 0
-  if (check !== parseInt(digits[9])) return false
-  sum = 0
-  for (let i = 0; i < 10; i++) sum += parseInt(digits[i]) * (11 - i)
-  check = 11 - (sum % 11)
-  if (check >= 10) check = 0
-  return check === parseInt(digits[10])
-}
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
@@ -83,7 +52,7 @@ export default function CotacaoForm() {
     const e: Partial<FormData> = {}
     if (!form.nome.trim()) e.nome = 'Nome é obrigatório'
     if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.email = 'E-mail inválido'
-    if (!validateCPF(form.cpf)) e.cpf = 'CPF inválido'
+    if (!form.cpf.trim()) e.cpf = 'Informe o CPF'
     if (form.telefone.replace(/\D/g, '').length < 10) e.telefone = 'Telefone inválido'
     if (!form.tipoSeguro) e.tipoSeguro = 'Selecione um tipo de seguro' as Seguro
     return e

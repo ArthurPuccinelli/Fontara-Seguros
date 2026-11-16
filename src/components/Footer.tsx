@@ -121,6 +121,7 @@ export default function Footer() {
             © {new Date().getFullYear()} Fontara Seguros. Todos os direitos reservados.
           </p>
           <p className="text-white/20 text-xs">
+            <a href="/demo" className="hover:text-white/50 transition-colors mr-3">Roteiro da demo</a>
             Corretora registrada na SUSEP · CNPJ 00.000.000/0001-00
           </p>
         </div>

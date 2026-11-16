@@ -1,4 +1,4 @@
-import { Car, Heart, Home, Building2, Briefcase, Plane, ArrowRight } from 'lucide-react'
+import { Car, Heart, Home, Building2, Briefcase, Plane, PiggyBank, ArrowRight } from 'lucide-react'
 
 const seguros = [
   {
@@ -65,6 +65,17 @@ const seguros = [
     color: 'from-amber-500/10 to-amber-600/5',
     iconColor: 'text-amber-600',
     iconBg: 'bg-amber-500/10',
+    href: '#cotacao',
+  },
+  {
+    icon: PiggyBank,
+    title: 'Previdência Privada (PGBL/VGBL)',
+    description:
+      'Construa seu patrimônio para o futuro com planos flexíveis, aportes mensais ou únicos e benefícios fiscais.',
+    features: ['PGBL com dedução no IR', 'VGBL para qualquer perfil', 'Portabilidade e resgate digitais'],
+    color: 'from-indigo-500/10 to-indigo-600/5',
+    iconColor: 'text-indigo-600',
+    iconBg: 'bg-indigo-500/10',
     href: '#cotacao',
   },
 ]

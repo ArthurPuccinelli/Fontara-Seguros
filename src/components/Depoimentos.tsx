@@ -90,7 +90,7 @@ export default function Depoimentos() {
               </div>
 
               <p className="text-gray-600 text-sm leading-relaxed flex-1 mb-6">
-                "{dep.texto}"
+                &ldquo;{dep.texto}&rdquo;
               </p>
 
               {/* Author */}
