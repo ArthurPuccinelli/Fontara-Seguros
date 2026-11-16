@@ -41,7 +41,7 @@
 | Web Form Resgate/Portabilidade | `b5a06678-688d-4243-952f-f0dccb9a19c7` | configurado (3 regras); falta ativar (Conectar conta) |
 | Workflow Proposta PF/PJ (API) — "Fontara Seguros - Proposta PF/PJ (API)" | `824dd961-5586-4eea-b3af-52d2c3e927f9` | publicado (Start API c/ 30 variáveis → PF/PJ → template → envio remoto → confirmação) |
 | Workflow embarcado (1B) — reaproveita "Fontara Seguros - Onboarding de cliente portal" | `0359ae48-47dc-45be-a7b8-9ae20894eaba` | ativo (Web Form → ramificação Empresarial/Vida/Auto → Doc Gen → assinatura → Salesforce) |
-| Teste E2E 1A (PF) | instância `41b0774c…`, envelope `d45d268f…` | OK 16/11/2026 — envelope enviado ao Titular + CC Corretor |
+| Teste E2E 1A (PF) | instância `41b0774c…`, envelope `d45d268f…` | OK 16/11/2026 — envelope recebido pelo Titular + CC Corretor, campos do template preenchidos corretamente pelas variáveis do trigger |
 | Workflow Atualização cadastral (existente) | `98e2f24c-e903-4692-b599-21fd8214e04e` | ativo |
 | Brand pt_BR | `d892d79e-b9b2-4a4c-9349-dd9d30044ac5` (Fontara Financial) | existente |
 
