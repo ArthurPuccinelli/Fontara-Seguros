@@ -46,6 +46,7 @@
 | Brand pt_BR | `d892d79e-b9b2-4a4c-9349-dd9d30044ac5` (Fontara Financial) | existente |
 
 | Teste E2E 2 (PJ) | instância `0edd347a…`, envelope `3761214a…` | OK 16/11/2026 — Rep1, Rep2, Test1, Test2 + CC Corretor; Rep3 vazio omitido (roteamento variável) |
+| Correções 16/11 | Workflow PF/PJ: remapeados campos PJ (IA tinha deslocado Rep1–3, Nº proposta, testemunhas), Cnpj e Corretor; Onboarding: ramo Auto completado (Preparar modelo Empresarial e Patrimonial + assinatura) e ramo sem condição com tela própria | validado: envelope PJ `c767256b…` com todos os campos corretos |
 
 Mapa visual da demo (rotas, falas, IDs, checklist): `public/demo-map.html` — no site em https://fontaraseguros.netlify.app/demo-map (também publicado em https://claude.ai/artifact/5z42TrDxJ5Z8aHaaXMMHUZ)
 

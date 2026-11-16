@@ -326,7 +326,7 @@ tr.grp td { background: var(--bg); font-size: 11.5px; letter-spacing: .1em; text
 <div><h5>O que acontece no workflow</h5><ol class="flow">
 <li><div><span class="who">Iniciar (API)</span><br>Recebe as 30 variáveis do portal.</div></li>
 <li><div><span class="who">Regra de ramificação</span><br><code>tipoPessoa contém "PF"</code> (diferencia maiúsculas) → ramo PF.</div></li>
-<li><div><span class="who">Prepare eSignature Template</span><br>Template PF: preenche 11 campos travados (nº, data, nome, CPF, e-mail, celular, produto, valor, periodicidade, canal, beneficiários).</div></li>
+<li><div><span class="who">Prepare eSignature Template</span><br>Template PF: preenche 12 campos travados (nº, data, nome, CPF, e-mail, celular, produto, valor, periodicidade, canal, beneficiários, corretor = e-mail do vendedor).</div></li>
 <li><div><span class="who">Enviar para assinatura</span><br>Remoto. Titular = <code>nomeTitular</code>/<code>emailTitular</code>; Corretor (CC) = quem publicou o fluxo. Notificação por e-mail.</div></li>
 <li><div><span class="who">Tela de confirmação</span><br>“Proposta enviada para assinatura” para quem iniciou.</div></li>
 </ol></div>
@@ -335,7 +335,7 @@ tr.grp td { background: var(--bg); font-size: 11.5px; letter-spacing: .1em; text
 <div><h5>O que o público vê</h5><p>Cartão de sucesso com o ID da instância, a linha do tempo (gerado → enviado → signatários) e o painel “Ver payload enviado à API”. O e-mail chega em ~10–30 s.</p></div>
 <div><h5>Ganchos para a conversa</h5><p>Mostre o JSON para o TI; abra o workflow no Workflow Builder e mostre que o envio por <b>Mensagem de texto ou WhatsApp</b> é um checkbox no passo de envio.</p></div>
 </div>
-<p class="risk">Campos Data de nascimento, Endereço e Corretor do PDF ficam em branco (não há variável). Se perguntarem, é só criar a variável e mapear.</p>
+<p class="risk">Data de nascimento e Endereço do PDF ficam em branco (não há variável). Se perguntarem, é só criar a variável e mapear.</p>
 </div></details>
       </div>
     </article>
@@ -376,7 +376,7 @@ tr.grp td { background: var(--bg); font-size: 11.5px; letter-spacing: .1em; text
 </ol></div>
 </div>
 <div><h5>Teste de referência (16/11)</h5><p>2 representantes + 2 testemunhas → envelope com Rep 1, Rep 2, Testemunha 1, Testemunha 2 e Corretor; Representante 3 omitido.</p></div>
-<p class="risk">O campo CNPJ do PDF PJ ainda não está mapeado no workflow (a razão social aparece). Evite dar zoom nesse campo ou mapeie <code>cpfCnpj</code> → <code>Cnpj</code> no passo “Prepare eSignature Template” do ramo PJ.</p>
+<p class="risk">Mapeamento revisado em 16/11: a IA tinha deslocado os campos dos representantes em uma posição. Se recriar o passo, confira campo a campo (Rep1 → rep1…, Test1/Test2, Cnpj).</p>
 </div></details>
       </div>
     </article>
@@ -409,8 +409,8 @@ tr.grp td { background: var(--bg); font-size: 11.5px; letter-spacing: .1em; text
 <li><div><span class="who">Iniciar (API)</span><br>O participante é “quem inicia o fluxo”: quem abre o iframe executa as etapas.</div></li>
 <li><div><span class="who">Coletar dados com Web Forms</span><br>Formulário dentro do iframe, com a marca Fontara.</div></li>
 <li><div><span class="who">Regra de várias ramificações</span><br>Empresarial / Vida / Auto / nenhuma condição, conforme o produto escolhido.</div></li>
-<li><div><span class="who">Preparar modelo de documento</span><br>Doc Gen gera a proposta do ramo escolhido (Auto não tem documento).</div></li>
-<li><div><span class="who">Enviar para assinatura → Gravar no Salesforce</span><br>Ramo sem condição exibe uma tela de confirmação.</div></li>
+<li><div><span class="who">Preparar modelo de documento</span><br>Doc Gen gera a proposta do ramo: Vida usa “Proposta de seguro padrão Vida”; Empresarial e Auto usam “Empresarial e Patrimonial”.</div></li>
+<li><div><span class="who">Enviar para assinatura → Gravar no Salesforce</span><br>Empresarial e Vida gravam no Salesforce; Auto só gera e assina. Sem produto reconhecido: tela “Solicitação registrada”. Todos terminam na confirmação final.</div></li>
 </ol></div>
 <div><h5>Comportamento do portal</h5><ul class="rules">
 <li><span class="if">Evento de conclusão (postMessage)</span><span class="then">O modal troca para “Concluído”. Só aceita mensagens de domínios <code>*.docusign.com / .net</code>.</span></li>
@@ -604,7 +604,8 @@ tr.grp td { background: var(--bg); font-size: 11.5px; letter-spacing: .1em; text
         <tr><td>Envelope PJ</td><td>Ordem de assinatura</td><td>Representantes (1) → Testemunhas (2) → Corretor em cópia (3)</td></tr>
         <tr><td>Web Form Resgate</td><td>Tipo = Resgate parcial</td><td>Mostra “Valor do resgate parcial”</td></tr>
         <tr><td>Web Form Resgate</td><td>Tipo = Portabilidade</td><td>Mostra entidade de destino e CNPJ</td></tr>
-        <tr><td>Workflow Onboarding (1B)</td><td>Produto Empresarial / Vida / Auto</td><td>Documento e envio diferentes por ramo</td></tr>
+        <tr><td>Workflow Onboarding (1B)</td><td>Produto Empresarial / Vida / Auto</td><td>Documento e envio por ramo (Auto usa o modelo Empresarial e Patrimonial, sem Salesforce)</td></tr>
+        <tr><td>Workflow Onboarding (1B)</td><td>Nenhuma condição atendida</td><td>Tela “Solicitação registrada” (consultor entra em contato)</td></tr>
       </tbody>
     </table>
   </div>

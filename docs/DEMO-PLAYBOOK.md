@@ -74,6 +74,11 @@ _Preenchido durante a criação das demos — ver seções abaixo._
 - ⚠️ **Sessão expira** (~1h) e alterações não salvas no editor se perdem → clique **Salvar rascunho** após cada passo.
 - Mapeamento manual de campo no "Prepare eSignature Template": botão **+** ao lado do campo → Detalhes da instância | **Variáveis do início do fluxo de trabalho** | Informações do participante.
 - Ramificação: SE `<variável>` `<operador>` (Igual a, Contém, Começa com, Está vazio…) `<valor>`; checkbox "Diferenciar maiúsculas e minúsculas"; ramo **"Nenhuma condição atendida"** (toggle) funciona como `else`. Etapa 2 "Juntar ramificações" opcional.
+- ⚠️ **(2026-11-16) "Mapeie para mim" pode errar:** no template PJ a IA deslocou os representantes em uma posição (Rep1←titular, Rep2←rep1, Rep3←rep2), mapeou NumeroProposta←valorContribuicao e deixou testemunhas vazias. **Sempre revise campo a campo** depois do mapeamento por IA, e valide lendo os tabs do envelope (`listRecipients` com `include_tabs=true`).
+- **Cada ramificação precisa de ≥1 etapa** para publicar ("Adicione pelo menos uma etapa à ramificação … antes de publicar"). Para não deixar o ramo "Nenhuma condição" vazio, use uma tela de confirmação com mensagem própria.
+- **Copiar/colar etapas:** menu ⋯ da etapa → Copiar etapa → no **+** do ramo de destino → Colar (1). A etapa colada mantém a configuração, mas referências a saídas de etapas de outro ramo ficam inválidas ("A variável foi excluída") e precisam ser religadas (ex.: documento do "Preparar modelo" do próprio ramo). A etapa **"Gravar dados no Salesforce" não colou** (falha silenciosa).
+- Editar um fluxo publicado cria **Rascunho**; publique com **Publicar alterações**.
+- Catálogo de etapas (+ → Adicionar uma etapa): abas Início | Docusign | Utilidade | Aplicativos; inclui Coletar dados com Formulários da Web, **Usar API do eSignature** (avançado), Preparar modelo de documento, Preparar modelo do eSignature, Enviar documentos para assinatura, Docusign Identify, regra de várias ramificações, tela de confirmação.
 - O passo de confirmação às vezes mostra "Não foi possível carregar esta etapa" → **Recarregar** resolve.
 - Destinatário "Usuário que inicia este fluxo" = quem abre o `instance_url` (permite embarcar a jornada inteira num iframe).
 ### 1.5 Navigator — upload e extrações
