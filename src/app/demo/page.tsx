@@ -74,6 +74,9 @@ export default function DemoHub() {
             Página de apoio do apresentador. Antes de começar, faça login no Portal do Canal (qualquer e-mail/senha) e
             configure <Link href="/area-cliente/perfil" className="underline">seus dados de demo</Link> (e-mail e celular recebem a assinatura).
           </p>
+          <a href="/demo-map" className="inline-block mt-4 text-sm font-semibold text-fontara-amber underline">
+            Abrir o mapa completo da demo (falas, IDs e checklist)
+          </a>
         </div>
       </header>
 

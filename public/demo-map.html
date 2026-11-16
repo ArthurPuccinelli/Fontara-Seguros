@@ -1,3 +1,9 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
 <title>Fontara Demo Map</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -37,7 +43,7 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
-body { background: var(--bg); color: var(--ink); font: 15px/1.6 var(--f-body); padding: 0 16px; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--f-body); padding: 0 16px; }
 .wrap { max-width: 1080px; margin: 0 auto; padding-block: 40px 72px; display: flex; flex-direction: column; gap: 56px; }
 h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.15; }
 h1 { font-size: clamp(30px, 5vw, 46px); }
@@ -121,6 +127,8 @@ td.mono { font-family: var(--f-mono); font-size: 12.5px; background: none; paddi
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
+</head>
+<body>
 
 <div class="wrap">
 
@@ -145,6 +153,7 @@ td.mono { font-family: var(--f-mono); font-size: 12.5px; background: none; paddi
       <ul>
         <li>Portal: <code>fontaraseguros.netlify.app</code> (ou <code>localhost:3000</code>)</li>
         <li>Roteiro do apresentador: <code>/demo</code></li>
+        <li>Este mapa: <code>/demo-map</code></li>
         <li>Console DocuSign: <code>apps-d.docusign.com</code></li>
       </ul>
     </div>
@@ -470,3 +479,5 @@ document.querySelectorAll('#check input').forEach((cb) => {
   })
 })
 </script>
+</body>
+</html>
