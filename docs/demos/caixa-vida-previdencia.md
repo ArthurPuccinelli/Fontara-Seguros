@@ -1,6 +1,6 @@
 # Demo — Caixa Vida e Previdência ("Do POP ao acordo inteligente")
 
-> Específico deste cliente. Conhecimento genérico: [`../DEMO-PLAYBOOK.md`](../DEMO-PLAYBOOK.md).
+> Específico deste cliente. Conhecimento genérico: playbook global `~/.claude/skills/docusign-demo-playbook/PLAYBOOK.md` (ver [`../DEMO-PLAYBOOK.md`](../DEMO-PLAYBOOK.md)).
 > Portal: Fontara Seguros (marca fictícia). Conta DocuSign demo: **Fontara Financial** `ec21792a-93fd-42e6-b819-8ae005bf5023`.
 
 ## Contexto (reunião 10/11/2026 — Gong)

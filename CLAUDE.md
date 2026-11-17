@@ -133,7 +133,7 @@ DOCUSIGN_CONSENT_REDIRECT_URI=https://fontaraseguros.netlify.app/
 
 ## Knowledge Base
 **→ `/docs/HANDOFF.md`** — Project state for resuming work (start here).
-**→ `/docs/DEMO-PLAYBOOK.md`** — Reusable DocuSign demo patterns (product map, platform navigation, API recipes, demo account IDs). **Read before building demos; append new learnings with dates.** This is the user's reference for demos across projects.
+**→ DocuSign Demo Playbook (global skill `docusign-demo-playbook`)** — `~/.claude/skills/docusign-demo-playbook/PLAYBOOK.md`: reusable patterns (product map, navigation, API recipes, gotchas). Hooks inject its index at session start and ask once per session to append dated learnings. Never put client IDs/secrets there; those go in `docs/demos/` and `docs/HANDOFF.md`.
 
 ## Commands
 ```bash

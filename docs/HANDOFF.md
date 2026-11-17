@@ -1,7 +1,7 @@
 # Handoff: estado do projeto para retomada
 
 > Leia este arquivo primeiro ao retomar o projeto. Depois leia, nesta ordem:
-> 1. [`DEMO-PLAYBOOK.md`](DEMO-PLAYBOOK.md): conhecimento DocuSign reutilizável.
+> 1. Playbook DocuSign global (skill `docusign-demo-playbook`, em `~/.claude/skills/docusign-demo-playbook/PLAYBOOK.md`): conhecimento reutilizável. Os hooks já injetam o índice no início da sessão.
 > 2. [`demos/caixa-vida-previdencia.md`](demos/caixa-vida-previdencia.md): roteiro e IDs do cliente.
 > 3. [`../public/demo-map.html`](../public/demo-map.html): mapa da demo para o apresentador, publicado em `/demo-map`.
 >
@@ -27,7 +27,7 @@ Portal fictício **Fontara Seguros** (Next.js 14 + Tailwind, Netlify) que demons
   O Netlify publica sozinho em cerca de 1 min.
 - Não rodar `npm run build` com o `npm run dev` ativo, porque os dois compartilham `.next`.
 - O dev server vem de `.claude/launch.json` ("dev", porta 3000).
-- O conhecimento genérico vai para o `DEMO-PLAYBOOK.md`, com data. O que é específico da Caixa vai para `demos/caixa-vida-previdencia.md`.
+- O conhecimento genérico vai para o playbook global (`~/.claude/skills/docusign-demo-playbook/PLAYBOOK.md`), com data e sem IDs de cliente. O que é específico da Caixa vai para `demos/caixa-vida-previdencia.md`.
 - **Estilo de UI pedido:**
   - Áreas logadas sem "cara de IA": nada de grade de cards com ícone colorido nem gradiente. Preferir layout editorial (listas, tabelas, linhas finas).
   - Modais de embed simples: sem título, borda navy (`EmbedShell`).
