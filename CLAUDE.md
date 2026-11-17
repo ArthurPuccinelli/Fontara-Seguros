@@ -1,5 +1,7 @@
 # Fontara Seguros — Portal
 
+> **Retomando o projeto? Leia primeiro [`docs/HANDOFF.md`](docs/HANDOFF.md)**: estado atual, mapa das demos, IDs, pendências e regras de trabalho. Responda em pt-BR. O remoto git chama `Fontara-Seguros`; push só quando pedido.
+
 ## Stack
 - Next.js 14 (App Router) + TypeScript + Tailwind CSS
 - Netlify (via `@netlify/plugin-nextjs`; no serverless functions)
@@ -16,7 +18,8 @@ src/
       maestro/route.ts                 ← Trigger workflows (Workflow Builder)
       maestro/instances/route.ts       ← Poll workflow status
       envelopes/route.ts               ← List/search envelopes (eSignature)
-      envelope/route.ts                ← Create single envelope (legacy)
+      envelope/route.ts                ← Cotação H1: Doc Gen template → docGenFormFields → send + recipient view
+      whatsapp/route.ts                ← C4: POST envelope delivered by WhatsApp, GET status
       webforms/instance/route.ts       ← Create Web Form instance
       signing-view/route.ts            ← Embedded Focused View signing
       agreements/route.ts              ← Navigator search + AI insights
@@ -36,16 +39,20 @@ src/
     auth.ts                            ← JWT (cached, 5-min refresh margin), ConsentRequiredError
     maestro.ts                         ← Workflow Builder API
     webforms.ts                        ← Web Forms instance creation + render
-    esign.ts                           ← eSignature envelope operations
+    esign.ts                           ← eSignature: recipient view, cotação Doc Gen, WhatsApp
     navigator.ts                       ← Navigator/Agreement Manager queries
     demo-data.ts                       ← Mock responses when env vars missing
   lib/
     journeys.ts                        ← Journey catalog (slug, POP code, workflow IDs, modes)
     defaultProfile.ts                  ← Mock personas (PF/PJ with reps/witnesses)
     br.ts                              ← Brazilian helpers (CPF/CNPJ formatting)
+    crm.ts                             ← CPF/CNPJ → party name (Navigator AI doesn't extract documents)
+    embedMode.ts                       ← Focused View / Clássica preference (localStorage)
   components/
     Navbar, Hero, Seguros, ComoFunciona, Diferenciais, Depoimentos, Footer
-    CotacaoForm                        ← Public quotation form (unused; demo form)
+    CotacaoForm                        ← Home quotation (H1) → Doc Gen proposal + embedded signing
+    EmbedShell / SigningEmbed          ← Plain navy-bordered modal; Docusign JS signing (focused/default)
+    WhatsAppJourney                    ← C4: plan → phone → WhatsApp delivery → status trail
     MaestroModal                       ← Embeds workflow instance_url in iframe
     WebFormEmbed                       ← Embeds Web Form via DocuSign JS loader
     WebFormJourney                     ← "Resgate/Portabilidade" Web Form demo
@@ -125,6 +132,7 @@ DOCUSIGN_CONSENT_REDIRECT_URI=https://fontaraseguros.netlify.app/
 ```
 
 ## Knowledge Base
+**→ `/docs/HANDOFF.md`** — Project state for resuming work (start here).
 **→ `/docs/DEMO-PLAYBOOK.md`** — Reusable DocuSign demo patterns (product map, platform navigation, API recipes, demo account IDs). **Read before building demos; append new learnings with dates.** This is the user's reference for demos across projects.
 
 ## Commands
