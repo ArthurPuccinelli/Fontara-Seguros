@@ -164,6 +164,10 @@ Para criar um template Doc Gen sem usar a interface, use um .docx com campos de 
 - A âncora acompanha o texto: valide a posição com conteúdos de tamanhos diferentes.
 - Para validar sem assinar: baixe `GET /envelopes/{id}/documents/1`, que já sai com os campos preenchidos, e compare com o `xPosition`/`yPosition` dos tabs (72 dpi).
 
+**Limpeza de testes por API:**
+- Templates: `PUT /folders/recyclebin` com `{"envelopeIds":[<templateIds>]}` (sim, o campo é `envelopeIds`).
+- Rascunhos: `PUT /envelopes/{id}` com `{"status":"voided"}`. Rascunhos não podem ser anulados, então ficam com status `deleted`. Mover para a lixeira não muda o status `created` de um rascunho.
+
 **Script de referência:** `scripts/create-cotacao-template.mjs` + `docs/demos/assets/build_proposta_seguro.py` (python-docx; ordene os elementos de `tcPr`/`tblPr` conforme o schema OOXML).
 
 ## WhatsApp delivery por API (17/11/2026)

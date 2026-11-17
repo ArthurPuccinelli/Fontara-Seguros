@@ -228,14 +228,14 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
   <div class="demos">
 
     <article class="demo">
-      <div class="demo-head"><span class="id">V1</span><div><h3>Proposta PF/PJ pelo formulário do portal</h3><p class="where">Catálogo → <b>Proposta de Adesão</b> → aba “Formulário do portal (API)”</p></div></div>
+      <div class="demo-head"><span class="id">V1</span><div><h3>Proposta PF/PJ pelo formulário do portal</h3><p class="where">Aba <b>Jornadas</b> → linha POP-VP-001 <b>Proposta de Adesão</b> → aba “Formulário do portal (API)”</p></div></div>
       <p class="trigger"><b>Gatilho:</b> “Enviar proposta” → <code>POST /api/docusign/maestro</code> com 30 variáveis → workflow “Proposta PF/PJ (API)”.</p>
       <div class="flow"><span class="tag form">Formulário do portal</span><span class="arrow">→</span><span class="tag api">API → Workflow</span><span class="arrow">→</span><span class="tag api">Ramificação PF / PJ</span><span class="arrow">→</span><span class="tag doc">Template eSignature preenchido</span><span class="arrow">→</span><span class="tag sign">Remota por e-mail</span></div>
-      <ul class="show"><li>PF: 1 signatário. PJ: 1–3 representantes + 0–2 testemunhas; papéis vazios são omitidos.</li><li>Mostre “Ver payload enviado à API” para o time de TI.</li><li>WhatsApp/SMS é uma opção no passo de envio do workflow (desligada na demo).</li></ul>
+      <ul class="show"><li>O “cliente em atendimento” no topo da aba Jornadas é o perfil de demo (link “trocar”).</li><li>PF: 1 signatário. PJ: 1–3 representantes + 0–2 testemunhas; papéis vazios são omitidos.</li><li>Mostre “Ver payload enviado à API” para o time de TI.</li><li>WhatsApp/SMS é uma opção no passo de envio do workflow (desligada na demo).</li></ul>
     </article>
 
     <article class="demo">
-      <div class="demo-head"><span class="id">V2</span><div><h3>Mesma proposta, experiência DocuSign embarcada</h3><p class="where">Catálogo → <b>Proposta de Adesão</b> → aba “Experiência DocuSign embarcada” → Iniciar</p></div></div>
+      <div class="demo-head"><span class="id">V2</span><div><h3>Mesma proposta, experiência DocuSign embarcada</h3><p class="where">Aba <b>Jornadas</b> → linha POP-VP-001 <b>Proposta de Adesão</b> → aba “Experiência DocuSign embarcada” → Iniciar</p></div></div>
       <p class="trigger"><b>Gatilho:</b> “Iniciar experiência” → <code>POST /api/docusign/maestro</code> → workflow “Onboarding de cliente portal” num iframe.</p>
       <div class="flow"><span class="tag api">API → Workflow</span><span class="arrow">→</span><span class="tag form">Web Form (dentro do workflow)</span><span class="arrow">→</span><span class="tag api">Ramificação Empresarial / Vida / Auto</span><span class="arrow">→</span><span class="tag doc">Doc Gen · Modelo de documento</span><span class="arrow">→</span><span class="tag sign">Dentro do workflow embarcado</span><span class="arrow">→</span><span class="tag post">Salesforce</span></div>
       <ul class="show"><li>Compare com V1: aqui a tela também é da DocuSign; mudar o POP é editar o workflow.</li><li>Vida usa o modelo “Proposta padrão Vida”; Empresarial e Auto usam “Empresarial e Patrimonial”. Auto não grava no Salesforce.</li></ul>
@@ -341,12 +341,15 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
     <summary>Antes da reunião e se algo der errado</summary>
     <div class="more-body">
       <ul class="show">
-        <li>Preencha <code>/area-cliente/perfil</code> com seu e-mail e celular (salvo só no navegador).</li>
+        <li>Preencha <code>/area-cliente/perfil</code> (Área do Cliente → Meus dados) com seu e-mail e um <b>celular com WhatsApp</b> (salvo só no navegador). O celular é usado na C4.</li>
         <li>Escolha o formato de assinatura embarcada no seletor “Assinatura: Focused View · Clássica” (fica salvo).</li>
         <li>Faça login no console DocuSign logo antes (a sessão expira em ~1 h).</li>
         <li>Tela em “Modo demo”: faltam credenciais no servidor; o roteiro funciona com dados simulados.</li>
         <li>“Consentimento DocuSign necessário”: abra o link exibido logado na conta demo e aceite.</li>
         <li>Web Form parado há mais de 5 min: feche e abra de novo (o token expira).</li>
+        <li>“fetch failed” ao abrir o Resgate: queda de rede entre o servidor e a DocuSign. O portal já tenta de novo uma vez; feche e abra o modal.</li>
+        <li>WhatsApp não chegou: confira o celular com DDD na tela de confirmação. A cópia por e-mail para o perfil confirma que o envelope saiu. A trilha só avança quando o cliente abre o link.</li>
+        <li>Cotação sem campos preenchidos: o template Doc Gen <code>fe5d08f8</code> precisa ter o .docx com os campos; recrie com <code>node scripts/create-cotacao-template.mjs --force</code> e atualize o ID em <code>esign.ts</code>.</li>
         <li>“Vence em 30 dias” vazio: rode <code>docs/demos/assets/generate.py</code> e suba os PDFs de novo.</li>
       </ul>
     </div>
