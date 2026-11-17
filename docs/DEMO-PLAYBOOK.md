@@ -144,6 +144,28 @@ Implementação: `src/components/SigningEmbed.tsx`, `src/components/WebFormEmbed
 
 ---
 
+## Doc Gen 100% por API (17/11/2026)
+
+Para criar um template Doc Gen sem usar a interface, use um .docx com campos de remetente `{{Campo}}`. Cada campo precisa estar num único *run* do Word, então não formate no meio do nome.
+
+1. `POST /templates` só com o papel (`recipients.signers[].roleName`), **sem documento**.
+2. `PUT /templates/{id}/documents/1` com o .docx. **Só assim os campos são detectados.** Se o .docx for no `POST /templates`, vira documento comum e `docGenFormFields` volta `{}`.
+3. `POST /templates/{id}/recipients/1/tabs` com âncoras (signHere/dateSigned). Use texto branco de 1 pt no .docx.
+4. Para cada envio:
+   1. `POST /envelopes` `{templateId, status:"created", templateRoles}` (com `clientUserId`, se for embarcado).
+   2. `GET /envelopes/{id}/docGenFormFields`. O `documentId` é um GUID, não "1".
+   3. `PUT .../docGenFormFields` com `{docGenFormFields:[{documentId, docGenFormFieldList:[{name,value}]}]}`.
+   4. `PUT /envelopes/{id}` `{status:"sent"}`.
+   5. `createRecipientView` para Focused View/Clássica.
+
+**Pegadinhas:**
+- O `name` do documento precisa terminar em `.docx`. Sem isso, dá `FORMAT_CONVERSION_ERROR`.
+- `PUT` em tabs de template **não altera** `anchorYOffset`. É preciso apagar (`DELETE .../tabs`) e recriar.
+- A âncora acompanha o texto: valide a posição com conteúdos de tamanhos diferentes.
+- Para validar sem assinar: baixe `GET /envelopes/{id}/documents/1`, que já sai com os campos preenchidos, e compare com o `xPosition`/`yPosition` dos tabs (72 dpi).
+
+**Script de referência:** `scripts/create-cotacao-template.mjs` + `docs/demos/assets/build_proposta_seguro.py` (python-docx; ordene os elementos de `tcPr`/`tblPr` conforme o schema OOXML).
+
 ## WhatsApp delivery por API (17/11/2026)
 
 Signer com `deliveryMethod: "WhatsApp"` e `phoneNumber: {countryCode: "55", number: "11999999999"}` (DDD + número, só dígitos). Sem `email`.

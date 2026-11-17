@@ -131,7 +131,7 @@ export async function dsFetch<T = any>(baseUrl: string, path: string, opts: DsFe
     if (s) url += `${url.includes('?') ? '&' : '?'}${s}`
   }
 
-  const res = await fetch(url, {
+  const init: RequestInit = {
     method,
     headers: {
       Authorization: `Bearer ${token}`,
@@ -140,7 +140,16 @@ export async function dsFetch<T = any>(baseUrl: string, path: string, opts: DsFe
     },
     body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
     cache: 'no-store',
-  })
+  }
+  // Falha de rede ("fetch failed": socket reaproveitado fechado, DNS, timeout) => uma nova tentativa.
+  // Erros HTTP não são repetidos.
+  let res: Response
+  try {
+    res = await fetch(url, init)
+  } catch {
+    await new Promise((r) => setTimeout(r, 400))
+    res = await fetch(url, init)
+  }
 
   const text = await res.text()
   if (!res.ok) {
@@ -166,7 +175,10 @@ export class DsHttpError extends Error {
 }
 
 export function errorMessage(err: unknown): string {
-  return err instanceof Error ? err.message : String(err)
+  if (!(err instanceof Error)) return String(err)
+  // "fetch failed" do undici esconde a causa real (timeout, DNS, TLS) em err.cause
+  const cause = (err as { cause?: { code?: string; message?: string } }).cause
+  return cause ? `${err.message} (${cause.code || cause.message})` : err.message
 }
 
 // Resposta padrão de erro para rotas: 401 {error, consentUrl} em consent_required, senão 500 {error}.

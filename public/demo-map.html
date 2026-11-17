@@ -151,7 +151,7 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
     <div class="lg"><h3>Documento</h3><dl>
       <dt><span class="tag doc">Template eSignature preenchido</span></dt><dd>Passo “Prepare eSignature Template”: um template com campos é preenchido com as variáveis do workflow.</dd>
       <dt><span class="tag doc">Doc Gen · Modelo de documento</span></dt><dd>Passo “Preparar modelo de documento”: o documento é gerado a partir de um modelo da biblioteca “Modelos de documentos”.</dd>
-      <dt><span class="tag doc">Documento gerado pelo portal</span></dt><dd>O portal monta o documento (HTML) e envia pela API.</dd>
+      <dt><span class="tag doc">Doc Gen por API</span></dt><dd>Template eSignature com .docx de campos <code>{{Campo}}</code>: o portal cria o rascunho e preenche os campos pela API (<code>docGenFormFields</code>) antes de enviar.</dd>
     </dl></div>
     <div class="lg"><h3>Assinatura</h3><dl>
       <dt><span class="tag sign">Remota por e-mail</span></dt><dd>Cada signatário recebe o link por e-mail (SMS/WhatsApp opcional).</dd>
@@ -174,9 +174,9 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
 
     <article class="demo">
       <div class="demo-head"><span class="id">H1</span><div><h3>Cotação com assinatura no site</h3><p class="where">Home → seção <b>Cotação</b> → “Solicitar Cotação + Assinatura Digital” → <b>Assinar agora</b></p></div></div>
-      <p class="trigger"><b>Gatilho:</b> envio do formulário → <code>POST /api/docusign/envelope</code> cria o envelope; “Assinar agora” pede uma sessão de assinatura (<code>/api/docusign/signing-view</code>).</p>
-      <div class="flow"><span class="tag form">Formulário do portal</span><span class="arrow">→</span><span class="tag api">API → Envelope</span><span class="arrow">→</span><span class="tag doc">Documento gerado pelo portal</span><span class="arrow">→</span><span class="tag sign">Embarcada · Focused View ⇄ Clássica</span></div>
-      <ul class="show"><li>Melhor exemplo de <b>eSignature API “pura”</b>: sem workflow, o sistema gera o documento e coleta a assinatura.</li><li>Troque Focused View ⇄ Clássica no seletor para mostrar as duas experiências.</li></ul>
+      <p class="trigger"><b>Gatilho:</b> envio do formulário → <code>POST /api/docusign/envelope</code> cria o rascunho do template “Proposta de Seguro (Cotacao)”, preenche os campos Doc Gen e envia; “Assinar agora” pede uma sessão de assinatura (<code>/api/docusign/signing-view</code>).</p>
+      <div class="flow"><span class="tag form">Formulário do portal</span><span class="arrow">→</span><span class="tag api">API → Envelope</span><span class="arrow">→</span><span class="tag doc">Doc Gen por API</span><span class="arrow">→</span><span class="tag sign">Embarcada · Focused View ⇄ Clássica</span></div>
+      <ul class="show"><li>Melhor exemplo de <b>eSignature API “pura”</b>: sem workflow, o sistema gera o documento e coleta a assinatura.</li><li>A proposta muda conforme o produto (coberturas, franquias, prêmio com IOF e parcelas). Teste Auto × Vida.</li><li>Troque Focused View ⇄ Clássica no seletor para mostrar as duas experiências.</li></ul>
     </article>
 
     <article class="demo">
@@ -283,7 +283,7 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
         <tr><th>Demo</th>
           <th><span class="tv">Workflow</span></th><th><span class="tv">Web Form</span></th><th><span class="tv">Envelope</span></th>
           <th><span class="tv">Form do portal</span></th><th><span class="tv">Web Form embarcado</span></th><th><span class="tv">Pré-preenchido</span></th>
-          <th><span class="tv">Template eSignature</span></th><th><span class="tv">Doc Gen (modelo)</span></th><th><span class="tv">Gerado pelo portal</span></th>
+          <th><span class="tv">Template eSignature</span></th><th><span class="tv">Doc Gen (modelo)</span></th><th><span class="tv">Doc Gen por API</span></th>
           <th><span class="tv">Remota (e-mail/WhatsApp)</span></th><th><span class="tv">Focused ⇄ Clássica</span></th><th><span class="tv">No workflow</span></th>
           <th><span class="tv">Status API</span></th><th><span class="tv">IA / contratos</span></th><th><span class="tv">Salesforce</span></th></tr>
       </thead>
@@ -330,6 +330,7 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
           <tr><td>Workflow</td><td>Fontara Seguros - Onboarding de cliente portal</td><td class="mono">0359ae48-47dc-45be-a7b8-9ae20894eaba</td><td>H2, V2</td></tr>
           <tr><td>Workflow</td><td>Fontara Seguros - Portal atualizacao de cadastro Salesforce</td><td class="mono">98e2f24c-e903-4692-b599-21fd8214e04e</td><td>C2</td></tr>
           <tr><td>Web Form</td><td>Fontara Seguros - Resgate/Portabilidade</td><td class="mono">b5a06678-688d-4243-952f-f0dccb9a19c7</td><td>C1</td></tr>
+          <tr><td>Template Doc Gen</td><td>Fontara Seguros - Proposta de Seguro (Cotacao)</td><td class="mono">fe5d08f8-ae51-40db-9b08-f1a69ad36351</td><td>H1</td></tr>
           <tr><td>Template eSignature</td><td>Proposta de Adesao PF / PJ</td><td class="mono">8e999bc2… / d47237d8…</td><td>V1, C4 (PF)</td></tr>
           <tr><td>Modelos de documentos</td><td>Proposta padrão Vida · Empresarial e Patrimonial</td><td class="mono">—</td><td>H2, V2</td></tr>
         </tbody>

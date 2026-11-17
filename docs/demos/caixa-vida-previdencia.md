@@ -39,14 +39,15 @@
 | Modelo de documento Doc Gen — Proposta PJ | — | pendente (mapeamento no final, com o usuário) |
 | Template eSignature Proposta PF (anchors, roles Titular + CC Corretor) | `8e999bc2-0e93-4917-84b3-315fc0ae97f9` | criado via API (`scripts/create-proposta-templates.mjs`) |
 | Template eSignature Proposta PJ (Rep1–3, Testemunha1–2, CC Corretor) | `d47237d8-e695-4b77-93a8-5164b581d29f` | criado via API |
-| Web Form Resgate/Portabilidade | `b5a06678-688d-4243-952f-f0dccb9a19c7` | configurado (3 regras); falta ativar (Conectar conta) |
+| Web Form Resgate/Portabilidade | `b5a06678-688d-4243-952f-f0dccb9a19c7` | ativo (3 regras) |
 | Workflow Proposta PF/PJ (API) — "Fontara Seguros - Proposta PF/PJ (API)" | `824dd961-5586-4eea-b3af-52d2c3e927f9` | publicado (Start API c/ 30 variáveis → PF/PJ → template → envio remoto → confirmação) |
-| Workflow embarcado (1B) — reaproveita "Fontara Seguros - Onboarding de cliente portal" | `0359ae48-47dc-45be-a7b8-9ae20894eaba` | ativo (Web Form → ramificação Empresarial/Vida/Auto → Doc Gen → assinatura → Salesforce) |
+| Workflow embarcado (1B) — reaproveita "Fontara Seguros - Onboarding de cliente portal" | `0359ae48-47dc-45be-a7b8-9ae20894eaba` | ativo; ramo Auto testado pelo usuário 17/11/2026 (Web Form → ramificação Empresarial/Vida/Auto → Doc Gen → assinatura → Salesforce) |
 | Teste E2E 1A (PF) | instância `41b0774c…`, envelope `d45d268f…` | OK 16/11/2026 — envelope recebido pelo Titular + CC Corretor, campos do template preenchidos corretamente pelas variáveis do trigger |
 | Workflow Atualização cadastral (existente) | `98e2f24c-e903-4692-b599-21fd8214e04e` | ativo |
 | Brand pt_BR | `d892d79e-b9b2-4a4c-9349-dd9d30044ac5` (Fontara Financial) | existente |
 
 | Teste E2E 2 (PJ) | instância `0edd347a…`, envelope `3761214a…` | OK 16/11/2026 — Rep1, Rep2, Test1, Test2 + CC Corretor; Rep3 vazio omitido (roteamento variável) |
+| Template Doc Gen da cotação (H1) — "Fontara Seguros - Proposta de Seguro (Cotacao)" | `fe5d08f8-ae51-40db-9b08-f1a69ad36351` | criado via API 17/11/2026 (`scripts/create-cotacao-template.mjs`); coberturas/prêmio por produto em `buildCotacaoFields` |
 | Contratação WhatsApp (C4 / POP-VP-002) | `POST /api/docusign/whatsapp` → template PF `8e999bc2…` via compositeTemplates, titular `deliveryMethod: WhatsApp` | rascunho validado 17/11/2026 (`deliveryMethod: whatsapp` no recipient); envio real depende do número do apresentador |
 | Correções 16/11 | Workflow PF/PJ: remapeados campos PJ (IA tinha deslocado Rep1–3, Nº proposta, testemunhas), Cnpj e Corretor; Onboarding: ramo Auto completado (Preparar modelo Empresarial e Patrimonial + assinatura) e ramo sem condição com tela própria | validado: envelope PJ `c767256b…` com todos os campos corretos |
 

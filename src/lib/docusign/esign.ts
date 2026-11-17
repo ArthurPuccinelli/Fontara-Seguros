@@ -88,7 +88,11 @@ export async function listEnvelopes(days = 7): Promise<EnvelopeSummary[]> {
   }))
 }
 
-// ---------- Proposta HTML (formulário de cotação) ----------
+// ---------- Proposta de seguro (cotação do site) — Doc Gen ----------
+// Template "Fontara Seguros - Proposta de Seguro (Cotacao)" (scripts/create-cotacao-template.mjs):
+// .docx com {{Campos}} de remetente. Fluxo: rascunho a partir do template -> docGenFormFields -> envio.
+
+export const COTACAO_TEMPLATE_ID = 'fe5d08f8-ae51-40db-9b08-f1a69ad36351'
 
 export interface ProposalData {
   signerName: string
@@ -110,72 +114,100 @@ export const TIPO_LABELS: Record<string, string> = {
   previdencia: 'Previdência Privada',
 }
 
-export function escapeHtml(value: unknown): string {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
+interface ProdutoCotacao {
+  nome: string
+  descricao: string
+  capitalPadrao: number
+  taxa: number // prêmio líquido anual = capital × taxa (mínimo premioMinimo)
+  premioMinimo: number
+  vigencia: string
+  // [nome, fração do capital (null = texto fixo), franquia/carência]
+  coberturas: [string, number | string, string][]
 }
 
-export function buildPropostaHtml(data: ProposalData): string {
-  const hoje = new Date().toLocaleDateString('pt-BR')
-  const tipoLabel = escapeHtml(TIPO_LABELS[data.tipoSeguro] || data.tipoSeguro)
-  const name = escapeHtml(data.signerName)
+// Valores ilustrativos para a demo; não representam tarifa real.
+const PRODUTOS: Record<string, ProdutoCotacao> = {
+  vida: {
+    nome: 'Fontara Vida Família', descricao: 'Seguro de vida individual com proteção para a família e assistência funeral.',
+    capitalPadrao: 300000, taxa: 0.0026, premioMinimo: 360, vigencia: '12 meses, renovação automática',
+    coberturas: [['Morte por qualquer causa', 1, 'Carência de 24 meses para suicídio'], ['Invalidez permanente total ou parcial por acidente', 1, 'Não há'],
+      ['Doenças graves (diagnóstico)', 0.25, 'Carência de 90 dias'], ['Assistência funeral familiar', 'Até R$ 10.000,00', 'Não há']],
+  },
+  auto: {
+    nome: 'Fontara Auto Completo', descricao: 'Cobertura compreensiva para o veículo, terceiros e assistência 24 horas.',
+    capitalPadrao: 90000, taxa: 0.042, premioMinimo: 1800, vigencia: '12 meses',
+    coberturas: [['Colisão, incêndio e roubo/furto (100% FIPE)', 1, 'R$ 3.200,00 (obrigatória)'], ['Danos materiais a terceiros', 'R$ 200.000,00', 'Não há'],
+      ['Danos corporais a terceiros', 'R$ 200.000,00', 'Não há'], ['Assistência 24h e carro reserva (15 dias)', 'Incluso', 'Não há']],
+  },
+  residencial: {
+    nome: 'Fontara Casa Protegida', descricao: 'Proteção do imóvel e dos bens contra incêndio, roubo e danos elétricos.',
+    capitalPadrao: 600000, taxa: 0.0011, premioMinimo: 280, vigencia: '12 meses',
+    coberturas: [['Incêndio, queda de raio e explosão', 1, 'Não há'], ['Roubo ou furto qualificado de bens', 0.1, '10% dos prejuízos, mín. R$ 500,00'],
+      ['Danos elétricos', 0.05, 'R$ 300,00'], ['Responsabilidade civil familiar', 0.05, 'Não há']],
+  },
+  empresarial: {
+    nome: 'Fontara Empresa Segura', descricao: 'Patrimônio e continuidade do negócio para pequenas e médias empresas.',
+    capitalPadrao: 1500000, taxa: 0.0035, premioMinimo: 1500, vigencia: '12 meses',
+    coberturas: [['Incêndio, raio e explosão (prédio e conteúdo)', 1, 'R$ 5.000,00'], ['Lucros cessantes (6 meses)', 0.2, '5 dias úteis'],
+      ['Roubo de bens e valores', 0.05, '10% dos prejuízos'], ['Responsabilidade civil operações', 0.1, 'R$ 2.000,00']],
+  },
+  saude: {
+    nome: 'Fontara Saúde Essencial', descricao: 'Reembolso de despesas médico-hospitalares com rede referenciada nacional.',
+    capitalPadrao: 500000, taxa: 0.0144, premioMinimo: 4800, vigencia: '12 meses, reajuste anual',
+    coberturas: [['Internação hospitalar e UTI', 1, 'Carência de 180 dias'], ['Consultas e exames', 'Ilimitado na rede', 'Carência de 30 dias'],
+      ['Urgência e emergência', 'Incluso', 'Carência de 24 horas'], ['Reembolso fora da rede', 'Até 2x a tabela', 'Não há']],
+  },
+  viagem: {
+    nome: 'Fontara Viagem Internacional', descricao: 'Assistência médica, bagagem e cancelamento para viagens ao exterior.',
+    capitalPadrao: 300000, taxa: 0.0012, premioMinimo: 189, vigencia: 'Período da viagem (até 30 dias)',
+    coberturas: [['Despesas médicas e hospitalares', 1, 'Não há'], ['Extravio de bagagem', 0.02, 'Não há'],
+      ['Cancelamento de viagem', 0.05, 'Não há'], ['Regresso sanitário', 'Incluso', 'Não há']],
+  },
+}
 
-  return `<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <style>
-    body { font-family: Arial, sans-serif; color: #1a1a2e; margin: 0; padding: 40px; }
-    .header { background: #0f2044; color: white; padding: 30px; border-radius: 8px; margin-bottom: 30px; }
-    .header h1 { margin: 0; font-size: 28px; }
-    .header p { margin: 8px 0 0; opacity: 0.7; font-size: 14px; }
-    .section { margin-bottom: 24px; }
-    .section h2 { color: #0f2044; font-size: 18px; border-bottom: 2px solid #e8f0fe; padding-bottom: 8px; }
-    .field { display: flex; margin-bottom: 8px; }
-    .field label { font-weight: bold; width: 200px; color: #555; font-size: 14px; }
-    .field span { font-size: 14px; }
-    .highlight { background: #e8f0fe; border-left: 4px solid #2563eb; padding: 16px 20px; border-radius: 4px; margin: 20px 0; }
-    .signature-area { margin-top: 60px; border-top: 1px solid #ccc; padding-top: 30px; }
-    .sig-line { border-bottom: 1px solid #333; height: 40px; margin-bottom: 8px; }
-    .footer { margin-top: 40px; font-size: 11px; color: #999; text-align: center; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h1>Fontara Seguros</h1>
-    <p>Proposta Comercial · ${hoje}</p>
-  </div>
-  <div class="section">
-    <h2>Dados do Solicitante</h2>
-    <div class="field"><label>Nome:</label><span>${name}</span></div>
-    <div class="field"><label>E-mail:</label><span>${escapeHtml(data.signerEmail)}</span></div>
-    <div class="field"><label>CPF:</label><span>${escapeHtml(data.cpf)}</span></div>
-    <div class="field"><label>Telefone:</label><span>${escapeHtml(data.phone)}</span></div>
-  </div>
-  <div class="section">
-    <h2>Produto Solicitado</h2>
-    <div class="field"><label>Tipo de Seguro:</label><span>${tipoLabel}</span></div>
-    ${data.valorCobertura ? `<div class="field"><label>Cobertura desejada:</label><span>${escapeHtml(data.valorCobertura)}</span></div>` : ''}
-    ${data.observacoes ? `<div class="field"><label>Observações:</label><span>${escapeHtml(data.observacoes)}</span></div>` : ''}
-  </div>
-  <div class="highlight">
-    <strong>Próximos passos:</strong> Nossa equipe entrará em contato em até 24 horas com as melhores
-    opções de cobertura disponíveis para o seu perfil.
-  </div>
-  <div class="signature-area">
-    <p><strong>Concordo com os termos desta proposta e autorizo a análise do meu perfil de risco.</strong></p>
-    <br/>
-    <div class="sig-line"></div>
-    <p style="font-size:12px;color:#555;">Assinatura do Solicitante — ${name}</p>
-    <p style="font-size:12px;color:#555;">Data: ___/___/______</p>
-  </div>
-  <div class="footer">Fontara Seguros · Av. Paulista, 1000 — São Paulo, SP · CNPJ 00.000.000/0001-00</div>
-</body>
-</html>`
+const brl = (n: number) => n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+const dataBR = (d: Date) => d.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+
+// "R$ 500.000" | "500000" | "500.000,00" -> 500000 (0 se vazio)
+function parseValor(v?: string): number {
+  if (!v) return 0
+  const n = Number(v.replace(/[^\d,]/g, '').replace(',', '.'))
+  return Number.isFinite(n) ? n : 0
+}
+
+// Campos de remetente do .docx (nomes iguais aos {{Campos}} do modelo)
+export function buildCotacaoFields(data: ProposalData, now = new Date()): Record<string, string> {
+  const prod = PRODUTOS[data.tipoSeguro] || PRODUTOS.vida
+  const capital = parseValor(data.valorCobertura) || prod.capitalPadrao
+  const liquido = Math.max(prod.premioMinimo, Math.round(capital * prod.taxa * 100) / 100)
+  const iof = Math.round(liquido * 0.0738 * 100) / 100
+  const total = liquido + iof
+  const validade = new Date(now.getTime() + 30 * 86400000)
+
+  const fields: Record<string, string> = {
+    NumeroProposta: `FS-${now.getFullYear()}-${String(now.getTime()).slice(-6)}`,
+    DataEmissao: dataBR(now),
+    ValidadeProposta: dataBR(validade),
+    NomeProponente: data.signerName,
+    CpfProponente: data.cpf || '—',
+    EmailProponente: data.signerEmail,
+    CelularProponente: data.phone || '—',
+    Produto: prod.nome,
+    DescricaoProduto: prod.descricao,
+    Vigencia: prod.vigencia,
+    CapitalReferencia: brl(capital),
+    PremioLiquido: brl(liquido),
+    Iof: brl(iof),
+    PremioTotal: brl(total),
+    FormaPagamento: `12x de ${brl(total / 12)} sem juros`,
+    Observacoes: data.observacoes?.trim() || 'Nenhuma observação informada.',
+  }
+  prod.coberturas.forEach(([nome, cap, franquia], i) => {
+    fields[`Cob${i + 1}Nome`] = nome
+    fields[`Cob${i + 1}Capital`] = typeof cap === 'number' ? brl(capital * cap) : cap
+    fields[`Cob${i + 1}Franquia`] = franquia
+  })
+  return fields
 }
 
 export interface CreatedEnvelope {
@@ -189,44 +221,34 @@ export async function createProposalEnvelope(
   data: ProposalData,
   opts: { embedded?: boolean; clientUserId?: string } = {}
 ): Promise<CreatedEnvelope> {
-  const { apiClient, accountId, docusign } = await getEsignApiClient()
-  const envelopesApi = new docusign.EnvelopesApi(apiClient)
   const clientUserId = opts.embedded ? opts.clientUserId || data.signerEmail.toLowerCase() : undefined
+  const base = `/v2.1/accounts/${env.accountId}/envelopes`
 
-  const signer = docusign.Signer.constructFromObject({
-    email: data.signerEmail,
-    name: data.signerName,
-    recipientId: '1',
-    routingOrder: '1',
-    ...(clientUserId ? { clientUserId } : {}),
-    tabs: docusign.Tabs.constructFromObject({
-      signHereTabs: [
-        docusign.SignHere.constructFromObject({
-          anchorString: 'Assinatura do Solicitante',
-          anchorYOffset: '10',
-          anchorUnits: 'pixels',
-          anchorXOffset: '0',
-        }),
-      ],
-    }),
+  // 1) Rascunho a partir do template Doc Gen
+  const draft: any = await dsFetch(env.basePath, base, {
+    method: 'POST',
+    body: {
+      status: 'created',
+      templateId: COTACAO_TEMPLATE_ID,
+      emailSubject: `Fontara Seguros — Proposta de ${TIPO_LABELS[data.tipoSeguro] || 'Seguro'}`.slice(0, 100),
+      templateRoles: [{ roleName: 'Proponente', name: data.signerName, email: data.signerEmail, ...(clientUserId ? { clientUserId } : {}) }],
+    },
+  })
+  const envelopeId: string = draft.envelopeId
+
+  // 2) Campos de remetente: o documentId do Doc Gen vem do GET (é um GUID, não "1")
+  const form: any = await dsFetch(env.basePath, `${base}/${envelopeId}/docGenFormFields`)
+  const documentId = form?.docGenFormFields?.[0]?.documentId
+  if (!documentId) throw new Error('Template da cotação sem campos Doc Gen (docGenFormFields vazio).')
+  const values = buildCotacaoFields(data)
+  await dsFetch(env.basePath, `${base}/${envelopeId}/docGenFormFields`, {
+    method: 'PUT',
+    body: { docGenFormFields: [{ documentId, docGenFormFieldList: Object.entries(values).map(([name, value]) => ({ name, value })) }] },
   })
 
-  const envelopeDefinition = docusign.EnvelopeDefinition.constructFromObject({
-    emailSubject: `Fontara Seguros — Proposta de ${TIPO_LABELS[data.tipoSeguro] || data.tipoSeguro}`.slice(0, 100),
-    documents: [
-      docusign.Document.constructFromObject({
-        documentBase64: Buffer.from(buildPropostaHtml(data)).toString('base64'),
-        name: 'Proposta Fontara Seguros',
-        fileExtension: 'html',
-        documentId: '1',
-      }),
-    ],
-    recipients: docusign.Recipients.constructFromObject({ signers: [signer] }),
-    status: 'sent',
-  })
-
-  const result = await envelopesApi.createEnvelope(accountId, { envelopeDefinition })
-  return { envelopeId: result.envelopeId, status: result.status, clientUserId }
+  // 3) Envio
+  await dsFetch(env.basePath, `${base}/${envelopeId}`, { method: 'PUT', body: { status: 'sent' } })
+  return { envelopeId, status: 'sent', clientUserId }
 }
 
 // ---------- Contratação com entrega por WhatsApp ----------
