@@ -60,6 +60,7 @@ header.top { display: flex; flex-direction: column; gap: 12px; border-bottom: 2p
 /* tags */
 .tag { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
 .tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .7; }
+.lg dt .tag, .tbl td .tag { white-space: normal; border-radius: 10px; }
 .api { background: var(--t-api-bg); color: var(--t-api); }
 .form { background: var(--t-form-bg); color: var(--t-form); }
 .doc { background: var(--t-doc-bg); color: var(--t-doc); }
@@ -87,6 +88,8 @@ header.top { display: flex; flex-direction: column; gap: 12px; border-bottom: 2p
 .where b { color: var(--ink); font-weight: 600; }
 .trigger { font-size: 13.5px; border-left: 3px solid var(--t-api); padding: 4px 10px; background: var(--bg); border-radius: 0 6px 6px 0; }
 .trigger b { color: var(--t-api); }
+.docline { font-size: 13.5px; border-left: 3px solid var(--t-doc); padding: 4px 10px; background: var(--t-doc-bg); border-radius: 0 6px 6px 0; }
+.docline b { color: var(--t-doc); }
 .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .flow .arrow { color: var(--muted); font-size: 13px; }
 .flow .tag { white-space: normal; text-align: left; }
@@ -149,9 +152,9 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
       <dt><span class="tag form">Regras condicionais</span></dt><dd>Campos aparecem ou somem conforme as respostas.</dd>
     </dl></div>
     <div class="lg"><h3>Documento</h3><dl>
-      <dt><span class="tag doc">Template eSignature preenchido</span></dt><dd>Passo “Prepare eSignature Template”: um template com campos é preenchido com as variáveis do workflow.</dd>
-      <dt><span class="tag doc">Doc Gen · Modelo de documento</span></dt><dd>Passo “Preparar modelo de documento”: o documento é gerado a partir de um modelo da biblioteca “Modelos de documentos”.</dd>
-      <dt><span class="tag doc">Doc Gen por API</span></dt><dd>Template eSignature com .docx de campos <code>{{Campo}}</code>: o portal cria o rascunho e preenche os campos pela API (<code>docGenFormFields</code>) antes de enviar.</dd>
+      <dt><span class="tag doc">Template eSignature (PDF com campos)</span></dt><dd>Template de eSignature (Modelos → Modelos) com PDF e campos: o workflow (“Preparar modelo do eSignature”) ou a API preenche os campos. <b>Usado em V1, C4 e C1.</b></dd>
+      <dt><span class="tag doc">Modelos de documentos (Doc Gen)</span></dt><dd>Biblioteca <b>Modelos → Modelos de documentos</b>. No workflow, o passo “Preparar modelo de documento” gera o documento a partir de um desses modelos. <b>Usado em H2 e V2.</b></dd>
+      <dt><span class="tag doc">Doc Gen por API (template .docx)</span></dt><dd>Template eSignature com .docx de campos <code>{{Campo}}</code>: o portal cria o rascunho e preenche os campos pela API (<code>docGenFormFields</code>) antes de enviar. Fica em Modelos → Modelos, não na biblioteca de Modelos de documentos. <b>Usado em H1.</b></dd>
     </dl></div>
     <div class="lg"><h3>Assinatura</h3><dl>
       <dt><span class="tag sign">Remota por e-mail</span></dt><dd>Cada signatário recebe o link por e-mail (SMS/WhatsApp opcional).</dd>
@@ -168,6 +171,21 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
   </div>
 </section>
 
+<section>
+  <span class="eyebrow">Documentos</span>
+  <h2>De onde vem cada documento</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Demo</th><th>Como o documento é gerado</th><th>Nome na DocuSign</th><th>Onde ver na plataforma</th></tr></thead>
+    <tbody>
+      <tr><td><b>H2, V2</b></td><td><span class="tag doc">Modelos de documentos (Doc Gen)</span></td><td>Vida: “Proposta padrão Vida”. Empresarial e Auto: “Empresarial e Patrimonial”</td><td>Modelos → <b>Modelos de documentos</b>. No workflow “Onboarding de cliente portal”: passo “Preparar modelo de documento”</td></tr>
+      <tr><td><b>H1</b></td><td><span class="tag doc">Doc Gen por API (template .docx)</span></td><td>“Fontara Seguros - Proposta de Seguro (Cotacao)”</td><td>Modelos → Modelos (template de eSignature com .docx)</td></tr>
+      <tr><td><b>V1, C4</b></td><td><span class="tag doc">Template eSignature (PDF com campos)</span></td><td>“Fontara Seguros - Proposta de Adesao PF / PJ”</td><td>Modelos → Modelos. V1: passo “Preparar modelo do eSignature” no workflow “Proposta PF/PJ (API)”</td></tr>
+      <tr><td><b>C1</b></td><td><span class="tag doc">Template eSignature (PDF com campos)</span></td><td>Template ligado ao Web Form “Resgate/Portabilidade”</td><td>Modelos → Formulários da Web</td></tr>
+      <tr><td>C2, C3, V3, V4, D1, D2</td><td colspan="3">Não geram documento</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
 <section class="area" id="home">
   <div class="area-head"><h2>Site público</h2><span class="path">/</span></div>
   <div class="demos">
@@ -175,14 +193,16 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
     <article class="demo">
       <div class="demo-head"><span class="id">H1</span><div><h3>Cotação com assinatura no site</h3><p class="where">Home → seção <b>Cotação</b> → “Solicitar Cotação + Assinatura Digital” → <b>Assinar agora</b></p></div></div>
       <p class="trigger"><b>Gatilho:</b> envio do formulário → <code>POST /api/docusign/envelope</code> cria o rascunho do template “Proposta de Seguro (Cotacao)”, preenche os campos Doc Gen e envia; “Assinar agora” pede uma sessão de assinatura (<code>/api/docusign/signing-view</code>).</p>
-      <div class="flow"><span class="tag form">Formulário do portal</span><span class="arrow">→</span><span class="tag api">API → Envelope</span><span class="arrow">→</span><span class="tag doc">Doc Gen por API</span><span class="arrow">→</span><span class="tag sign">Embarcada · Focused View ⇄ Clássica</span></div>
+      <div class="flow"><span class="tag form">Formulário do portal</span><span class="arrow">→</span><span class="tag api">API → Envelope</span><span class="arrow">→</span><span class="tag doc">Doc Gen por API (template .docx)</span><span class="arrow">→</span><span class="tag sign">Embarcada · Focused View ⇄ Clássica</span></div>
+      <p class="docline"><b>Documento:</b> template Doc Gen “Proposta de Seguro (Cotacao)”: coberturas, franquias e prêmio mudam conforme o produto escolhido.</p>
       <ul class="show"><li>Melhor exemplo de <b>eSignature API “pura”</b>: sem workflow, o sistema gera o documento e coleta a assinatura.</li><li>A proposta muda conforme o produto (coberturas, franquias, prêmio com IOF e parcelas). Teste Auto × Vida.</li><li>Troque Focused View ⇄ Clássica no seletor para mostrar as duas experiências.</li></ul>
     </article>
 
     <article class="demo">
       <div class="demo-head"><span class="id">H2</span><div><h3>“Contrate agora” (onboarding)</h3><p class="where">Home → seção <b>Como funciona</b> → botão “Contrate agora é fácil”</p></div></div>
       <p class="trigger"><b>Gatilho:</b> clique → <code>POST /api/docusign/maestro</code> sem dados → workflow “Onboarding de cliente portal” abre num iframe.</p>
-      <div class="flow"><span class="tag api">API → Workflow</span><span class="arrow">→</span><span class="tag form">Web Form (dentro do workflow)</span><span class="arrow">→</span><span class="tag api">Ramificação por produto</span><span class="arrow">→</span><span class="tag doc">Doc Gen · Modelo de documento</span><span class="arrow">→</span><span class="tag sign">Dentro do workflow embarcado</span><span class="arrow">→</span><span class="tag post">Salesforce</span></div>
+      <div class="flow"><span class="tag api">API → Workflow</span><span class="arrow">→</span><span class="tag form">Web Form (dentro do workflow)</span><span class="arrow">→</span><span class="tag api">Ramificação por produto</span><span class="arrow">→</span><span class="tag doc">Modelos de documentos (Doc Gen)</span><span class="arrow">→</span><span class="tag sign">Dentro do workflow embarcado</span><span class="arrow">→</span><span class="tag post">Salesforce</span></div>
+      <p class="docline"><b>Documento:</b> <b>Modelos de documentos</b>: “Proposta padrão Vida” (Vida) ou “Empresarial e Patrimonial” (Empresarial e Auto).</p>
       <ul class="show"><li>É o mesmo workflow da demo <b>V2</b>; use uma das duas.</li></ul>
     </article>
 
@@ -196,8 +216,9 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
     <article class="demo">
       <div class="demo-head"><span class="id">C1</span><div><h3>Resgate / Portabilidade</h3><p class="where">Produto PGBL → <b>Resgatar ou portar</b> (ou Serviços → Resgate ou portabilidade)</p></div></div>
       <p class="trigger"><b>Gatilho:</b> clique → <code>POST /api/docusign/webforms/instance</code> cria a instância com <code>formValues</code> do perfil (nome, e-mail, CPF, nº do certificado).</p>
-      <div class="flow"><span class="tag api">API → Web Form</span><span class="arrow">→</span><span class="tag form">Pré-preenchido por API</span><span class="arrow">→</span><span class="tag form">Web Form embarcado</span><span class="arrow">→</span><span class="tag form">Regras condicionais</span><span class="arrow">→</span><span class="tag doc">Template eSignature preenchido</span><span class="arrow">→</span><span class="tag sign">Embarcada · Focused View ⇄ Clássica</span></div>
-      <ul class="show"><li>Nome e CPF chegam travados; “Resgate parcial” mostra o valor, “Portabilidade” mostra entidade e CNPJ.</li><li>O documento é o template do Web Form preenchido com as respostas (não é Doc Gen).</li><li>O seletor de assinatura recria a instância no formato escolhido.</li></ul>
+      <div class="flow"><span class="tag api">API → Web Form</span><span class="arrow">→</span><span class="tag form">Pré-preenchido por API</span><span class="arrow">→</span><span class="tag form">Web Form embarcado</span><span class="arrow">→</span><span class="tag form">Regras condicionais</span><span class="arrow">→</span><span class="tag doc">Template eSignature (PDF com campos)</span><span class="arrow">→</span><span class="tag sign">Embarcada · Focused View ⇄ Clássica</span></div>
+      <p class="docline"><b>Documento:</b> template de eSignature do Web Form, preenchido com as respostas (não é Doc Gen).</p>
+      <ul class="show"><li>Nome e CPF chegam travados; “Resgate parcial” mostra o valor, “Portabilidade” mostra entidade e CNPJ.</li><li>O seletor de assinatura recria a instância no formato escolhido.</li></ul>
     </article>
 
     <article class="demo">
@@ -216,7 +237,8 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
     <article class="demo">
       <div class="demo-head"><span class="id">C4</span><div><h3>Contratação pelo WhatsApp</h3><p class="where">Bloco <b>Contratação pelo WhatsApp</b> → Ver planos (também no Canal: POP-VP-002)</p></div></div>
       <p class="trigger"><b>Gatilho:</b> escolher plano → confirmar celular → <code>POST /api/docusign/whatsapp</code> cria o envelope (template Proposta PF via <code>compositeTemplates</code>) com o titular em <code>deliveryMethod: WhatsApp</code>. A tela consulta <code>GET /api/docusign/whatsapp?envelopeId=</code> a cada 5 s.</p>
-      <div class="flow"><span class="tag form">Form do portal</span><span class="arrow">→</span><span class="tag api">API → Envelope</span><span class="arrow">→</span><span class="tag doc">Template eSignature preenchido</span><span class="arrow">→</span><span class="tag sign">Entrega por WhatsApp</span><span class="arrow">→</span><span class="tag post">Status por API</span></div>
+      <div class="flow"><span class="tag form">Form do portal</span><span class="arrow">→</span><span class="tag api">API → Envelope</span><span class="arrow">→</span><span class="tag doc">Template eSignature (PDF com campos)</span><span class="arrow">→</span><span class="tag sign">Entrega por WhatsApp</span><span class="arrow">→</span><span class="tag post">Status por API</span></div>
+      <p class="docline"><b>Documento:</b> template de eSignature “Proposta de Adesao PF”, preenchido pela API.</p>
       <ul class="show"><li>Use o seu celular no perfil de demo: a mensagem chega no WhatsApp em segundos.</li><li>A trilha avança sozinha: enviada → cliente abriu → assinada.</li><li>Cópia por e-mail para o e-mail do perfil (papel Corretor).</li><li>Sem e-mail para o titular: WhatsApp não combina com e-mail no mesmo signatário.</li></ul>
     </article>
 
@@ -230,15 +252,17 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
     <article class="demo">
       <div class="demo-head"><span class="id">V1</span><div><h3>Proposta PF/PJ pelo formulário do portal</h3><p class="where">Aba <b>Jornadas</b> → linha POP-VP-001 <b>Proposta de Adesão</b> → aba “Formulário do portal (API)”</p></div></div>
       <p class="trigger"><b>Gatilho:</b> “Enviar proposta” → <code>POST /api/docusign/maestro</code> com 30 variáveis → workflow “Proposta PF/PJ (API)”.</p>
-      <div class="flow"><span class="tag form">Formulário do portal</span><span class="arrow">→</span><span class="tag api">API → Workflow</span><span class="arrow">→</span><span class="tag api">Ramificação PF / PJ</span><span class="arrow">→</span><span class="tag doc">Template eSignature preenchido</span><span class="arrow">→</span><span class="tag sign">Remota por e-mail</span></div>
+      <div class="flow"><span class="tag form">Formulário do portal</span><span class="arrow">→</span><span class="tag api">API → Workflow</span><span class="arrow">→</span><span class="tag api">Ramificação PF / PJ</span><span class="arrow">→</span><span class="tag doc">Template eSignature (PDF com campos)</span><span class="arrow">→</span><span class="tag sign">Remota por e-mail</span></div>
+      <p class="docline"><b>Documento:</b> template de eSignature “Proposta de Adesao PF” ou “PJ”, preenchido pelo workflow (passo “Preparar modelo do eSignature”).</p>
       <ul class="show"><li>O “cliente em atendimento” no topo da aba Jornadas é o perfil de demo (link “trocar”).</li><li>PF: 1 signatário. PJ: 1–3 representantes + 0–2 testemunhas; papéis vazios são omitidos.</li><li>Mostre “Ver payload enviado à API” para o time de TI.</li><li>WhatsApp/SMS é uma opção no passo de envio do workflow (desligada na demo).</li></ul>
     </article>
 
     <article class="demo">
       <div class="demo-head"><span class="id">V2</span><div><h3>Mesma proposta, experiência DocuSign embarcada</h3><p class="where">Aba <b>Jornadas</b> → linha POP-VP-001 <b>Proposta de Adesão</b> → aba “Experiência DocuSign embarcada” → Iniciar</p></div></div>
       <p class="trigger"><b>Gatilho:</b> “Iniciar experiência” → <code>POST /api/docusign/maestro</code> → workflow “Onboarding de cliente portal” num iframe.</p>
-      <div class="flow"><span class="tag api">API → Workflow</span><span class="arrow">→</span><span class="tag form">Web Form (dentro do workflow)</span><span class="arrow">→</span><span class="tag api">Ramificação Empresarial / Vida / Auto</span><span class="arrow">→</span><span class="tag doc">Doc Gen · Modelo de documento</span><span class="arrow">→</span><span class="tag sign">Dentro do workflow embarcado</span><span class="arrow">→</span><span class="tag post">Salesforce</span></div>
-      <ul class="show"><li>Compare com V1: aqui a tela também é da DocuSign; mudar o POP é editar o workflow.</li><li>Vida usa o modelo “Proposta padrão Vida”; Empresarial e Auto usam “Empresarial e Patrimonial”. Auto não grava no Salesforce.</li></ul>
+      <div class="flow"><span class="tag api">API → Workflow</span><span class="arrow">→</span><span class="tag form">Web Form (dentro do workflow)</span><span class="arrow">→</span><span class="tag api">Ramificação Empresarial / Vida / Auto</span><span class="arrow">→</span><span class="tag doc">Modelos de documentos (Doc Gen)</span><span class="arrow">→</span><span class="tag sign">Dentro do workflow embarcado</span><span class="arrow">→</span><span class="tag post">Salesforce</span></div>
+      <p class="docline"><b>Documento:</b> <b>Modelos de documentos</b>: “Proposta padrão Vida” (Vida) ou “Empresarial e Patrimonial” (Empresarial e Auto).</p>
+      <ul class="show"><li>Compare com V1: aqui a tela também é da DocuSign; mudar o POP é editar o workflow.</li><li>Auto não grava no Salesforce.</li></ul>
       <p class="note"><b>Focused View não se aplica:</b> a assinatura roda dentro da tela do Workflow Builder.</p>
     </article>
 
@@ -283,7 +307,7 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
         <tr><th>Demo</th>
           <th><span class="tv">Workflow</span></th><th><span class="tv">Web Form</span></th><th><span class="tv">Envelope</span></th>
           <th><span class="tv">Form do portal</span></th><th><span class="tv">Web Form embarcado</span></th><th><span class="tv">Pré-preenchido</span></th>
-          <th><span class="tv">Template eSignature</span></th><th><span class="tv">Doc Gen (modelo)</span></th><th><span class="tv">Doc Gen por API</span></th>
+          <th><span class="tv">Template eSignature</span></th><th><span class="tv">Modelos de documentos</span></th><th><span class="tv">Doc Gen por API</span></th>
           <th><span class="tv">Remota (e-mail/WhatsApp)</span></th><th><span class="tv">Focused ⇄ Clássica</span></th><th><span class="tv">No workflow</span></th>
           <th><span class="tv">Status API</span></th><th><span class="tv">IA / contratos</span></th><th><span class="tv">Salesforce</span></th></tr>
       </thead>
