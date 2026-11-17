@@ -67,25 +67,25 @@ export default function SigningEmbed({ envelopeId, name, email, clientUserId, on
   }, [envelopeId, name, email, clientUserId, mode, containerId])
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex justify-end">
-        <EmbedModeToggle />
-      </div>
+    <div className="h-full flex flex-col">
       {status === 'error' ? (
         <div className="p-8 text-center">
           <AlertTriangle size={28} className="text-red-500 mx-auto mb-3" />
           <p className="text-sm text-gray-600 break-words">{error}</p>
         </div>
       ) : (
-        <div className="relative min-h-[520px]">
+        <div className="relative flex-1 min-h-[480px]">
           {status === 'loading' && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <Loader2 size={36} className="text-fontara-accent animate-spin" />
             </div>
           )}
-          <div id={containerId} key={mode} className="w-full h-[70vh] min-h-[520px]" />
+          <div id={containerId} key={mode} className="w-full h-full min-h-[480px]" />
         </div>
       )}
+      <div className="flex justify-end px-2 py-1 border-t border-gray-100">
+        <EmbedModeToggle />
+      </div>
     </div>
   )
 }

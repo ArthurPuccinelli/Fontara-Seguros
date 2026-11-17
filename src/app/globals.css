@@ -12,7 +12,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 120px; /* altura do menu fixo */
+  scroll-padding-top: 80px; /* altura do menu fixo */
 }
 
 body {

@@ -8,6 +8,7 @@ import { User, FileText, AlertTriangle, LogOut, ChevronRight, Phone, UserCog, Ar
 import { useAuth } from '@/context/AuthContext'
 import MaestroModal from '@/components/MaestroModal'
 import WebFormJourney from '@/components/WebFormJourney'
+import EmbedShell from '@/components/EmbedShell'
 import AgreementSearch from '@/components/AgreementSearch'
 
 const DADOS_CADASTRAIS_WORKFLOW = '98e2f24c-e903-4692-b599-21fd8214e04e'
@@ -174,7 +175,13 @@ export default function AreaClientePage() {
         <MaestroModal workflowId={DADOS_CADASTRAIS_WORKFLOW} onClose={() => setModal(null)} />
       )}
 
-      {(modal === 'resgate' || modal === 'contratos') && (
+      {modal === 'resgate' && (
+        <EmbedShell label="Resgate / Portabilidade" onClose={() => setModal(null)}>
+          <WebFormJourney journey="resgate-portabilidade" title="Solicitação de Resgate / Portabilidade" />
+        </EmbedShell>
+      )}
+
+      {modal === 'contratos' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <button
@@ -186,15 +193,11 @@ export default function AreaClientePage() {
             </button>
             <div className="px-6 py-4 border-b border-gray-100 pr-14">
               <h2 className="text-lg font-bold text-fontara-navy">
-                {modal === 'resgate' ? 'Resgate / Portabilidade' : 'Meus contratos'}
+                Meus contratos
               </h2>
             </div>
             <div className="p-4 sm:p-6">
-              {modal === 'resgate' ? (
-                <WebFormJourney journey="resgate-portabilidade" title="Solicitação de Resgate / Portabilidade" />
-              ) : (
-                <AgreementSearch initialCpfCnpj={user.cpf} lockCpfCnpj />
-              )}
+              <AgreementSearch initialCpfCnpj={user.cpf} lockCpfCnpj />
             </div>
           </div>
         </div>

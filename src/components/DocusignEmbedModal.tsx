@@ -107,16 +107,20 @@ export default function DocusignEmbedModal({ title, subtitle, onClose, start, on
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={title}>
       <div
-        className={`relative bg-white rounded-2xl shadow-2xl w-full transition-all duration-300 ${
-          embedded ? 'max-w-4xl h-[90vh] flex flex-col' : 'max-w-md max-h-[90vh] overflow-y-auto'
+        className={`relative bg-white shadow-2xl w-full transition-all duration-300 ${
+          embedded ? 'max-w-4xl h-[88vh] flex flex-col rounded-xl border-2 border-fontara-navy' : 'rounded-2xl max-w-md max-h-[90vh] overflow-y-auto'
         }`}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
+          className={
+            embedded
+              ? 'absolute -top-3 -right-3 z-10 w-8 h-8 rounded-full bg-fontara-navy text-white flex items-center justify-center shadow-md hover:bg-fontara-blue transition'
+              : 'absolute top-4 right-4 z-10 p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors'
+          }
           aria-label="Fechar"
         >
-          <X size={20} />
+          <X size={embedded ? 16 : 20} />
         </button>
 
         {step === 'loading' && (
@@ -128,18 +132,12 @@ export default function DocusignEmbedModal({ title, subtitle, onClose, start, on
         )}
 
         {embedded && url && (
-          <>
-            <div className="px-6 py-4 border-b border-gray-100 shrink-0 pr-14">
-              <h2 className="text-lg font-bold text-fontara-navy">{title}</h2>
-              {subtitle && <p className="text-xs text-gray-500 mt-0.5">{subtitle}</p>}
-            </div>
-            <iframe
-              src={url}
-              className="flex-1 w-full rounded-b-2xl border-0"
-              title={title}
-              allow="camera; microphone; geolocation"
-            />
-          </>
+          <iframe
+            src={url}
+            className="flex-1 w-full rounded-[10px] border-0"
+            title={title}
+            allow="camera; microphone; geolocation"
+          />
         )}
 
         {step === 'completed' && (

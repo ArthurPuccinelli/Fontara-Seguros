@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { formatCPF, formatPhone } from '@/lib/br'
 import { FileSignature, Send, CheckCircle, AlertCircle, Loader2, X } from 'lucide-react'
 import SigningEmbed from './SigningEmbed'
+import EmbedShell from './EmbedShell'
 
 type Seguro = 'vida' | 'auto' | 'residencial' | 'empresarial' | 'saude' | 'viagem'
 
@@ -286,9 +287,21 @@ export default function CotacaoForm() {
       </div>
 
       {/* Result Modal */}
-      {showModal && (
+      {showModal && signing === 'open' && result?.envelopeId && result.clientUserId && (
+        <EmbedShell label="Assinatura da proposta" onClose={() => setSigning('off')}>
+          <SigningEmbed
+            envelopeId={result.envelopeId}
+            name={form.nome}
+            email={form.email}
+            clientUserId={result.clientUserId}
+            onFinished={() => setSigning('done')}
+          />
+        </EmbedShell>
+      )}
+
+      {showModal && signing !== 'open' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className={`bg-white rounded-3xl shadow-2xl w-full p-8 relative animate-fade-up ${signing === 'open' ? 'max-w-4xl' : 'max-w-md'}`}>
+          <div className="bg-white rounded-3xl shadow-2xl w-full p-8 relative animate-fade-up max-w-md">
             <button
               onClick={() => { setShowModal(false); setSigning('off') }}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
@@ -296,18 +309,7 @@ export default function CotacaoForm() {
               <X size={24} />
             </button>
 
-            {status === 'success' && signing === 'open' && result?.envelopeId && result.clientUserId ? (
-              <>
-                <h3 className="text-lg font-bold text-fontara-navy mb-3 pr-8">Assine sua proposta</h3>
-                <SigningEmbed
-                  envelopeId={result.envelopeId}
-                  name={form.nome}
-                  email={form.email}
-                  clientUserId={result.clientUserId}
-                  onFinished={() => setSigning('done')}
-                />
-              </>
-            ) : status === 'success' ? (
+            {status === 'success' ? (
               <>
                 <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
                   <CheckCircle className="text-green-500" size={32} />

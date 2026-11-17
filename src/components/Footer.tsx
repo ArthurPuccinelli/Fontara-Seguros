@@ -37,7 +37,7 @@ export default function Footer() {
               alt="Fontara Seguros"
               width={140}
               height={48}
-              className="object-contain mb-4"
+              className="object-contain mb-4 brightness-0 invert"
             />
             <p className="text-white/50 text-sm leading-relaxed mb-6">
               Protegendo o que importa para você há mais de 15 anos. Soluções completas em seguros

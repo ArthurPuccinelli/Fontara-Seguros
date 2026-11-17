@@ -80,10 +80,8 @@ export default function WebFormJourney({ journey, title, onDone }: Props) {
 
   if (state.s === 'ready')
     return (
-      <div>
-        <div className="flex justify-end px-1 pb-1">
-          <EmbedModeToggle />
-        </div>
+      <div className="min-h-full flex flex-col">
+        <div className="flex-1">
       <WebFormEmbed
         key={mode}
         instanceUrl={state.url}
@@ -95,6 +93,10 @@ export default function WebFormJourney({ journey, title, onDone }: Props) {
           if (type !== 'sessionTimeout' && type !== 'finishLater') finish()
         }}
       />
+        </div>
+        <div className="sticky bottom-0 bg-white flex justify-end px-2 py-1 border-t border-gray-100">
+          <EmbedModeToggle />
+        </div>
       </div>
     )
 
