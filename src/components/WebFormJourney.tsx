@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import { CheckCircle, FlaskConical, Loader2, AlertTriangle, ExternalLink } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import WebFormEmbed from './WebFormEmbed'
+import EmbedModeToggle from './EmbedModeToggle'
+import { useEmbedMode } from '@/lib/embedMode'
 import type { WebFormInstanceResponse } from '@/types/demo'
 
 interface Props {
@@ -23,12 +25,15 @@ type State =
 export default function WebFormJourney({ journey, title, onDone }: Props) {
   const { profile } = useAuth()
   const [state, setState] = useState<State>({ s: 'loading' })
+  const [mode] = useEmbedMode()
   const profileRef = useRef(profile)
   const doneRef = useRef(onDone)
   doneRef.current = onDone
 
+  // Uma nova instância é criada quando o formato da assinatura muda (o token vale 5 min e é de uso único)
   useEffect(() => {
     let cancelled = false
+    setState({ s: 'loading' })
     const p = profileRef.current
     fetch('/api/docusign/webforms/instance', {
       method: 'POST',
@@ -58,7 +63,7 @@ export default function WebFormJourney({ journey, title, onDone }: Props) {
     return () => {
       cancelled = true
     }
-  }, [journey])
+  }, [journey, mode])
 
   function finish(demo?: boolean) {
     setState({ s: 'done', demo })
@@ -75,15 +80,22 @@ export default function WebFormJourney({ journey, title, onDone }: Props) {
 
   if (state.s === 'ready')
     return (
+      <div>
+        <div className="flex justify-end px-1 pb-1">
+          <EmbedModeToggle />
+        </div>
       <WebFormEmbed
+        key={mode}
         instanceUrl={state.url}
         instanceToken={state.token}
+        useFocusedViewForSigning={mode === 'focused'}
         onSubmitted={() => undefined}
         onSessionEnd={(e) => {
           const type = String((e as { sessionEndType?: string } | undefined)?.sessionEndType ?? '')
           if (type !== 'sessionTimeout' && type !== 'finishLater') finish()
         }}
       />
+      </div>
     )
 
   if (state.s === 'demo')
@@ -96,7 +108,7 @@ export default function WebFormJourney({ journey, title, onDone }: Props) {
         {title && <p className="text-sm text-gray-500 mb-3">{title}</p>}
         <p className="text-xs text-gray-500 leading-relaxed mb-4">
           Em produção, um Web Form do DocuSign abriria aqui com os campos já pré-preenchidos com os seus dados
-          (nome, CPF, e-mail e nº do certificado). Ao enviar, o documento é gerado e segue para assinatura em Focused View.
+          (nome, CPF, e-mail e nº do certificado). Ao enviar, o documento é gerado e segue para assinatura no formato escolhido (Focused View ou clássica).
         </p>
         {state.message && <p className="text-xs text-gray-400 mb-4">{state.message}</p>}
         <button onClick={() => finish(true)} className="btn-primary text-sm">Simular envio</button>

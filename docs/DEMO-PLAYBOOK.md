@@ -110,6 +110,16 @@ Implementação de referência: `src/lib/docusign/*` (auth, maestro, webforms, e
 
 ---
 
+### Focused View x embarcado clássico (2026-11-17)
+| Onde | Como escolher | Observação |
+|---|---|---|
+| Assinatura embarcada criada pelo app | `docusign.signing({ url, displayFormat: 'focused' \| 'default' })` (Docusign JS) | Recipient view com `clientUserId` + `frameAncestors` (origem do app + `https://apps-d.docusign.com`) + `messageOrigins: ['https://apps-d.docusign.com']`. URL é de uso único: gere uma nova a cada troca de formato. |
+| Web Form embarcado | opção `useFocusedViewForSigning` em `docusign.webforms({ url, options })` (padrão `true`) | Vale para a assinatura gerada após o envio de form baseado em template. Não funciona se o form usa “Initiate signing session from email”. Para trocar, crie nova instância (token de 5 min). |
+| Workflow embarcado (`instance_url` em iframe) | não há opção | A assinatura roda na UI do Workflow Builder. |
+
+Implementação: `src/components/SigningEmbed.tsx`, `src/components/WebFormEmbed.tsx`, seletor `src/components/EmbedModeToggle.tsx` (preferência em `localStorage`).
+⚠️ O navegador embutido do Claude não captura o conteúdo de iframes da DocuSign em screenshot (fica branco); valide pelo DOM (iframe `apps-d.docusign.com/embedded-signing…`) ou visualmente com o usuário.
+
 ## 3. Pegadinhas e limitações (com data)
 
 - **2026-11-16 — Consentimento JWT:** adicionar qualquer scope novo faz o token falhar com `consent_required` (HTTP 400), mesmo com os antigos já consentidos. URL: `https://{authServer}/oauth/auth?response_type=code&scope={scopes %20}&client_id={IK}&redirect_uri=https://developers.docusign.com/platform/auth/consent` — logado como o usuário impersonado. A lista de scopes do consentimento deve conter tudo que o token pede.

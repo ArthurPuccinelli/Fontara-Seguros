@@ -19,7 +19,7 @@ export default function Hero() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/5" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-16 grid md:grid-cols-2 gap-12 items-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-36 pb-16 grid md:grid-cols-2 gap-12 items-center">
         {/* Left content */}
         <div className="animate-fade-up">
           <div className="inline-flex items-center gap-2 bg-fontara-gold/20 border border-fontara-gold/30 rounded-full px-4 py-2 text-fontara-amber text-sm font-medium mb-6">

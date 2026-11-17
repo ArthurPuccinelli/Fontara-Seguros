@@ -45,12 +45,13 @@ export default function Footer() {
             </p>
             <div className="flex gap-3">
               {[
-                { icon: Instagram, href: '#' },
-                { icon: Linkedin, href: '#' },
-                { icon: Facebook, href: '#' },
-              ].map(({ icon: Icon, href }) => (
+                { icon: Instagram, href: '#', label: 'Instagram' },
+                { icon: Linkedin, href: '#', label: 'LinkedIn' },
+                { icon: Facebook, href: '#', label: 'Facebook' },
+              ].map(({ icon: Icon, href, label }) => (
                 <a
-                  key={href}
+                  key={label}
+                  aria-label={label}
                   href={href}
                   className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center text-white/60 hover:bg-fontara-gold/20 hover:text-fontara-amber transition-all"
                 >
@@ -121,6 +122,7 @@ export default function Footer() {
             © {new Date().getFullYear()} Fontara Seguros. Todos os direitos reservados.
           </p>
           <p className="text-white/20 text-xs">
+            <a href="/demo-map" className="hover:text-white/50 transition-colors mr-3">Mapa da demo</a>
             <a href="/demo" className="hover:text-white/50 transition-colors mr-3">Roteiro da demo</a>
             Corretora registrada na SUSEP · CNPJ 00.000.000/0001-00
           </p>

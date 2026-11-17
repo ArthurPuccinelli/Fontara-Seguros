@@ -4,7 +4,7 @@ import { ArrowRight, AlertCircle, Eye, Boxes } from 'lucide-react'
 
 const steps = [
   {
-    code: '1A',
+    code: 'V1',
     title: 'Proposta de adesão — formulário do portal (API)',
     dor: 'Dezenas de formulários manuais (POPs) por produto, com retrabalho e erros de preenchimento.',
     mostrar: 'Formulário nativo com lógica condicional (PF/PJ, representantes, testemunhas, beneficiários). Ao enviar, o payload JSON vai para a API e o documento é gerado e enviado para assinatura. Abra o painel "Ver payload enviado à API" para o time de TI.',
@@ -13,7 +13,7 @@ const steps = [
     cta: 'Abrir (Portal do Canal)',
   },
   {
-    code: '1B',
+    code: 'V2',
     title: 'Mesma proposta PF/PJ — experiência DocuSign embarcada',
     dor: 'Cada mudança de POP exige novo desenvolvimento de tela e fila na TI.',
     mostrar: 'A mesma proposta PF/PJ renderizada direto do Workflow Builder (Web Form + ramificação PF/PJ + Doc Gen + assinatura) dentro do portal: alterar o POP é alterar o workflow, sem deploy. Compare com o 1A.',
@@ -22,7 +22,7 @@ const steps = [
     cta: 'Abrir (Portal do Canal)',
   },
   {
-    code: '1C',
+    code: 'C1',
     title: 'Resgate / Portabilidade — Web Form + assinatura',
     dor: 'O cliente precisa imprimir, assinar e enviar formulários de resgate ou portabilidade.',
     mostrar: 'Web Form dinâmico pré-preenchido com os dados do cliente; ao enviar, segue direto para assinatura em Focused View.',
@@ -31,7 +31,16 @@ const steps = [
     cta: 'Abrir (Área do Cliente)',
   },
   {
-    code: '2',
+    code: 'H1',
+    title: 'Cotação com assinatura no site (eSignature API)',
+    dor: 'Propostas impressas ou enviadas por e-mail atrasam o fechamento.',
+    mostrar: 'Formulário da home gera o documento pela API e o cliente assina sem sair do site. Alterne Focused View ⇄ Clássica no seletor discreto da janela de assinatura.',
+    produto: 'eSignature API + assinatura embarcada (Docusign JS)',
+    href: '/#cotacao',
+    cta: 'Abrir (Home)',
+  },
+  {
+    code: 'V3',
     title: 'Acompanhamento em tempo real',
     dor: 'Falta de visibilidade: ninguém sabe em que etapa está cada proposta ou quem ainda não assinou.',
     mostrar: 'Painel com instâncias do workflow e envelopes, com linha do tempo de status e atualização automática a cada 15 s.',
@@ -40,7 +49,7 @@ const steps = [
     cta: 'Abrir (Portal do Canal)',
   },
   {
-    code: '3',
+    code: 'V4',
     title: 'Contratos inteligentes (extração por IA)',
     dor: 'Contratos assinados ficam em pastas e e-mails; vencimentos passam despercebidos.',
     mostrar: 'Busca por CPF/CNPJ e filtros "vence em 30/60/90 dias" sobre campos extraídos por IA (Iris), com destaque para vencimentos próximos.',
@@ -49,7 +58,7 @@ const steps = [
     cta: 'Abrir (Portal do Canal)',
   },
   {
-    code: '4',
+    code: 'D2',
     title: 'Perguntar em linguagem natural (Docusign MCP / WhatsApp)',
     dor: 'Para saber algo de um contrato é preciso abrir sistemas e filtrar telas.',
     mostrar: 'Um assistente consulta o acervo via Docusign MCP e responde em linguagem natural, inclusive pelo WhatsApp. Também mostre "Meus dados de demo" para cadastrar o seu e-mail/celular.',

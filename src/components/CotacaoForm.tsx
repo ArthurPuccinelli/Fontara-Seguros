@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { formatCPF, formatPhone } from '@/lib/br'
 import { FileSignature, Send, CheckCircle, AlertCircle, Loader2, X } from 'lucide-react'
+import SigningEmbed from './SigningEmbed'
 
 type Seguro = 'vida' | 'auto' | 'residencial' | 'empresarial' | 'saude' | 'viagem'
 
@@ -30,6 +31,8 @@ type Status = 'idle' | 'loading' | 'success' | 'error'
 interface DocuSignResult {
   envelopeId?: string
   signingUrl?: string
+  clientUserId?: string
+  demo?: boolean
   message?: string
 }
 
@@ -46,6 +49,7 @@ export default function CotacaoForm() {
   const [status, setStatus] = useState<Status>('idle')
   const [result, setResult] = useState<DocuSignResult | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [signing, setSigning] = useState<'off' | 'open' | 'done'>('off')
   const [errors, setErrors] = useState<Partial<FormData>>({})
 
   function validate() {
@@ -85,6 +89,7 @@ export default function CotacaoForm() {
       if (res.ok) {
         setResult(data)
         setStatus('success')
+        setSigning('off')
         setShowModal(true)
       } else {
         setResult({ message: data.error || 'Erro ao processar a solicitação' })
@@ -283,24 +288,39 @@ export default function CotacaoForm() {
       {/* Result Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-fade-up">
+          <div className={`bg-white rounded-3xl shadow-2xl w-full p-8 relative animate-fade-up ${signing === 'open' ? 'max-w-4xl' : 'max-w-md'}`}>
             <button
-              onClick={() => setShowModal(false)}
+              onClick={() => { setShowModal(false); setSigning('off') }}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
             >
               <X size={24} />
             </button>
 
-            {status === 'success' ? (
+            {status === 'success' && signing === 'open' && result?.envelopeId && result.clientUserId ? (
+              <>
+                <h3 className="text-lg font-bold text-fontara-navy mb-3 pr-8">Assine sua proposta</h3>
+                <SigningEmbed
+                  envelopeId={result.envelopeId}
+                  name={form.nome}
+                  email={form.email}
+                  clientUserId={result.clientUserId}
+                  onFinished={() => setSigning('done')}
+                />
+              </>
+            ) : status === 'success' ? (
               <>
                 <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
                   <CheckCircle className="text-green-500" size={32} />
                 </div>
                 <h3 className="text-2xl font-bold text-fontara-navy text-center mb-2">
-                  Solicitação enviada!
+                  {signing === 'done' ? 'Proposta assinada!' : 'Proposta gerada!'}
                 </h3>
                 <p className="text-gray-500 text-center mb-6">
-                  Sua proposta foi gerada com sucesso. Verifique seu e-mail para assinar o documento via DocuSign.
+                  {signing === 'done'
+                    ? 'Obrigado! Uma cópia do documento assinado será enviada para o seu e-mail.'
+                    : result?.demo
+                      ? 'Modo demonstração: em produção a proposta abriria aqui para assinatura embarcada.'
+                      : 'Sua proposta foi gerada pela API do DocuSign. Assine agora sem sair do site.'}
                 </p>
                 {result?.envelopeId && (
                   <div className="bg-gray-50 rounded-xl p-4 text-sm mb-4">
@@ -308,16 +328,11 @@ export default function CotacaoForm() {
                     <p className="font-mono font-bold text-fontara-navy break-all">{result.envelopeId}</p>
                   </div>
                 )}
-                {result?.signingUrl && (
-                  <a
-                    href={result.signingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block btn-primary text-center"
-                  >
+                {signing !== 'done' && result?.clientUserId && !result.demo && (
+                  <button type="button" onClick={() => setSigning('open')} className="block w-full btn-primary text-center">
                     <FileSignature size={18} className="inline mr-2" />
-                    Assinar agora via DocuSign
-                  </a>
+                    Assinar agora
+                  </button>
                 )}
               </>
             ) : (

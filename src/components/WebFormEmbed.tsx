@@ -10,8 +10,13 @@ interface WebFormWidget {
   mount: (selector: string) => void
   unmount?: () => void
 }
-interface DocusignInstance {
+interface SigningWidget {
+  on: (event: string, handler: (e: unknown) => void) => void
+  mount: (selector: string) => void
+}
+export interface DocusignInstance {
   webforms: (cfg: { url: string; options: Record<string, unknown> }) => WebFormWidget
+  signing: (cfg: { url: string; displayFormat: 'focused' | 'default'; style?: Record<string, unknown> }) => SigningWidget
 }
 declare global {
   interface Window {
@@ -24,7 +29,7 @@ declare global {
 const SCRIPT_URL = process.env.NEXT_PUBLIC_DOCUSIGN_JS_URL || 'https://js-d.docusign.com/bundle.js'
 
 let scriptPromise: Promise<void> | null = null
-function loadScript(): Promise<void> {
+export function loadDocusignScript(): Promise<void> {
   if (typeof window === 'undefined') return Promise.reject(new Error('no window'))
   if (window.DocuSign) return Promise.resolve()
   if (scriptPromise) return scriptPromise
@@ -47,9 +52,11 @@ interface Props {
   instanceToken?: string
   onSubmitted?: (event?: unknown) => void
   onSessionEnd?: (event?: unknown) => void
+  // Assinatura após o envio: Focused View (padrão) ou tela clássica
+  useFocusedViewForSigning?: boolean
 }
 
-export default function WebFormEmbed({ instanceUrl, instanceToken, onSubmitted, onSessionEnd }: Props) {
+export default function WebFormEmbed({ instanceUrl, instanceToken, onSubmitted, onSessionEnd, useFocusedViewForSigning = true }: Props) {
   const reactId = useId().replace(/:/g, '')
   const containerId = `docusign-webform-${reactId}`
   const [status, setStatus] = useState<'loading' | 'ready' | 'fallback'>('loading')
@@ -62,7 +69,7 @@ export default function WebFormEmbed({ instanceUrl, instanceToken, onSubmitted, 
     let cancelled = false
     ;(async () => {
       try {
-        await loadScript()
+        await loadDocusignScript()
         if (cancelled || !window.DocuSign) return
         const docusign = await window.DocuSign.loadDocuSign(process.env.NEXT_PUBLIC_DOCUSIGN_INTEGRATION_KEY || undefined)
         if (cancelled) return
@@ -72,6 +79,7 @@ export default function WebFormEmbed({ instanceUrl, instanceToken, onSubmitted, 
             ...(instanceToken ? { instanceToken } : {}),
             autoResizeHeight: true,
             hideProgressBar: false,
+            useFocusedViewForSigning,
             iframeStyles: { minHeight: '600px' },
           },
         })
@@ -91,7 +99,7 @@ export default function WebFormEmbed({ instanceUrl, instanceToken, onSubmitted, 
       cancelled = true
       clearTimeout(t)
     }
-  }, [instanceUrl, instanceToken, containerId])
+  }, [instanceUrl, instanceToken, containerId, useFocusedViewForSigning])
 
   // Fallback: iframe direto (formato documentado: formUrl#instanceToken=...)
   const fallbackSrc = instanceToken ? `${instanceUrl}#instanceToken=${instanceToken}` : instanceUrl
