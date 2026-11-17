@@ -31,6 +31,15 @@ const steps = [
     cta: 'Abrir (Área do Cliente)',
   },
   {
+    code: 'C4',
+    title: 'Contratação com assinatura pelo WhatsApp',
+    dor: 'Cliente desiste no meio da contratação: e-mail não chega, link se perde, precisa de computador.',
+    mostrar: 'Na Área do Cliente, escolha um plano e confirme o celular: a proposta chega no WhatsApp e é assinada pelo telefone. A trilha na tela avança sozinha (enviada → aberta → assinada). Também no Portal do Canal (POP-VP-002).',
+    produto: 'eSignature API + entrega por WhatsApp',
+    href: '/area-cliente',
+    cta: 'Abrir (Área do Cliente)',
+  },
+  {
     code: 'H1',
     title: 'Cotação com assinatura no site (eSignature API)',
     dor: 'Propostas impressas ou enviadas por e-mail atrasam o fechamento.',
@@ -61,10 +70,10 @@ const steps = [
     code: 'D2',
     title: 'Perguntar em linguagem natural (Docusign MCP / WhatsApp)',
     dor: 'Para saber algo de um contrato é preciso abrir sistemas e filtrar telas.',
-    mostrar: 'Um assistente consulta o acervo via Docusign MCP e responde em linguagem natural, inclusive pelo WhatsApp. Também mostre "Meus dados de demo" para cadastrar o seu e-mail/celular.',
+    mostrar: 'Fora do portal: no Claude com o conector Docusign, pergunte sobre o acervo em linguagem natural (ex.: contratos de um CNPJ que vencem em 90 dias).',
     produto: 'Docusign MCP + Navigator',
-    href: '/canal/contratos',
-    cta: 'Abrir (Portal do Canal)',
+    href: '/demo-map',
+    cta: 'Ver no mapa',
   },
 ]
 

@@ -17,6 +17,16 @@ export const JOURNEYS: Journey[] = [
     embeddedWorkflowId: '0359ae48-47dc-45be-a7b8-9ae20894eaba', // Fontara Seguros - Onboarding de cliente portal (Web Form + ramificações + Doc Gen)
   },
   {
+    slug: 'contratacao-whatsapp',
+    popCode: 'POP-VP-002',
+    title: 'Contratação com assinatura pelo WhatsApp',
+    description: 'O cliente escolhe o plano e recebe a proposta no WhatsApp para assinar pelo celular, sem e-mail e sem app.',
+    persona: 'cliente',
+    modes: ['whatsapp'],
+    publico: ['PF'],
+    produtos: ['eSignature API', 'Entrega por WhatsApp'],
+  },
+  {
     slug: 'resgate-portabilidade',
     popCode: 'POP-VP-014',
     title: 'Solicitação de Resgate / Portabilidade',

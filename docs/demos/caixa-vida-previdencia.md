@@ -27,6 +27,7 @@
 2. **1B — Mesma proposta, experiência DocuSign embarcada (6 min)** — `/canal/nova-jornada/proposta?modo=embarcado`. Fala: *mudar o POP = editar o workflow, sem deploy*. Abrir o Workflow Builder e mostrar a ramificação PF/PJ.
 3. **1C — Cliente final: Resgate/Portabilidade (6 min)** — `/area-cliente` → card Resgate. Web Form condicional (total/parcial/portabilidade) pré-preenchido → assinatura Focused View.
 4. **2/3 — Acompanhamento (4 min)** — `/canal/acompanhamento`: instâncias + envelopes, etapa atual.
+4b. **C4 — Contratação pelo WhatsApp (4 min)** — `/area-cliente` → bloco "Contratação pelo WhatsApp" → Ver planos → confirmar celular. A mensagem chega no WhatsApp; a trilha na tela avança até "assinada".
 5. **4 — Pós-assinatura com IA (8 min)** — Navigator com 14 contratos legados; `/canal/contratos`: CPF/CNPJ, "vence em 90 dias". Fechar com Claude + Docusign MCP: "Quais contratos do CNPJ 55.318.076/0001-51 vencem nos próximos 90 dias?" (história do WhatsApp do Fernando).
 6. **Fechamento (5 min)** — proposta de piloto com 1 POP real deles.
 
@@ -46,6 +47,7 @@
 | Brand pt_BR | `d892d79e-b9b2-4a4c-9349-dd9d30044ac5` (Fontara Financial) | existente |
 
 | Teste E2E 2 (PJ) | instância `0edd347a…`, envelope `3761214a…` | OK 16/11/2026 — Rep1, Rep2, Test1, Test2 + CC Corretor; Rep3 vazio omitido (roteamento variável) |
+| Contratação WhatsApp (C4 / POP-VP-002) | `POST /api/docusign/whatsapp` → template PF `8e999bc2…` via compositeTemplates, titular `deliveryMethod: WhatsApp` | rascunho validado 17/11/2026 (`deliveryMethod: whatsapp` no recipient); envio real depende do número do apresentador |
 | Correções 16/11 | Workflow PF/PJ: remapeados campos PJ (IA tinha deslocado Rep1–3, Nº proposta, testemunhas), Cnpj e Corretor; Onboarding: ramo Auto completado (Preparar modelo Empresarial e Patrimonial + assinatura) e ramo sem condição com tela própria | validado: envelope PJ `c767256b…` com todos os campos corretos |
 
 Mapa visual da demo (rotas, falas, IDs, checklist): `public/demo-map.html` — no site em https://fontaraseguros.netlify.app/demo-map (também publicado em https://claude.ai/artifact/5z42TrDxJ5Z8aHaaXMMHUZ)

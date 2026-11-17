@@ -28,7 +28,7 @@ export interface DemoProfile {
 
 export type Persona = 'cliente' | 'vendedor'
 
-export type JourneyMode = 'api' | 'embedded-workflow' | 'embedded-webform'
+export type JourneyMode = 'api' | 'embedded-workflow' | 'embedded-webform' | 'whatsapp'
 
 export interface Journey {
   slug: string

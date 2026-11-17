@@ -228,3 +228,83 @@ export async function createProposalEnvelope(
   const result = await envelopesApi.createEnvelope(accountId, { envelopeDefinition })
   return { envelopeId: result.envelopeId, status: result.status, clientUserId }
 }
+
+// ---------- Contratação com entrega por WhatsApp ----------
+// deliveryMethod 'WhatsApp' só é respeitado em compositeTemplates (inlineTemplates.recipients);
+// em templateRoles o DocuSign ignora e volta para e-mail. WhatsApp não combina com e-mail no mesmo signatário.
+
+export const PROPOSTA_PF_TEMPLATE_ID = '8e999bc2-0e93-4917-84b3-315fc0ae97f9'
+
+export interface WhatsAppProposalInput {
+  name: string
+  phone: string // qualquer formato; normalizado para DDD + número
+  ccEmail?: string // cópia (papel Corretor) por e-mail
+  fields: Record<string, string> // tabLabel -> valor (campos do template PF)
+}
+
+// "(11) 99999-9999" | "+55 11 99999-9999" -> { countryCode: '55', number: '11999999999' }
+export function toBrPhone(raw: string): { countryCode: string; number: string } {
+  let d = String(raw || '').replace(/\D/g, '')
+  if (d.length > 11 && d.startsWith('55')) d = d.slice(2)
+  return { countryCode: '55', number: d }
+}
+
+export async function createWhatsAppProposal(input: WhatsAppProposalInput): Promise<CreatedEnvelope> {
+  const phoneNumber = toBrPhone(input.phone)
+  const textTabs = Object.entries(input.fields)
+    .filter(([, v]) => v !== undefined && v !== '')
+    .map(([tabLabel, value]) => ({ tabLabel, value: String(value) }))
+
+  const recipients: Record<string, unknown> = {
+    signers: [{
+      recipientId: '1',
+      roleName: 'Titular',
+      routingOrder: '1',
+      name: input.name,
+      deliveryMethod: 'WhatsApp',
+      phoneNumber,
+      tabs: { textTabs },
+    }],
+  }
+  if (input.ccEmail) {
+    recipients.carbonCopies = [{ recipientId: '2', roleName: 'Corretor', routingOrder: '2', name: 'Central Fontara Seguros', email: input.ccEmail }]
+  }
+
+  const res: any = await dsFetch(env.basePath, `/v2.1/accounts/${env.accountId}/envelopes`, {
+    method: 'POST',
+    body: {
+      status: 'sent',
+      emailSubject: 'Fontara Seguros - Proposta de Adesão para assinatura',
+      compositeTemplates: [{
+        compositeTemplateId: '1',
+        serverTemplates: [{ sequence: '1', templateId: PROPOSTA_PF_TEMPLATE_ID }],
+        inlineTemplates: [{ sequence: '2', recipients }],
+      }],
+    },
+  })
+  return { envelopeId: res.envelopeId, status: res.status }
+}
+
+export interface WhatsAppStatus {
+  envelopeId: string
+  status: string // sent | delivered | completed | declined | voided
+  signerStatus?: string
+  deliveredAt?: string
+  signedAt?: string
+  completedAt?: string
+}
+
+export async function getWhatsAppStatus(envelopeId: string): Promise<WhatsAppStatus> {
+  const e: any = await dsFetch(env.basePath, `/v2.1/accounts/${env.accountId}/envelopes/${encodeURIComponent(envelopeId)}`, {
+    query: { include: 'recipients' },
+  })
+  const s = e?.recipients?.signers?.[0]
+  return {
+    envelopeId,
+    status: e?.status,
+    signerStatus: s?.status,
+    deliveredAt: s?.deliveredDateTime,
+    signedAt: s?.signedDateTime,
+    completedAt: e?.completedDateTime,
+  }
+}

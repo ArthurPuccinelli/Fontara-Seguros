@@ -9,12 +9,14 @@ import { getJourney } from '@/lib/journeys'
 import JourneyForm from '@/components/JourneyForm'
 import DocusignEmbedModal from '@/components/DocusignEmbedModal'
 import WebFormJourney from '@/components/WebFormJourney'
+import WhatsAppJourney from '@/components/WhatsAppJourney'
 import type { JourneyMode, MaestroTriggerResponse } from '@/types/demo'
 
 const TAB_LABEL: Record<JourneyMode, string> = {
   api: 'Formulário do portal (API)',
   'embedded-workflow': 'Experiência DocuSign embarcada',
   'embedded-webform': 'Web Form DocuSign embarcado',
+  whatsapp: 'Envio por WhatsApp',
 }
 
 export default function NovaJornadaPage() {
@@ -103,6 +105,12 @@ export default function NovaJornadaPage() {
       {active === 'embedded-webform' && (
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 sm:p-6">
           <WebFormJourney journey={journey.slug} title={journey.title} />
+        </div>
+      )}
+
+      {active === 'whatsapp' && (
+        <div className="bg-white rounded-lg border border-gray-200 max-w-4xl">
+          <WhatsAppJourney origem="canal" />
         </div>
       )}
 

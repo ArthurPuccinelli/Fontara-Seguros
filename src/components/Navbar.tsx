@@ -19,12 +19,12 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-fontara-navy shadow-md">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-6">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-8 h-16 flex items-center justify-between gap-8">
         <a href="#" className="flex items-center shrink-0">
           <Image src="/logo.png" alt="Fontara Seguros" width={130} height={44} className="object-contain brightness-0 invert" priority />
         </a>
 
-        <nav className="hidden lg:flex items-center gap-6" aria-label="Navegação do site">
+        <nav className="hidden lg:flex items-center gap-8" aria-label="Navegação do site">
           {navLinks.map((link) => (
             <a key={link.href} href={link.href} className="text-sm text-white/70 hover:text-white transition">
               {link.label}

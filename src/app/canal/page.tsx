@@ -1,81 +1,123 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, FileStack, Zap, Layers, Plus } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { JOURNEYS } from '@/lib/journeys'
-import type { JourneyMode } from '@/types/demo'
+import { useAuth } from '@/context/AuthContext'
+import type { InstanceSummary, JourneyMode } from '@/types/demo'
 
 const MODE_LABEL: Record<JourneyMode, string> = {
-  api: 'Formulário do portal (API)',
-  'embedded-workflow': 'Experiência embarcada (Workflow)',
+  api: 'Formulário do portal',
+  'embedded-workflow': 'Docusign embarcado',
   'embedded-webform': 'Web Form embarcado',
+  whatsapp: 'Envio por WhatsApp',
 }
 
-const KPIS = [
-  { icon: FileStack, label: 'POPs digitalizados', value: '3', hint: 'de 38 mapeados' },
-  { icon: Zap, label: 'Jornadas ativas', value: String(JOURNEYS.length), hint: 'no catálogo' },
-  { icon: Layers, label: 'Assinaturas este mês', value: '1.284', hint: 'dados de demonstração' },
+const NUMEROS = [
+  { valor: '4', legenda: 'POPs digitalizados', nota: 'de 38 mapeados' },
+  { valor: '1.284', legenda: 'assinaturas no mês', nota: 'ilustrativo' },
+  { valor: '1h52', legenda: 'tempo médio até assinar', nota: 'antes: 6 dias' },
 ]
 
 export default function CanalHome() {
+  const { profile } = useAuth()
+  const [recentes, setRecentes] = useState<InstanceSummary[] | null>(null)
+
+  useEffect(() => {
+    fetch('/api/docusign/maestro/instances')
+      .then((r) => r.json())
+      .then((d) => setRecentes((d.instances ?? []).slice(0, 5)))
+      .catch(() => setRecentes([]))
+  }, [])
+
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-fontara-navy">Catálogo de jornadas</h1>
-        <p className="text-gray-500 text-sm mt-1">Escolha o POP digital que deseja iniciar para o seu cliente.</p>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        {KPIS.map((k) => (
-          <div key={k.label} className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
-            <div className="p-3 rounded-lg bg-fontara-light text-fontara-accent">
-              <k.icon size={22} />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-fontara-navy leading-none">{k.value}</div>
-              <div className="text-xs text-gray-600 mt-1">{k.label}</div>
-              <div className="text-[10px] text-gray-400">{k.hint}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {JOURNEYS.map((j) => (
-          <Link
-            key={j.slug}
-            href={`/canal/nova-jornada/${j.slug}`}
-            className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex flex-col hover:shadow-md transition group"
-          >
-            <div className="flex items-center justify-between gap-2 mb-3">
-              <span className="text-[11px] font-semibold bg-fontara-gold/15 text-amber-800 px-2 py-1 rounded-full">
-                substitui {j.popCode}
-              </span>
-              <div className="flex gap-1">
-                {j.publico.map((p) => (
-                  <span key={p} className="text-[10px] font-bold bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">{p}</span>
-                ))}
-              </div>
-            </div>
-            <h2 className="font-semibold text-fontara-navy mb-1">{j.title}</h2>
-            <p className="text-gray-500 text-xs leading-relaxed mb-4 flex-1">{j.description}</p>
-            <div className="flex flex-wrap gap-1.5 mb-3">
-              {j.produtos.map((p) => (
-                <span key={p} className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">{p}</span>
-              ))}
-            </div>
-            <div className="text-[11px] text-gray-400 mb-3">{j.modes.map((m) => MODE_LABEL[m]).join(' · ')}</div>
-            <span className="text-sm font-semibold text-fontara-accent flex items-center gap-1 group-hover:gap-2 transition-all">
-              Iniciar jornada <ArrowRight size={15} />
-            </span>
-          </Link>
-        ))}
-
-        <div className="rounded-xl border-2 border-dashed border-gray-200 p-5 flex flex-col items-center justify-center text-center text-gray-400">
-          <Plus size={24} className="mb-2" />
-          <p className="text-sm font-medium text-gray-500">Novo POP = nova entrada no catálogo</p>
-          <p className="text-xs mt-1">Aponte para um workflow ou Web Form do DocuSign — sem desenvolver uma nova tela.</p>
+      <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-end border-b border-gray-300 pb-8">
+        <div>
+          <p className="text-xs uppercase tracking-[0.18em] text-gray-400">Cliente em atendimento</p>
+          <p className="text-3xl font-semibold tracking-tight text-fontara-navy mt-2">{profile.name}</p>
+          <p className="text-sm text-gray-500 mt-1 tabular-nums">
+            {profile.cpf} · {profile.phone} · PJ {profile.pj.razaoSocial}
+            <Link href="/area-cliente/perfil" className="ml-3 text-fontara-accent hover:underline underline-offset-4">trocar</Link>
+          </p>
         </div>
+        <dl className="flex gap-10">
+          {NUMEROS.map((n) => (
+            <div key={n.legenda}>
+              <dt className="sr-only">{n.legenda}</dt>
+              <dd className="text-2xl font-semibold tabular-nums text-fontara-navy">{n.valor}</dd>
+              <dd className="text-xs text-gray-600">{n.legenda}</dd>
+              <dd className="text-[11px] text-gray-400">{n.nota}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      <div className="grid lg:grid-cols-[1fr_340px] gap-10 mt-10">
+        <section className="min-w-0">
+          <div className="flex items-baseline justify-between mb-2">
+            <h1 className="text-sm font-semibold text-gray-700">Iniciar jornada</h1>
+            <span className="text-xs text-gray-400">{JOURNEYS.length} no catálogo</span>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="text-left text-[11px] uppercase tracking-wider text-gray-400 border-b border-gray-200">
+                <tr>
+                  <th className="font-medium px-5 py-3 w-28">POP</th>
+                  <th className="font-medium px-5 py-3">Jornada</th>
+                  <th className="font-medium px-5 py-3 hidden md:table-cell">Como roda</th>
+                  <th className="px-5 py-3 w-10" />
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {JOURNEYS.map((j) => (
+                  <tr key={j.slug} className="group hover:bg-[#faf9f6]">
+                    <td className="px-5 py-4 align-top font-mono text-xs text-gray-500 whitespace-nowrap">{j.popCode}</td>
+                    <td className="px-5 py-4 align-top">
+                      <Link href={`/canal/nova-jornada/${j.slug}`} className="font-medium text-gray-900 group-hover:text-fontara-navy">
+                        {j.title}
+                      </Link>
+                      <p className="text-xs text-gray-500 mt-1 max-w-md leading-relaxed">{j.description}</p>
+                      <p className="text-[11px] text-gray-400 mt-2">{j.publico.join(' / ')} · {j.produtos.join(', ')}</p>
+                    </td>
+                    <td className="px-5 py-4 align-top text-xs text-gray-600 hidden md:table-cell whitespace-nowrap">
+                      {j.modes.map((m) => <div key={m}>{MODE_LABEL[m]}</div>)}
+                    </td>
+                    <td className="px-5 py-4 align-top">
+                      <Link href={`/canal/nova-jornada/${j.slug}`} aria-label={`Iniciar ${j.title}`} className="text-gray-300 group-hover:text-fontara-navy transition">
+                        <ArrowRight size={16} />
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-gray-400 mt-3">
+            Um novo POP entra aqui como uma linha de configuração apontando para um workflow ou Web Form, sem tela nova.
+          </p>
+        </section>
+
+        <aside>
+          <div className="flex items-baseline justify-between border-b border-gray-300 pb-2">
+            <h2 className="text-sm font-semibold text-gray-700">Em andamento</h2>
+            <Link href="/canal/acompanhamento" className="text-xs text-fontara-accent hover:underline underline-offset-4">ver tudo</Link>
+          </div>
+          {recentes === null && <p className="text-sm text-gray-400 py-4">Carregando…</p>}
+          {recentes?.length === 0 && <p className="text-sm text-gray-400 py-4">Nenhuma jornada recente.</p>}
+          <ul>
+            {recentes?.map((i) => (
+              <li key={i.id} className="py-3 border-b border-gray-200">
+                <p className="text-sm text-gray-800 truncate">{i.workflowName || i.name}</p>
+                <p className="text-xs text-gray-400 mt-0.5 flex justify-between gap-2">
+                  <span className="truncate">{i.currentStep || i.name}</span>
+                  <span className={i.status.toLowerCase().includes('complet') ? 'text-emerald-700' : 'text-amber-700'}>{i.status}</span>
+                </p>
+              </li>
+            ))}
+          </ul>
+        </aside>
       </div>
     </div>
   )

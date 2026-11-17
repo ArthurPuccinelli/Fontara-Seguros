@@ -155,6 +155,7 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
     </dl></div>
     <div class="lg"><h3>Assinatura</h3><dl>
       <dt><span class="tag sign">Remota por e-mail</span></dt><dd>Cada signatário recebe o link por e-mail (SMS/WhatsApp opcional).</dd>
+      <dt><span class="tag sign">Entrega por WhatsApp</span></dt><dd>O signatário recebe a mensagem da Docusign no WhatsApp e assina pelo celular (<code>deliveryMethod: WhatsApp</code>, sem e-mail).</dd>
       <dt><span class="tag sign">Embarcada · Focused View ⇄ Clássica</span></dt><dd>Assinatura dentro do portal. Alterne no seletor discreto “Assinatura: Focused View · Clássica” no canto da janela.</dd>
       <dt><span class="tag sign">Dentro do workflow embarcado</span></dt><dd>A assinatura acontece na tela do próprio Workflow Builder (sem opção de Focused View).</dd>
     </dl></div>
@@ -193,23 +194,30 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
   <div class="demos">
 
     <article class="demo">
-      <div class="demo-head"><span class="id">C1</span><div><h3>Resgate / Portabilidade</h3><p class="where">Card <b>Resgate / Portabilidade</b></p></div></div>
-      <p class="trigger"><b>Gatilho:</b> clique no card → <code>POST /api/docusign/webforms/instance</code> cria a instância com <code>formValues</code> do perfil (nome, e-mail, CPF, nº do certificado).</p>
+      <div class="demo-head"><span class="id">C1</span><div><h3>Resgate / Portabilidade</h3><p class="where">Produto PGBL → <b>Resgatar ou portar</b> (ou Serviços → Resgate ou portabilidade)</p></div></div>
+      <p class="trigger"><b>Gatilho:</b> clique → <code>POST /api/docusign/webforms/instance</code> cria a instância com <code>formValues</code> do perfil (nome, e-mail, CPF, nº do certificado).</p>
       <div class="flow"><span class="tag api">API → Web Form</span><span class="arrow">→</span><span class="tag form">Pré-preenchido por API</span><span class="arrow">→</span><span class="tag form">Web Form embarcado</span><span class="arrow">→</span><span class="tag form">Regras condicionais</span><span class="arrow">→</span><span class="tag doc">Template eSignature preenchido</span><span class="arrow">→</span><span class="tag sign">Embarcada · Focused View ⇄ Clássica</span></div>
       <ul class="show"><li>Nome e CPF chegam travados; “Resgate parcial” mostra o valor, “Portabilidade” mostra entidade e CNPJ.</li><li>O documento é o template do Web Form preenchido com as respostas (não é Doc Gen).</li><li>O seletor de assinatura recria a instância no formato escolhido.</li></ul>
     </article>
 
     <article class="demo">
-      <div class="demo-head"><span class="id">C2</span><div><h3>Alterar dados cadastrais</h3><p class="where">Card <b>Alterar Dados Cadastrais</b></p></div></div>
+      <div class="demo-head"><span class="id">C2</span><div><h3>Alterar dados cadastrais</h3><p class="where">Pendências → <b>Confirmar agora</b> (ou Serviços → Atualizar dados cadastrais)</p></div></div>
       <p class="trigger"><b>Gatilho:</b> clique → <code>POST /api/docusign/maestro</code> → workflow “Portal atualizacao de cadastro Salesforce” num iframe.</p>
       <div class="flow"><span class="tag api">API → Workflow</span><span class="arrow">→</span><span class="tag form">Web Form (dentro do workflow)</span><span class="arrow">→</span><span class="tag post">Salesforce: ler</span><span class="arrow">→</span><span class="tag form">Web Form com os dados do CRM</span><span class="arrow">→</span><span class="tag post">Salesforce: gravar</span></div>
       <ul class="show"><li>Não gera documento nem assinatura: mostra integração com CRM sem código.</li><li>O workflow não recebe dados do portal; o cliente digita no primeiro formulário.</li></ul>
     </article>
 
     <article class="demo">
-      <div class="demo-head"><span class="id">C3</span><div><h3>Meus contratos</h3><p class="where">Card <b>Meus contratos</b></p></div></div>
-      <p class="trigger"><b>Gatilho:</b> abrir o card → <code>GET /api/docusign/agreements</code> filtrado pelo CPF do perfil.</p>
+      <div class="demo-head"><span class="id">C3</span><div><h3>Meus contratos</h3><p class="where">Menu <b>Documentos</b>, ou Vida Família → Ver contrato</p></div></div>
+      <p class="trigger"><b>Gatilho:</b> abrir → <code>GET /api/docusign/agreements</code> filtrado pelo CPF do perfil.</p>
       <div class="flow"><span class="tag api">API → Agreement Manager</span><span class="arrow">→</span><span class="tag post">Agreement Manager · IA</span></div>
+    </article>
+
+    <article class="demo">
+      <div class="demo-head"><span class="id">C4</span><div><h3>Contratação pelo WhatsApp</h3><p class="where">Bloco <b>Contratação pelo WhatsApp</b> → Ver planos (também no Canal: POP-VP-002)</p></div></div>
+      <p class="trigger"><b>Gatilho:</b> escolher plano → confirmar celular → <code>POST /api/docusign/whatsapp</code> cria o envelope (template Proposta PF via <code>compositeTemplates</code>) com o titular em <code>deliveryMethod: WhatsApp</code>. A tela consulta <code>GET /api/docusign/whatsapp?envelopeId=</code> a cada 5 s.</p>
+      <div class="flow"><span class="tag form">Form do portal</span><span class="arrow">→</span><span class="tag api">API → Envelope</span><span class="arrow">→</span><span class="tag doc">Template eSignature preenchido</span><span class="arrow">→</span><span class="tag sign">Entrega por WhatsApp</span><span class="arrow">→</span><span class="tag post">Status por API</span></div>
+      <ul class="show"><li>Use o seu celular no perfil de demo: a mensagem chega no WhatsApp em segundos.</li><li>A trilha avança sozinha: enviada → cliente abriu → assinada.</li><li>Cópia por e-mail para o e-mail do perfil (papel Corretor).</li><li>Sem e-mail para o titular: WhatsApp não combina com e-mail no mesmo signatário.</li></ul>
     </article>
 
   </div>
@@ -276,7 +284,7 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
           <th><span class="tv">Workflow</span></th><th><span class="tv">Web Form</span></th><th><span class="tv">Envelope</span></th>
           <th><span class="tv">Form do portal</span></th><th><span class="tv">Web Form embarcado</span></th><th><span class="tv">Pré-preenchido</span></th>
           <th><span class="tv">Template eSignature</span></th><th><span class="tv">Doc Gen (modelo)</span></th><th><span class="tv">Gerado pelo portal</span></th>
-          <th><span class="tv">Remota (e-mail)</span></th><th><span class="tv">Focused ⇄ Clássica</span></th><th><span class="tv">No workflow</span></th>
+          <th><span class="tv">Remota (e-mail/WhatsApp)</span></th><th><span class="tv">Focused ⇄ Clássica</span></th><th><span class="tv">No workflow</span></th>
           <th><span class="tv">Status API</span></th><th><span class="tv">IA / contratos</span></th><th><span class="tv">Salesforce</span></th></tr>
       </thead>
       <tbody>
@@ -285,6 +293,7 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
         <tr><td>C1 Resgate</td><td></td><td><i class="dot api"></i></td><td></td><td></td><td><i class="dot form"></i></td><td><i class="dot form"></i></td><td><i class="dot doc"></i></td><td></td><td></td><td></td><td><i class="dot sign"></i></td><td></td><td></td><td></td><td></td></tr>
         <tr><td>C2 Dados cadastrais</td><td><i class="dot api"></i></td><td></td><td></td><td></td><td><i class="dot form"></i></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><i class="dot post"></i></td></tr>
         <tr><td>C3 Meus contratos</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><i class="dot post"></i></td><td></td></tr>
+        <tr><td>C4 WhatsApp</td><td></td><td></td><td><i class="dot api"></i></td><td><i class="dot form"></i></td><td></td><td></td><td><i class="dot doc"></i></td><td></td><td></td><td><i class="dot sign"></i></td><td></td><td></td><td><i class="dot post"></i></td><td></td><td></td></tr>
         <tr><td>V1 Proposta (API)</td><td><i class="dot api"></i></td><td></td><td></td><td><i class="dot form"></i></td><td></td><td></td><td><i class="dot doc"></i></td><td></td><td></td><td><i class="dot sign"></i></td><td></td><td></td><td></td><td></td><td></td></tr>
         <tr><td>V2 Proposta embarcada</td><td><i class="dot api"></i></td><td></td><td></td><td></td><td><i class="dot form"></i></td><td></td><td></td><td><i class="dot doc"></i></td><td></td><td></td><td></td><td><i class="dot sign"></i></td><td></td><td></td><td><i class="dot post"></i></td></tr>
         <tr><td>V3 Acompanhamento</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><i class="dot post"></i></td><td></td><td></td></tr>
@@ -302,6 +311,7 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
     <li><span><span class="id">V1</span> Mesma tela em PJ: 2 representantes + testemunhas</span></li>
     <li><span><span class="id">V2</span> A mesma jornada como experiência DocuSign embarcada</span></li>
     <li><span><span class="id">C1</span> Cliente: Resgate com Web Form pré-preenchido e Focused View</span></li>
+    <li><span><span class="id">C4</span> Contratação com assinatura pelo WhatsApp (celular na mão)</span></li>
     <li><span><span class="id">H1</span> eSignature API pura: Focused View ⇄ Clássica</span></li>
     <li><span><span class="id">V3</span> Acompanhamento dos envelopes em tempo real</span></li>
     <li><span><span class="id">V4</span> Contratos legados com IA e vencimentos</span></li>
@@ -320,7 +330,7 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
           <tr><td>Workflow</td><td>Fontara Seguros - Onboarding de cliente portal</td><td class="mono">0359ae48-47dc-45be-a7b8-9ae20894eaba</td><td>H2, V2</td></tr>
           <tr><td>Workflow</td><td>Fontara Seguros - Portal atualizacao de cadastro Salesforce</td><td class="mono">98e2f24c-e903-4692-b599-21fd8214e04e</td><td>C2</td></tr>
           <tr><td>Web Form</td><td>Fontara Seguros - Resgate/Portabilidade</td><td class="mono">b5a06678-688d-4243-952f-f0dccb9a19c7</td><td>C1</td></tr>
-          <tr><td>Template eSignature</td><td>Proposta de Adesao PF / PJ</td><td class="mono">8e999bc2… / d47237d8…</td><td>V1</td></tr>
+          <tr><td>Template eSignature</td><td>Proposta de Adesao PF / PJ</td><td class="mono">8e999bc2… / d47237d8…</td><td>V1, C4 (PF)</td></tr>
           <tr><td>Modelos de documentos</td><td>Proposta padrão Vida · Empresarial e Patrimonial</td><td class="mono">—</td><td>H2, V2</td></tr>
         </tbody>
       </table></div>

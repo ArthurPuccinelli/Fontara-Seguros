@@ -4,176 +4,209 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { User, FileText, AlertTriangle, LogOut, ChevronRight, Phone, UserCog, ArrowRightLeft, X } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import MaestroModal from '@/components/MaestroModal'
 import WebFormJourney from '@/components/WebFormJourney'
+import WhatsAppJourney from '@/components/WhatsAppJourney'
 import EmbedShell from '@/components/EmbedShell'
 import AgreementSearch from '@/components/AgreementSearch'
 
 const DADOS_CADASTRAIS_WORKFLOW = '98e2f24c-e903-4692-b599-21fd8214e04e'
 
-type Action = 'maestro' | 'resgate' | 'contratos'
+type Action = 'maestro' | 'resgate' | 'contratos' | 'whatsapp'
 
-const menuItems: {
-  icon: typeof User
-  title: string
-  description: string
-  color: string
-  href?: string
-  action?: Action
-  soon?: boolean
-}[] = [
+// Dados ilustrativos da carteira do cliente (não vêm da DocuSign).
+const PRODUTOS = [
   {
-    icon: UserCog,
-    title: 'Meus dados de demo',
-    description: 'Configure os dados que pré-preenchem todas as demos',
-    color: 'bg-fontara-light text-fontara-accent',
-    href: '/area-cliente/perfil',
+    nome: 'Previdência Horizonte PGBL',
+    numero: 'CERT-PGBL-2020-0031942',
+    valor: 'R$ 48.312,77',
+    legenda: 'saldo acumulado',
+    extra: '+9,4% em 12 meses',
+    acao: { label: 'Resgatar ou portar', action: 'resgate' as Action },
   },
   {
-    icon: User,
-    title: 'Alterar Dados Cadastrais',
-    description: 'Atualize suas informações pessoais e de contato',
-    color: 'bg-blue-50 text-blue-600',
-    action: 'maestro',
-  },
-  {
-    icon: ArrowRightLeft,
-    title: 'Resgate / Portabilidade',
-    description: 'Solicite resgate ou portabilidade do seu plano de previdência',
-    color: 'bg-green-50 text-green-600',
-    action: 'resgate',
-  },
-  {
-    icon: FileText,
-    title: 'Meus contratos',
-    description: 'Consulte seus contratos e vencimentos',
-    color: 'bg-purple-50 text-purple-600',
-    action: 'contratos',
-  },
-  {
-    icon: AlertTriangle,
-    title: 'Sinistros',
-    description: 'Abra e acompanhe ocorrências e acionamentos',
-    href: '#',
-    color: 'bg-amber-50 text-amber-600',
-    soon: true,
+    nome: 'Vida Família',
+    numero: 'APO-VIDA-2019-0007731',
+    valor: 'R$ 250.000,00',
+    legenda: 'capital segurado',
+    extra: 'vigente até 03/2027',
+    acao: { label: 'Ver contrato', action: 'contratos' as Action },
   },
 ]
+
+const ATIVIDADE = [
+  { quando: '12 nov', texto: 'Contribuição mensal de R$ 500,00 confirmada' },
+  { quando: '03 nov', texto: 'Extrato de outubro disponível' },
+  { quando: '21 out', texto: 'Beneficiários do Vida Família revisados' },
+]
+
+function saudacao(d: Date) {
+  const h = d.getHours()
+  return h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'
+}
 
 export default function AreaClientePage() {
   const { user, ready, logout } = useAuth()
   const router = useRouter()
   const [modal, setModal] = useState<Action | null>(null)
+  const [agora, setAgora] = useState<Date | null>(null)
 
   useEffect(() => {
     if (ready && !user) router.replace('/area-cliente/login')
   }, [ready, user, router])
+  useEffect(() => setAgora(new Date()), [])
 
   if (!ready || !user) return null
 
-  function handleLogout() {
-    logout()
-    router.push('/')
-  }
+  const primeiro = user.name.split(' ')[0]
+  const iniciais = user.name.split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toUpperCase()
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-fontara-navy shadow-md">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <a href="/">
-            <Image src="/logo.png" alt="Fontara Seguros" width={140} height={48} className="object-contain brightness-0 invert" priority />
+    <div className="min-h-screen bg-[#f6f5f1] text-gray-900">
+      <header className="bg-fontara-navy">
+        <div className="max-w-6xl mx-auto px-4 sm:px-8 h-16 flex items-center gap-8">
+          <a href="/" className="shrink-0">
+            <Image src="/logo.png" alt="Fontara Seguros" width={120} height={40} className="object-contain brightness-0 invert" priority />
           </a>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 text-white/70 hover:text-white text-sm transition"
-          >
-            <LogOut size={16} />
-            Sair
-          </button>
+          <nav className="hidden md:flex items-center gap-6 text-sm" aria-label="Área do cliente">
+            <span className="text-white font-medium">Visão geral</span>
+            <button onClick={() => setModal('contratos')} className="text-white/60 hover:text-white transition">Documentos</button>
+            <Link href="/area-cliente/perfil" className="text-white/60 hover:text-white transition">Meus dados</Link>
+          </nav>
+          <div className="ml-auto flex items-center gap-4">
+            <span className="hidden sm:flex items-center gap-2 text-sm text-white/80">
+              <span className="w-8 h-8 rounded-full bg-white/10 text-white text-xs font-semibold flex items-center justify-center">{iniciais}</span>
+              {primeiro}
+            </span>
+            <button
+              onClick={() => {
+                logout()
+                router.push('/')
+              }}
+              className="text-sm text-white/60 hover:text-white transition"
+            >
+              Sair
+            </button>
+          </div>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
-        {/* Welcome */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-fontara-navy">
-            Olá, {user.name.split(' ')[0]}!
-          </h1>
-          <p className="text-gray-500 text-sm mt-1">O que você precisa hoje?</p>
-        </div>
+      <main className="max-w-6xl mx-auto px-4 sm:px-8 pt-10 pb-16">
+        <p className="text-xs uppercase tracking-[0.18em] text-gray-400" suppressHydrationWarning>
+          {agora?.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
+        </p>
+        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-fontara-navy mt-2">
+          {agora ? saudacao(agora) : 'Olá'}, {primeiro}.
+        </h1>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-          {menuItems.map((item) => {
-            const Icon = item.icon
+        <div className="grid lg:grid-cols-[1fr_320px] gap-10 mt-10">
+          <div className="min-w-0">
+            <section>
+              <div className="flex items-baseline justify-between border-b border-gray-300 pb-2">
+                <h2 className="text-sm font-semibold text-gray-700">Seus produtos</h2>
+                <span className="text-xs text-gray-400">2 ativos</span>
+              </div>
+              <ul>
+                {PRODUTOS.map((p) => (
+                  <li key={p.numero} className="grid sm:grid-cols-[1fr_auto] gap-x-6 gap-y-3 py-6 border-b border-gray-200">
+                    <div>
+                      <p className="font-medium text-gray-900">{p.nome}</p>
+                      <p className="text-xs text-gray-400 font-mono mt-1">{p.numero}</p>
+                      <button
+                        onClick={() => setModal(p.acao.action)}
+                        className="mt-4 text-sm text-fontara-accent hover:text-fontara-navy underline underline-offset-4 decoration-fontara-accent/30"
+                      >
+                        {p.acao.label}
+                      </button>
+                    </div>
+                    <div className="sm:text-right">
+                      <p className="text-2xl font-semibold tabular-nums tracking-tight text-fontara-navy">{p.valor}</p>
+                      <p className="text-xs text-gray-500">{p.legenda}</p>
+                      <p className="text-xs text-emerald-700 mt-1">{p.extra}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
 
-            if (item.action) {
-              return (
-                <button
-                  key={item.title}
-                  onClick={() => setModal(item.action!)}
-                  className="relative bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-start gap-4 group transition hover:shadow-md text-left w-full"
-                >
-                  <div className={`p-3 rounded-lg ${item.color} shrink-0`}>
-                    <Icon size={22} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h2 className="font-semibold text-fontara-navy text-sm">{item.title}</h2>
-                    <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">{item.description}</p>
-                  </div>
-                  <ChevronRight size={18} className="text-gray-300 group-hover:text-fontara-navy transition shrink-0 mt-1" />
-                </button>
-              )
-            }
-
-            return (
-              <Link
-                key={item.title}
-                href={item.href!}
-                className={`relative bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-start gap-4 group transition hover:shadow-md ${item.soon ? 'opacity-60 pointer-events-none' : ''}`}
+            <section className="mt-10 bg-white border border-gray-200 rounded-lg p-6 sm:p-8 grid sm:grid-cols-[1fr_auto] gap-6 items-end">
+              <div>
+                <p className="text-xs uppercase tracking-[0.18em] text-[#128C4A] font-semibold">Contratação pelo WhatsApp</p>
+                <p className="text-xl font-semibold text-fontara-navy mt-2 tracking-tight max-w-md">
+                  Escolha um plano aqui e assine a proposta no seu celular.
+                </p>
+                <p className="text-sm text-gray-500 mt-2 max-w-md">
+                  Sem e-mail, sem papel. A proposta chega no WhatsApp de {user.phone || 'cadastro'} e é assinada em poucos toques.
+                </p>
+              </div>
+              <button
+                onClick={() => setModal('whatsapp')}
+                className="inline-flex items-center gap-2 bg-fontara-navy text-white text-sm font-semibold px-5 py-3 rounded-md hover:bg-fontara-blue transition whitespace-nowrap"
               >
-                <div className={`p-3 rounded-lg ${item.color} shrink-0`}>
-                  <Icon size={22} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h2 className="font-semibold text-fontara-navy text-sm">{item.title}</h2>
-                    {item.soon && (
-                      <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium">Em breve</span>
-                    )}
-                  </div>
-                  <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">{item.description}</p>
-                </div>
-                {!item.soon && (
-                  <ChevronRight size={18} className="text-gray-300 group-hover:text-fontara-navy transition shrink-0 mt-1" />
-                )}
-              </Link>
-            )
-          })}
-        </div>
+                Ver planos <ArrowUpRight size={15} />
+              </button>
+            </section>
 
-        {/* Help banner */}
-        <div className="bg-fontara-navy/5 border border-fontara-navy/10 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
-          <div>
-            <h3 className="font-semibold text-fontara-navy text-sm">Precisa de ajuda?</h3>
-            <p className="text-gray-500 text-xs mt-0.5">Nossa equipe está disponível de seg. a sex., das 8h às 18h.</p>
+            <section className="mt-10">
+              <h2 className="text-sm font-semibold text-gray-700 border-b border-gray-300 pb-2">Serviços</h2>
+              <ul className="grid sm:grid-cols-2 gap-x-10">
+                {[
+                  { label: 'Atualizar dados cadastrais', onClick: () => setModal('maestro') },
+                  { label: 'Resgate ou portabilidade', onClick: () => setModal('resgate') },
+                  { label: 'Contratos e documentos', onClick: () => setModal('contratos') },
+                  { label: 'Contratar novo plano', onClick: () => setModal('whatsapp') },
+                ].map((s) => (
+                  <li key={s.label} className="border-b border-gray-200">
+                    <button onClick={s.onClick} className="w-full flex items-center justify-between py-4 text-sm text-gray-800 hover:text-fontara-navy group">
+                      {s.label}
+                      <ArrowUpRight size={15} className="text-gray-300 group-hover:text-fontara-navy transition" />
+                    </button>
+                  </li>
+                ))}
+                <li className="border-b border-gray-200 py-4 text-sm text-gray-400 flex justify-between">
+                  Comunicar sinistro <span className="text-xs">em breve</span>
+                </li>
+              </ul>
+            </section>
           </div>
-          <a
-            href="tel:+551130000000"
-            className="flex items-center gap-2 bg-fontara-navy text-white text-sm px-4 py-2 rounded-lg hover:bg-fontara-navy/90 transition shrink-0"
-          >
-            <Phone size={15} />
-            (11) 3000-0000
-          </a>
+
+          <aside className="space-y-10">
+            <section>
+              <h2 className="text-sm font-semibold text-gray-700 border-b border-gray-300 pb-2">Pendências</h2>
+              <div className="py-5 border-b border-gray-200">
+                <p className="text-sm text-gray-800">Seu endereço e telefone não são confirmados desde 2023.</p>
+                <button onClick={() => setModal('maestro')} className="mt-3 text-sm font-semibold text-fontara-navy hover:underline underline-offset-4">
+                  Confirmar agora
+                </button>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-sm font-semibold text-gray-700 border-b border-gray-300 pb-2">Atividade recente</h2>
+              <ul>
+                {ATIVIDADE.map((a) => (
+                  <li key={a.texto} className="flex gap-4 py-3 border-b border-gray-200 text-sm">
+                    <span className="w-12 shrink-0 text-xs text-gray-400 tabular-nums pt-0.5">{a.quando}</span>
+                    <span className="text-gray-700">{a.texto}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            <section className="text-sm text-gray-500 leading-relaxed">
+              <p className="text-gray-700 font-medium">Central de atendimento</p>
+              <p className="tabular-nums">(11) 3000-0000 · seg. a sex., 8h às 18h</p>
+              <Link href="/area-cliente/perfil" className="inline-block mt-4 text-xs text-gray-400 hover:text-gray-600">
+                Dados usados na demonstração
+              </Link>
+            </section>
+          </aside>
         </div>
       </main>
 
-      {modal === 'maestro' && (
-        <MaestroModal workflowId={DADOS_CADASTRAIS_WORKFLOW} onClose={() => setModal(null)} />
-      )}
+      {modal === 'maestro' && <MaestroModal workflowId={DADOS_CADASTRAIS_WORKFLOW} onClose={() => setModal(null)} />}
 
       {modal === 'resgate' && (
         <EmbedShell label="Resgate / Portabilidade" onClose={() => setModal(null)}>
@@ -181,26 +214,19 @@ export default function AreaClientePage() {
         </EmbedShell>
       )}
 
+      {modal === 'whatsapp' && (
+        <EmbedShell label="Contratação pelo WhatsApp" onClose={() => setModal(null)}>
+          <WhatsAppJourney origem="cliente" />
+        </EmbedShell>
+      )}
+
       {modal === 'contratos' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setModal(null)}
-              className="absolute top-4 right-4 z-10 p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
-              aria-label="Fechar"
-            >
-              <X size={20} />
-            </button>
-            <div className="px-6 py-4 border-b border-gray-100 pr-14">
-              <h2 className="text-lg font-bold text-fontara-navy">
-                Meus contratos
-              </h2>
-            </div>
-            <div className="p-4 sm:p-6">
-              <AgreementSearch initialCpfCnpj={user.cpf} lockCpfCnpj />
-            </div>
+        <EmbedShell label="Contratos e documentos" onClose={() => setModal(null)}>
+          <div className="p-6 sm:p-8">
+            <h2 className="text-xl font-semibold text-fontara-navy tracking-tight border-b border-gray-200 pb-4 mb-6">Contratos e documentos</h2>
+            <AgreementSearch initialCpfCnpj={user.cpf} lockCpfCnpj />
           </div>
-        </div>
+        </EmbedShell>
       )}
     </div>
   )

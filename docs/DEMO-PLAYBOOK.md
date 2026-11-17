@@ -21,7 +21,7 @@
 | **Docusign MCP Server** | Agentes (Claude etc.) consultam/agem na conta | Demo ao vivo no Claude: "quais contratos vencem em 90 dias?" | GA; usa permissões do usuário |
 | **App Center / Extension apps** | Integrações (CRM, Data Verification, custom) | Passo de workflow chamando sistema | Requer app hospedado para custom |
 | **Brands** | White label (logo, cores, idioma, textos) | Brand pt_BR aplicada ao envelope/workflow | |
-| **WhatsApp / SMS delivery** | Entrega do envelope por canal móvel | Configurar no recipient | Checar habilitação na conta demo |
+| **WhatsApp / SMS delivery** | Entrega do envelope por canal móvel | `deliveryMethod` + `phoneNumber` no signer (ver §WhatsApp) | Habilitado na conta demo Fontara Financial (17/11/2026) |
 
 ---
 
@@ -144,6 +144,21 @@ Implementação: `src/components/SigningEmbed.tsx`, `src/components/WebFormEmbed
 
 ---
 
+## WhatsApp delivery por API (17/11/2026)
+
+Signer com `deliveryMethod: "WhatsApp"` e `phoneNumber: {countryCode: "55", number: "11999999999"}` (DDD + número, só dígitos). Sem `email`.
+
+- **Pegadinha:** em `templateRoles`, o `deliveryMethod` é **ignorado** e o envelope volta para e-mail. Use `compositeTemplates`: `serverTemplates` (templateId) + `inlineTemplates.recipients.signers` com o mesmo `roleName` e as `tabs` de pré-preenchimento.
+- **Restrições:**
+  - WhatsApp não combina com e-mail no mesmo signatário.
+  - No máximo 5 destinatários SMS/WhatsApp por envelope.
+  - Não dá para usar autenticação por telefone.
+  - A mensagem do remetente não é incluída.
+- **CC por e-mail:** o CC pode continuar por e-mail; é útil para o apresentador receber a cópia.
+- **Teste sem enviar nada:** crie o envelope com `status: "created"` (rascunho) e leia `listRecipients`. O `deliveryMethod` precisa voltar `whatsapp`.
+- **Status:** `GET envelopes/{id}?include=recipients` devolve o signer `status` (`sent` → `delivered` quando abre → `completed`). Polling de 5 s é suficiente para demo ao vivo.
+- **Narrativa:** "o cliente contrata no portal e assina no WhatsApp, sem e-mail e sem app". Funciona muito bem com o celular do prospect na mão.
+
 ## 5. Cases de mercado (por setor)
 
 ### Seguros / Vida e Previdência (BR)
@@ -171,6 +186,6 @@ Implementação: `src/components/SigningEmbed.tsx`, `src/components/WebFormEmbed
 ## 7. Perguntas em aberto (validar com produto/SE)
 - IDV: suporte a CNH/RG digital e validação de CPF na Receita?
 - ICP-Brasil com certificado em nuvem (assinatura remota)?
-- WhatsApp delivery em envelopes disparados por Workflow Builder / embedded?
+- WhatsApp delivery em envelopes disparados por Workflow Builder / embedded? (por API eSignature: OK, ver §WhatsApp)
 - White label completo do Web Form (domínio, textos, CSS)?
 - Residência de dados BR para Navigator (LGPD)?
