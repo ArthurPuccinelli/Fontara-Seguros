@@ -40,6 +40,15 @@ const steps = [
     cta: 'Abrir (Área do Cliente)',
   },
   {
+    code: 'C5',
+    title: 'Alteração de beneficiários — modelo de documento editável',
+    dor: 'Cada mudança de texto ou cláusula de um formulário exige desenvolvimento e deploy.',
+    mostrar: 'Na Área do Cliente, "Alterar beneficiários": o termo sai da biblioteca Modelos de documentos com tabela dinâmica (um beneficiário por linha) e cláusulas condicionais (Vida × Previdência, menor de idade). Assinatura embarcada Focused View ⇄ Clássica. Edite o modelo na DocuSign, publique e gere de novo: o site já usa a nova versão.',
+    produto: 'Modelos de documentos (Doc Gen) + eSignature embarcado',
+    href: '/area-cliente',
+    cta: 'Abrir (Área do Cliente)',
+  },
+  {
     code: 'H1',
     title: 'Cotação com assinatura no site (eSignature API)',
     dor: 'Propostas impressas ou enviadas por e-mail atrasam o fechamento.',

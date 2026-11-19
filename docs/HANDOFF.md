@@ -42,13 +42,14 @@ Portal fictício **Fontara Seguros** (Next.js 14 + Tailwind, Netlify) que demons
 | C2 | Área do Cliente → Pendências → Confirmar agora | Workflow embarcado com Salesforce (sem documento) | Workflow `98e2f24c` |
 | C3 | Área do Cliente → Documentos | Navigator filtrado pelo CPF do perfil | Agreement Manager |
 | C4 | Área do Cliente → Contratação pelo WhatsApp (e Canal POP-VP-002) | Plano → celular → envelope com **entrega por WhatsApp** → trilha de status por polling | Template PF `8e999bc2` via compositeTemplates |
+| C5 | Área do Cliente → produto → Alterar beneficiários | Formulário do portal → modelo de envelope ligado a um **Modelo de documento** (tabela dinâmica + cláusulas condicionais + assinatura no modelo) → assinatura embarcada (Focused View ⇄ Clássica) | Modelo de documento `52cca5f1`, modelo de envelope `fdd421a2` |
 | V1 | Canal → Jornadas → POP-VP-001 → Formulário do portal | Form nativo PF/PJ (representantes, testemunhas) → trigger do workflow com 30 variáveis | Workflow `824dd961`, templates PF `8e999bc2` / PJ `d47237d8` |
 | V2 | Canal → mesma jornada → Experiência embarcada | Igual à H2 | Workflow `0359ae48` |
 | V3 | Canal → Acompanhamento | Instâncias de workflow e envelopes (refresh a cada 15 s) | Maestro + eSignature |
 | V4 | Canal → Contratos | Busca Navigator por CPF/CNPJ e vencimento (14 contratos legados) | Agreement Manager |
 | D1, D2 | Fora do portal | Console DocuSign; Claude + Docusign MCP | — |
 
-**Modelos de documentos** (biblioteca Doc Gen) aparecem só em **H2 e V2**:
+**Modelos de documentos** (biblioteca Doc Gen) aparecem em **H2, V2 e C5**. Em H2 e V2:
 - Vida usa "Proposta padrão Vida".
 - Empresarial e Auto usam "Empresarial e Patrimonial".
 
@@ -60,14 +61,15 @@ Portal fictício **Fontara Seguros** (Next.js 14 + Tailwind, Netlify) que demons
   - recipient view (Focused View);
   - `createProposalEnvelope` (H1, Doc Gen: rascunho → `docGenFormFields` → envio);
   - `buildCotacaoFields` (coberturas e prêmio por produto);
-  - `createWhatsAppProposal` / `getWhatsAppStatus` (C4).
+  - `createWhatsAppProposal` / `getWhatsAppStatus` (C4);
+  - `createBeneficiariosEnvelope` (C5: campos por label + tabela dinâmica `TableRow`).
 - `src/lib/docusign/{maestro,webforms,navigator,demo-data}.ts`.
 - `src/lib/crm.ts`: mapa CPF/CNPJ → nome. A IA do Navigator não extrai documento.
 - `src/lib/journeys.ts`: catálogo de POPs. Novo POP = nova entrada.
 - `src/lib/embedMode.ts`: preferência Focused View/Clássica no localStorage.
-- **Rotas** (`src/app/api/docusign/`): `maestro`, `maestro/instances`, `webforms/instance`, `signing-view`, `envelope` (H1), `envelopes`, `agreements`, `whatsapp` (POST envia, GET status), `consent`.
+- **Rotas** (`src/app/api/docusign/`): `maestro`, `maestro/instances`, `webforms/instance`, `signing-view`, `envelope` (H1), `envelopes`, `agreements`, `whatsapp` (POST envia, GET status), `beneficiarios` (C5), `consent`.
 - **Componentes principais:**
-  - `EmbedShell`, `SigningEmbed`, `WebFormJourney`, `WhatsAppJourney`.
+  - `EmbedShell`, `SigningEmbed`, `WebFormJourney`, `WhatsAppJourney`, `BeneficiariosJourney`.
   - `JourneyForm`, `MaestroModal`, `DocusignEmbedModal`, `AgreementSearch`, `CotacaoForm`.
 - **Páginas:**
   - `/area-cliente`: visão de conta com produtos, pendências e serviços.
@@ -93,6 +95,7 @@ Portal fictício **Fontara Seguros** (Next.js 14 + Tailwind, Netlify) que demons
 | Web Form Resgate/Portabilidade | `b5a06678-688d-4243-952f-f0dccb9a19c7` | ativo |
 | Template Doc Gen "Proposta de Seguro (Cotacao)" | `fe5d08f8-ae51-40db-9b08-f1a69ad36351` | ativo (H1) |
 | Templates eSignature Proposta PF / PJ | `8e999bc2-0e93-4917-84b3-315fc0ae97f9` / `d47237d8-e695-4b77-93a8-5164b581d29f` | ativos (V1, C4) |
+| Modelo de documento "Fontara Seguros - Alteração Beneficiários" | `52cca5f1-a378-444e-aede-600250756e12` | publicado (v4), usado pelo modelo de envelope `fdd421a2` (C5) |
 | Modelo de documento "Proposta de Adesao PF" | `92a21226-566d-4792-90de-750de2eff402` | **não publicado, sem campos mapeados; nenhuma demo usa** |
 | Agreement Manager "Legados Vida e Previdencia" | 14 PDFs | processados |
 

@@ -28,6 +28,7 @@
 3. **1C — Cliente final: Resgate/Portabilidade (6 min)** — `/area-cliente` → card Resgate. Web Form condicional (total/parcial/portabilidade) pré-preenchido → assinatura Focused View.
 4. **2/3 — Acompanhamento (4 min)** — `/canal/acompanhamento`: instâncias + envelopes, etapa atual.
 4b. **C4 — Contratação pelo WhatsApp (4 min)** — `/area-cliente` → bloco "Contratação pelo WhatsApp" → Ver planos → confirmar celular. A mensagem chega no WhatsApp; a trilha na tela avança até "assinada".
+4c. **C5 — Alteração de beneficiários (4 min)** — `/area-cliente` → Vida Família → Alterar beneficiários. Mostre a tabela crescendo e as cláusulas mudando (Vida × PGBL, menor). Depois, abra o modelo em Modelos de documentos, edite uma frase, publique e gere de novo: o site já reflete.
 5. **4 — Pós-assinatura com IA (8 min)** — Navigator com 14 contratos legados; `/canal/contratos`: CPF/CNPJ, "vence em 90 dias". Fechar com Claude + Docusign MCP: "Quais contratos do CNPJ 55.318.076/0001-51 vencem nos próximos 90 dias?" (história do WhatsApp do Fernando).
 6. **Fechamento (5 min)** — proposta de piloto com 1 POP real deles.
 
@@ -48,6 +49,8 @@
 
 | Teste E2E 2 (PJ) | instância `0edd347a…`, envelope `3761214a…` | OK 16/11/2026 — Rep1, Rep2, Test1, Test2 + CC Corretor; Rep3 vazio omitido (roteamento variável) |
 | Template Doc Gen da cotação (H1) — "Fontara Seguros - Proposta de Seguro (Cotacao)" | `fe5d08f8-ae51-40db-9b08-f1a69ad36351` | criado via API 17/11/2026 (`scripts/create-cotacao-template.mjs`); coberturas/prêmio por produto em `buildCotacaoFields` |
+| Beneficiários (C5) — Modelo de documento "Fontara Seguros - Alteração Beneficiários" | `52cca5f1-a378-444e-aede-600250756e12` (v4) | publicado 19/11/2026: campos de remetente, tabela dinâmica `Beneficiarios` (Nome/Parentesco/Percentual), regra "Clausula Vida" com 2 variantes (Produto = Vida / Previdência), "Clausula Menor" (TemMenor = Sim), Assinatura + Data do Signatário 1 |
+| Beneficiários (C5) — Modelo de envelope "Fontara Seguros - Alteracao de Beneficiarios (embarcado)" | `fdd421a2-7ec1-4f6f-ad46-edea1a9e6301` | usa o modelo de documento acima (papel "Signatário 1" vinculado); `POST /api/docusign/beneficiarios` + assinatura embarcada; validado E2E 19/11/2026 |
 | Contratação WhatsApp (C4 / POP-VP-002) | `POST /api/docusign/whatsapp` → template PF `8e999bc2…` via compositeTemplates, titular `deliveryMethod: WhatsApp` | rascunho validado 17/11/2026 (`deliveryMethod: whatsapp` no recipient); envio real depende do número do apresentador |
 | Correções 16/11 | Workflow PF/PJ: remapeados campos PJ (IA tinha deslocado Rep1–3, Nº proposta, testemunhas), Cnpj e Corretor; Onboarding: ramo Auto completado (Preparar modelo Empresarial e Patrimonial + assinatura) e ramo sem condição com tela própria | validado: envelope PJ `c767256b…` com todos os campos corretos |
 

@@ -153,7 +153,7 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
     </dl></div>
     <div class="lg"><h3>Documento</h3><dl>
       <dt><span class="tag doc">Template eSignature (PDF com campos)</span></dt><dd>Template de eSignature (Modelos → Modelos) com PDF e campos: o workflow (“Preparar modelo do eSignature”) ou a API preenche os campos. <b>Usado em V1, C4 e C1.</b></dd>
-      <dt><span class="tag doc">Modelos de documentos (Doc Gen)</span></dt><dd>Biblioteca <b>Modelos → Modelos de documentos</b>. No workflow, o passo “Preparar modelo de documento” gera o documento a partir de um desses modelos. <b>Usado em H2 e V2.</b></dd>
+      <dt><span class="tag doc">Modelos de documentos (Doc Gen)</span></dt><dd>Biblioteca <b>Modelos → Modelos de documentos</b>. No workflow, o passo “Preparar modelo de documento” gera o documento a partir de um desses modelos; ou um <b>modelo de envelope</b> usa o modelo e a API preenche os campos (C5). Tem campos de remetente, <b>tabela dinâmica</b>, <b>cláusulas condicionais</b> e assinatura. <b>Usado em H2, V2 e C5.</b></dd>
       <dt><span class="tag doc">Doc Gen por API (template .docx)</span></dt><dd>Template eSignature com .docx de campos <code>{{Campo}}</code>: o portal cria o rascunho e preenche os campos pela API (<code>docGenFormFields</code>) antes de enviar. Fica em Modelos → Modelos, não na biblioteca de Modelos de documentos. <b>Usado em H1.</b></dd>
     </dl></div>
     <div class="lg"><h3>Assinatura</h3><dl>
@@ -181,6 +181,7 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
       <tr><td><b>H1</b></td><td><span class="tag doc">Doc Gen por API (template .docx)</span></td><td>“Fontara Seguros - Proposta de Seguro (Cotacao)”</td><td>Modelos → Modelos (template de eSignature com .docx)</td></tr>
       <tr><td><b>V1, C4</b></td><td><span class="tag doc">Template eSignature (PDF com campos)</span></td><td>“Fontara Seguros - Proposta de Adesao PF / PJ”</td><td>Modelos → Modelos. V1: passo “Preparar modelo do eSignature” no workflow “Proposta PF/PJ (API)”</td></tr>
       <tr><td><b>C1</b></td><td><span class="tag doc">Template eSignature (PDF com campos)</span></td><td>Template ligado ao Web Form “Resgate/Portabilidade”</td><td>Modelos → Formulários da Web</td></tr>
+      <tr><td><b>C5</b></td><td><span class="tag doc">Modelos de documentos (Doc Gen)</span></td><td>“Fontara Seguros - Alteração Beneficiários” (tabela dinâmica + cláusulas condicionais + assinatura) dentro do modelo de envelope “Alteracao de Beneficiarios (embarcado)”</td><td>Modelos → <b>Modelos de documentos</b> (editar e publicar atualiza o modelo de envelope sozinho)</td></tr>
       <tr><td>C2, C3, V3, V4, D1, D2</td><td colspan="3">Não geram documento</td></tr>
     </tbody>
   </table></div>
@@ -240,6 +241,14 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
       <div class="flow"><span class="tag form">Form do portal</span><span class="arrow">→</span><span class="tag api">API → Envelope</span><span class="arrow">→</span><span class="tag doc">Template eSignature (PDF com campos)</span><span class="arrow">→</span><span class="tag sign">Entrega por WhatsApp</span><span class="arrow">→</span><span class="tag post">Status por API</span></div>
       <p class="docline"><b>Documento:</b> template de eSignature “Proposta de Adesao PF”, preenchido pela API.</p>
       <ul class="show"><li>Use o seu celular no perfil de demo: a mensagem chega no WhatsApp em segundos.</li><li>A trilha avança sozinha: enviada → cliente abriu → assinada.</li><li>Cópia por e-mail para o e-mail do perfil (papel Corretor).</li><li>Sem e-mail para o titular: WhatsApp não combina com e-mail no mesmo signatário.</li></ul>
+    </article>
+
+    <article class="demo">
+      <div class="demo-head"><span class="id">C5</span><div><h3>Alteração de beneficiários</h3><p class="where">Produto (Vida Família ou PGBL) → <b>Alterar beneficiários</b> (também em Serviços)</p></div></div>
+      <p class="trigger"><b>Gatilho:</b> o cliente informa os beneficiários (nome, parentesco, %, menor) → <code>POST /api/docusign/beneficiarios</code> cria o rascunho do modelo de envelope, preenche os campos e a <b>tabela dinâmica</b> (<code>docGenFormFields</code>) e envia; a assinatura abre embarcada (<code>/api/docusign/signing-view</code>).</p>
+      <div class="flow"><span class="tag form">Formulário do portal</span><span class="arrow">→</span><span class="tag api">API → Envelope</span><span class="arrow">→</span><span class="tag doc">Modelos de documentos (Doc Gen)</span><span class="arrow">→</span><span class="tag sign">Embarcada · Focused View ⇄ Clássica</span></div>
+      <p class="docline"><b>Documento:</b> <b>Modelos de documentos</b> “Fontara Seguros - Alteração Beneficiários”: tabela dinâmica (uma linha por beneficiário), cláusula <i>Vida</i> ou <i>Previdência</i> conforme o produto e cláusula do <i>menor</i> só se houver menor. Assinatura e data posicionadas no próprio modelo.</p>
+      <ul class="show"><li><b>Mensagem principal:</b> o negócio edita texto, cláusulas, tabela e posição da assinatura na DocuSign; ao publicar, o site já usa a nova versão (sem desenvolvedor, sem deploy).</li><li>Mostre ao vivo: Modelos → Modelos de documentos → abrir o modelo, mostrar as regras (setas &lt; &gt; das variantes) e a tabela dinâmica.</li><li>Compare Vida × PGBL e marque “Menor de idade” para a cláusula extra aparecer.</li><li>Use o seletor discreto Focused View ⇄ Clássica no rodapé da assinatura.</li></ul>
     </article>
 
   </div>
@@ -317,6 +326,7 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
         <tr><td>C1 Resgate</td><td></td><td><i class="dot api"></i></td><td></td><td></td><td><i class="dot form"></i></td><td><i class="dot form"></i></td><td><i class="dot doc"></i></td><td></td><td></td><td></td><td><i class="dot sign"></i></td><td></td><td></td><td></td><td></td></tr>
         <tr><td>C2 Dados cadastrais</td><td><i class="dot api"></i></td><td></td><td></td><td></td><td><i class="dot form"></i></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><i class="dot post"></i></td></tr>
         <tr><td>C3 Meus contratos</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><i class="dot post"></i></td><td></td></tr>
+        <tr><td>C5 Beneficiários</td><td></td><td></td><td><i class="dot api"></i></td><td><i class="dot form"></i></td><td></td><td></td><td></td><td><i class="dot doc"></i></td><td></td><td></td><td><i class="dot sign"></i></td><td></td><td></td><td></td><td></td></tr>
         <tr><td>C4 WhatsApp</td><td></td><td></td><td><i class="dot api"></i></td><td><i class="dot form"></i></td><td></td><td></td><td><i class="dot doc"></i></td><td></td><td></td><td><i class="dot sign"></i></td><td></td><td></td><td><i class="dot post"></i></td><td></td><td></td></tr>
         <tr><td>V1 Proposta (API)</td><td><i class="dot api"></i></td><td></td><td></td><td><i class="dot form"></i></td><td></td><td></td><td><i class="dot doc"></i></td><td></td><td></td><td><i class="dot sign"></i></td><td></td><td></td><td></td><td></td><td></td></tr>
         <tr><td>V2 Proposta embarcada</td><td><i class="dot api"></i></td><td></td><td></td><td></td><td><i class="dot form"></i></td><td></td><td></td><td><i class="dot doc"></i></td><td></td><td></td><td></td><td><i class="dot sign"></i></td><td></td><td></td><td><i class="dot post"></i></td></tr>
@@ -336,6 +346,7 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
     <li><span><span class="id">V2</span> A mesma jornada como experiência DocuSign embarcada</span></li>
     <li><span><span class="id">C1</span> Cliente: Resgate com Web Form pré-preenchido e Focused View</span></li>
     <li><span><span class="id">C4</span> Contratação com assinatura pelo WhatsApp (celular na mão)</span></li>
+    <li><span><span class="id">C5</span> Beneficiários: modelo de documento editável + cláusulas + tabela dinâmica</span></li>
     <li><span><span class="id">H1</span> eSignature API pura: Focused View ⇄ Clássica</span></li>
     <li><span><span class="id">V3</span> Acompanhamento dos envelopes em tempo real</span></li>
     <li><span><span class="id">V4</span> Contratos legados com IA e vencimentos</span></li>
@@ -357,6 +368,8 @@ td.mono { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
           <tr><td>Template Doc Gen</td><td>Fontara Seguros - Proposta de Seguro (Cotacao)</td><td class="mono">fe5d08f8-ae51-40db-9b08-f1a69ad36351</td><td>H1</td></tr>
           <tr><td>Template eSignature</td><td>Proposta de Adesao PF / PJ</td><td class="mono">8e999bc2… / d47237d8…</td><td>V1, C4 (PF)</td></tr>
           <tr><td>Modelos de documentos</td><td>Proposta padrão Vida · Empresarial e Patrimonial</td><td class="mono">—</td><td>H2, V2</td></tr>
+          <tr><td>Modelo de documento</td><td>Fontara Seguros - Alteração Beneficiários</td><td class="mono">52cca5f1-a378-444e-aede-600250756e12</td><td>C5</td></tr>
+          <tr><td>Modelo de envelope</td><td>Fontara Seguros - Alteracao de Beneficiarios (embarcado)</td><td class="mono">fdd421a2-7ec1-4f6f-ad46-edea1a9e6301</td><td>C5</td></tr>
         </tbody>
       </table></div>
     </div>

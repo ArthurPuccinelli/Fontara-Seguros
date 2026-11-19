@@ -29,6 +29,9 @@ export default function SigningEmbed({ envelopeId, name, email, clientUserId, on
   useEffect(() => {
     let cancelled = false
     setStatus('loading')
+    // Nosso loader cobre o iframe (e o spinner da própria Docusign) até o evento 'ready'.
+    // Se o evento não vier, libera a tela depois de 20 s para nunca travar a assinatura.
+    const fallback = setTimeout(() => !cancelled && setStatus((s) => (s === 'loading' ? 'ready' : s)), 20000)
     ;(async () => {
       try {
         const res = await fetch('/api/docusign/signing-view', {
@@ -63,6 +66,7 @@ export default function SigningEmbed({ envelopeId, name, email, clientUserId, on
     })()
     return () => {
       cancelled = true
+      clearTimeout(fallback)
     }
   }, [envelopeId, name, email, clientUserId, mode, containerId])
 
@@ -76,8 +80,9 @@ export default function SigningEmbed({ envelopeId, name, email, clientUserId, on
       ) : (
         <div className="relative flex-1 min-h-[480px]">
           {status === 'loading' && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <Loader2 size={36} className="text-fontara-accent animate-spin" />
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white">
+              <Loader2 size={32} className="text-fontara-navy animate-spin" />
+              <p className="text-sm text-gray-500">Preparando o documento para assinatura…</p>
             </div>
           )}
           <div id={containerId} key={mode} className="w-full h-full min-h-[480px]" />

@@ -330,3 +330,104 @@ export async function getWhatsAppStatus(envelopeId: string): Promise<WhatsAppSta
     completedAt: e?.completedDateTime,
   }
 }
+
+// ---------- Alteração de beneficiários (C5) — Modelo de documento da biblioteca ----------
+// Modelo de envelope "Fontara Seguros - Alteracao de Beneficiarios (embarcado)" usa o documento
+// "Fontara Seguros - Alteração Beneficiários" da biblioteca Modelos de documentos: campos de remetente,
+// tabela dinâmica "Beneficiarios" (Nome | Parentesco | Percentual), cláusulas condicionais (Produto, TemMenor)
+// e Assinatura/Data do papel "Signatário 1" — tudo editável na UI; cada publicação atualiza o modelo de envelope.
+// Os nomes técnicos dos campos são gerados (ex.: /C_Produto_vCw26s): mapeamos pelo `label`.
+
+export const BENEFICIARIOS_TEMPLATE_ID = 'fdd421a2-7ec1-4f6f-ad46-edea1a9e6301'
+const BENEFICIARIOS_ROLE = 'Signatário 1'
+
+export interface Beneficiario {
+  nome: string
+  parentesco: string
+  percentual: number
+  menor?: boolean
+}
+
+export interface BeneficiariosData {
+  signerName: string
+  signerEmail: string
+  cpf: string
+  certificado: string
+  produto: 'Vida' | 'Previdência'
+  beneficiarios: Beneficiario[] // 1..N (tabela dinâmica)
+}
+
+export function buildBeneficiariosFields(d: BeneficiariosData, now = new Date()) {
+  const benefs = d.beneficiarios.filter((b) => b.nome.trim())
+  const campos: Record<string, string> = {
+    Protocolo: `BEN-${now.getFullYear()}-${String(now.getTime()).slice(-6)}`,
+    DataSolicitacao: now.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
+    NomeSegurado: d.signerName,
+    CpfSegurado: d.cpf || '—',
+    Certificado: d.certificado,
+    Produto: d.produto,
+    TemMenor: benefs.some((b) => b.menor) ? 'Sim' : 'Não',
+  }
+  const linhas = benefs.map((b) => ({
+    Nome: b.nome.trim(),
+    Parentesco: `${b.parentesco || 'beneficiário'}${b.menor ? ' (menor)' : ''}`,
+    Percentual: `${b.percentual}%`,
+  }))
+  return { campos, linhas }
+}
+
+interface DocGenField {
+  label: string
+  name: string
+  type: string
+  rowValues?: { docGenFormFieldList: DocGenField[] }[]
+}
+
+export async function createBeneficiariosEnvelope(
+  d: BeneficiariosData,
+  clientUserId: string,
+): Promise<CreatedEnvelope & { protocolo: string }> {
+  const base = `/v2.1/accounts/${env.accountId}/envelopes`
+
+  const draft: any = await dsFetch(env.basePath, base, {
+    method: 'POST',
+    body: {
+      status: 'created',
+      templateId: BENEFICIARIOS_TEMPLATE_ID,
+      emailSubject: 'Fontara Seguros — Alteração de beneficiários',
+      templateRoles: [{ roleName: BENEFICIARIOS_ROLE, name: d.signerName, email: d.signerEmail, clientUserId }],
+    },
+  })
+  const envelopeId: string = draft.envelopeId
+
+  const form: any = await dsFetch(env.basePath, `${base}/${envelopeId}/docGenFormFields`)
+  const doc = form?.docGenFormFields?.[0]
+  if (!doc?.documentId) throw new Error('Modelo de beneficiários sem campos (docGenFormFields vazio).')
+  const fields = doc.docGenFormFieldList as DocGenField[]
+  const { campos, linhas } = buildBeneficiariosFields(d)
+
+  const list: Record<string, unknown>[] = fields
+    .filter((f) => f.type !== 'TableRow' && campos[f.label] !== undefined)
+    .map((f) => ({ name: f.name, value: campos[f.label] }))
+
+  // Tabela dinâmica: uma linha por beneficiário; cada linha precisa trazer todas as colunas da definição.
+  const tabela = fields.find((f) => f.type === 'TableRow' && f.label === 'Beneficiarios')
+  const colunas = tabela?.rowValues?.[0]?.docGenFormFieldList ?? []
+  if (tabela && colunas.length) {
+    list.push({
+      name: tabela.name,
+      type: 'TableRow',
+      rowValues: linhas.map((l) => ({
+        docGenFormFieldList: colunas.map((c) => ({ name: c.name, value: (l as Record<string, string>)[c.label] ?? '' })),
+      })),
+    })
+  }
+
+  await dsFetch(env.basePath, `${base}/${envelopeId}/docGenFormFields`, {
+    method: 'PUT',
+    body: { docGenFormFields: [{ documentId: doc.documentId, docGenFormFieldList: list }] },
+  })
+
+  await dsFetch(env.basePath, `${base}/${envelopeId}`, { method: 'PUT', body: { status: 'sent' } })
+  return { envelopeId, status: 'sent', clientUserId, protocolo: campos.Protocolo }
+}

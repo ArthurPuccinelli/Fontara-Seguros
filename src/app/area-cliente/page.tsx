@@ -9,12 +9,13 @@ import { useAuth } from '@/context/AuthContext'
 import MaestroModal from '@/components/MaestroModal'
 import WebFormJourney from '@/components/WebFormJourney'
 import WhatsAppJourney from '@/components/WhatsAppJourney'
+import BeneficiariosJourney from '@/components/BeneficiariosJourney'
 import EmbedShell from '@/components/EmbedShell'
 import AgreementSearch from '@/components/AgreementSearch'
 
 const DADOS_CADASTRAIS_WORKFLOW = '98e2f24c-e903-4692-b599-21fd8214e04e'
 
-type Action = 'maestro' | 'resgate' | 'contratos' | 'whatsapp'
+type Action = 'maestro' | 'resgate' | 'contratos' | 'whatsapp' | 'beneficiarios'
 
 // Dados ilustrativos da carteira do cliente (não vêm da DocuSign).
 const PRODUTOS = [
@@ -24,6 +25,7 @@ const PRODUTOS = [
     valor: 'R$ 48.312,77',
     legenda: 'saldo acumulado',
     extra: '+9,4% em 12 meses',
+    tipo: 'Previdência' as const,
     acao: { label: 'Resgatar ou portar', action: 'resgate' as Action },
   },
   {
@@ -32,6 +34,7 @@ const PRODUTOS = [
     valor: 'R$ 250.000,00',
     legenda: 'capital segurado',
     extra: 'vigente até 03/2027',
+    tipo: 'Vida' as const,
     acao: { label: 'Ver contrato', action: 'contratos' as Action },
   },
 ]
@@ -51,6 +54,7 @@ export default function AreaClientePage() {
   const { user, ready, logout } = useAuth()
   const router = useRouter()
   const [modal, setModal] = useState<Action | null>(null)
+  const [plano, setPlano] = useState<(typeof PRODUTOS)[number]>(PRODUTOS[1])
   const [agora, setAgora] = useState<Date | null>(null)
 
   useEffect(() => {
@@ -114,12 +118,23 @@ export default function AreaClientePage() {
                     <div>
                       <p className="font-medium text-gray-900">{p.nome}</p>
                       <p className="text-xs text-gray-400 font-mono mt-1">{p.numero}</p>
-                      <button
-                        onClick={() => setModal(p.acao.action)}
-                        className="mt-4 text-sm text-fontara-accent hover:text-fontara-navy underline underline-offset-4 decoration-fontara-accent/30"
-                      >
-                        {p.acao.label}
-                      </button>
+                      <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+                        <button
+                          onClick={() => setModal(p.acao.action)}
+                          className="text-fontara-accent hover:text-fontara-navy underline underline-offset-4 decoration-fontara-accent/30"
+                        >
+                          {p.acao.label}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setPlano(p)
+                            setModal('beneficiarios')
+                          }}
+                          className="text-fontara-accent hover:text-fontara-navy underline underline-offset-4 decoration-fontara-accent/30"
+                        >
+                          Alterar beneficiários
+                        </button>
+                      </div>
                     </div>
                     <div className="sm:text-right">
                       <p className="text-2xl font-semibold tabular-nums tracking-tight text-fontara-navy">{p.valor}</p>
@@ -157,6 +172,7 @@ export default function AreaClientePage() {
                   { label: 'Resgate ou portabilidade', onClick: () => setModal('resgate') },
                   { label: 'Contratos e documentos', onClick: () => setModal('contratos') },
                   { label: 'Contratar novo plano', onClick: () => setModal('whatsapp') },
+                  { label: 'Alterar beneficiários', onClick: () => { setPlano(PRODUTOS[1]); setModal('beneficiarios') } },
                 ].map((s) => (
                   <li key={s.label} className="border-b border-gray-200">
                     <button onClick={s.onClick} className="w-full flex items-center justify-between py-4 text-sm text-gray-800 hover:text-fontara-navy group">
@@ -211,6 +227,12 @@ export default function AreaClientePage() {
       {modal === 'resgate' && (
         <EmbedShell label="Resgate / Portabilidade" onClose={() => setModal(null)}>
           <WebFormJourney journey="resgate-portabilidade" title="Solicitação de Resgate / Portabilidade" />
+        </EmbedShell>
+      )}
+
+      {modal === 'beneficiarios' && (
+        <EmbedShell label="Alterar beneficiários" onClose={() => setModal(null)}>
+          <BeneficiariosJourney produto={plano.tipo} certificado={plano.numero} nomePlano={plano.nome} />
         </EmbedShell>
       )}
 
