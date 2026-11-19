@@ -1,7 +1,7 @@
 # Handoff: estado do projeto para retomada
 
 > Leia este arquivo primeiro ao retomar o projeto. Depois leia, nesta ordem:
-> 1. Playbook DocuSign global (skill `docusign-demo-playbook`, em `~/.claude/skills/docusign-demo-playbook/PLAYBOOK.md`): conhecimento reutilizável. Os hooks já injetam o índice no início da sessão.
+> 1. Playbook DocuSign compartilhado (skill `docusign-demo-playbook`, clone de https://github.com/ArthurPuccinelli/docusign-demo-playbook em `~/.claude/skills/`): conhecimento reutilizável. Os hooks fazem `git pull` e injetam o índice no início da sessão; aprendizados viram PR via `scripts/contribute.sh`. Instalação: [`DEMO-PLAYBOOK.md`](DEMO-PLAYBOOK.md).
 > 2. [`demos/caixa-vida-previdencia.md`](demos/caixa-vida-previdencia.md): roteiro e IDs do cliente.
 > 3. [`../public/demo-map.html`](../public/demo-map.html): mapa da demo para o apresentador, publicado em `/demo-map`.
 >
